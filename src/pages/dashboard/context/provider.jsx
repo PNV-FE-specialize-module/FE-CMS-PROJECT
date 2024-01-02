@@ -1,13 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react'
 
-class provider extends Component {
-  render() {
-    return (
-      <div>
-        
-      </div>
-    );
-  }
+export const provider = () => {
+  return (
+    <div>provider</div>
+  )
 }
-
-export default provider;

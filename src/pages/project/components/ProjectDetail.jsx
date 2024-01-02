@@ -1,13 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react'
 
-class ProjectDetail extends Component {
-  render() {
-    return (
-      <div>
-        
-      </div>
-    );
-  }
+export const ProjectDetail = () => {
+  return (
+    <div>ProjectDetail</div>
+  )
 }
-
-export default ProjectDetail;
