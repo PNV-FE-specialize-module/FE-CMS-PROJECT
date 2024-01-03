@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Space, Table, Avatar,Pagination } from 'antd';
 import axios from 'axios';
 import "./style.css";
+import {Link} from "react-router-dom";
 
 const ShowEmployees = () => {
   const [employees, setEmployees] = useState([]);
@@ -58,17 +59,20 @@ const ShowEmployees = () => {
         </span>
       ),
     },
-    
+
     {
       title: 'Action',
       key: 'action',
       render: (_, record) => (
-        <Space size="middle">
-          <a className='text-edit'>Edit</a>
-          <a className='text-del'>Delete</a>
-        </Space>
+          <Space size="middle">
+            <Link to={`/employee/${record.key}`} className='text-edit'>
+              Edit
+            </Link>
+            <a className='text-del'>Delete</a>
+          </Space>
       ),
     },
+
   ];
   const handleTableChange = (pagination) => {
     setPagination(pagination);
