@@ -4,11 +4,12 @@ import viteLogo from '/vite.svg'
 import { DatePicker } from 'antd';
 
 import './style/App.css'
+import ShowEmployees from './pages/employee/container';
 
 function App() {
 
   return (
-      <DatePicker />
+      <ShowEmployees />
   )
 }
 
