@@ -1,0 +1,38 @@
+.ant-modal-content {
+    width: 1000px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+.ant-btn-primary{
+    background: #5D5FEF;
+}
+.ant-modal-title{
+    color: #5D5FEF;
+}
+input{
+    height: 40px;
+}
+.ant-picker{
+    height: 40px;
+}
+.option{
+    color: #fff;
+}
+.ant-form-item-required{
+    color: #5D5FEF;
+}
+
+/* .done{
+    background-color: rgb(18, 181, 18);
+}
+.onp{
+    background-color: rgb(147, 147, 220);
+}
+.pending{
+    background-color: rgb(255, 145, 0);
+}
+.closed{
+    background-color: rgb(234, 51, 51);
+} */
+
+  
