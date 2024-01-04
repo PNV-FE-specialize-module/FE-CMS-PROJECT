@@ -1,32 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Spin, Alert, Space, Tag } from 'antd';
-import axios from 'axios';
 import {
-  EditOutlined,
+  EyeOutlined,
   DeleteOutlined
 } from "@ant-design/icons";
 import { checkProjectStatus, getStatusColor } from '../../../components/enum/enum';
+import { useGetProject } from '../../../hooks/useProject';
 
 const ListProject = () => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/project');
-        console.log('API Response:', response.data);
-        setData(response.data.data);
-      } catch (error) {
-        setError('Error fetching data');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const { data: projects, isLoading, isError, error } = useGetProject();
 
   const columns = [
     {
@@ -93,7 +75,7 @@ const ListProject = () => {
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <EditOutlined />
+          <EyeOutlined />
           <DeleteOutlined />
         </Space>
       ),
@@ -101,14 +83,21 @@ const ListProject = () => {
   ];
 
   return (
-    <Spin spinning={loading} tip="Loading...">
-      {error && <Alert message={error} type="error" />}
-      {Array.isArray(data) && data.length > 0 ? (
-        <Table columns={columns} dataSource={data} rowKey={(record) => record.id} />
+
+    <Spin spinning={isLoading} tip="Loading...">
+      {isError && <Alert message={error.message} type="error" />}
+      {projects && projects.data ? (
+        Array.isArray(projects.data) && projects.data.length > 0 ? (
+          <Table columns={columns} dataSource={projects.data} rowKey={(record) => record.id} />
+        ) : (
+          <p>No data to display</p>
+        )
       ) : (
-        <p>No data to display</p>
+        <p>Loading...</p>
       )}
     </Spin>
+
+
   );
 };
 

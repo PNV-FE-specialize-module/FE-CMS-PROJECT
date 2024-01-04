@@ -8,7 +8,6 @@ import {
 } from '@ant-design/icons';
 import '../../../style/hearder.css'
 import Language from "../Language";
-import avatarUsers from "./AvartaUser";
 
 const { Header } = Layout;
 
@@ -37,14 +36,6 @@ export default function HeaderContent({ pageTitle }) {
         }
       />
       <Language/>
-      <avatarUsers/>
-
-      {/* <Dropdown>
-        <Space>
-          <Avatar icon={<UserOutlined />} />
-          <DownOutlined/>
-        </Space>
-      </Dropdown> */}
     </Header>
   );
 }
