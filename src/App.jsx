@@ -1,16 +1,24 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-// import { DatePicker } from 'antd';
-//
-// import './style/App.css'
-// import ShowEmployees from './pages/employee/container';
-//
-// function App() {
-//
-//   return (
-//       <ShowEmployees />
-//   )
-// }
-//
-// export default App
+
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { LayoutDashboard } from './components';
+import AppRoutes from './routers';
+
+function App() {
+  return (
+    <Router>
+      <Routes>
+        {AppRoutes.map((route, index) => (
+          <Route
+            key={index}
+            path={route.path}
+            element={<LayoutDashboard pageTitle={route.title}>{route.element}</LayoutDashboard>}
+          />
+        ))}
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
+

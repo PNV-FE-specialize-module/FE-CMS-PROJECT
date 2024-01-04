@@ -27,10 +27,11 @@
     width: 0px;
 }
 .custom-table .status-wrapper {
-    display: inline-block;
-    padding: 5px 10px;
-    border-radius: 100px;
-    width: 50px;
+    display: inline;
+    padding: 3px 8px;
+    border-radius: 2px;
+    width: 20px;
+
 }
 .custom-table .status-active {
     background-color: #83d5b7;

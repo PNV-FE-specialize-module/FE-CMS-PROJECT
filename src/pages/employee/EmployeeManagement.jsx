@@ -3,6 +3,10 @@ import { Space, Table, Avatar,Pagination } from 'antd';
 import axios from 'axios';
 import "../../style/EmployeeManagement.css"
 import {Link} from "react-router-dom";
+import {
+    EyeOutlined,
+    DeleteOutlined
+  } from "@ant-design/icons";
 
 const ShowEmployees = () => {
     const [employees, setEmployees] = useState([]);
@@ -66,9 +70,9 @@ const ShowEmployees = () => {
             render: (_, record) => (
                 <Space size="middle">
                     <Link to={`/employee/${record.key}`} className='text-edit'>
-                        Edit
+                        <EyeOutlined />
                     </Link>
-                    <a className='text-del'>Delete</a>
+                    <DeleteOutlined/>
                 </Space>
             ),
         },
