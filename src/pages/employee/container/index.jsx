@@ -189,7 +189,7 @@ const ShowEmployees = () => {
         },
         {
           text: 'Full-stack',
-          value: 'fullsatck',
+          value: 'fullstack',
         },
         {
           text: 'Back-end',
