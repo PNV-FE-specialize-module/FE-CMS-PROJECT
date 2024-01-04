@@ -1,0 +1,30 @@
+.ant-menu-light .ant-menu-item-selected{
+    background-color: #1677ff;
+    color:white;
+}
+
+
+.ant-menu-light .ant-menu-item a{
+   transition: color 0.05s;
+
+}
+
+
+.demo-logo-vertical {
+    height: 32px;
+    margin: 16px;
+    border-radius: 6px;
+    color:"#000000";
+    display: flex;
+    justify-content:center;
+}
+
+.ant-layout .ant-layout-sider-trigger{
+    background-color:#1677ff;
+}
+
+
+.ant-typography {
+    margin:0;
+    margin-bottom:1px;
+}
