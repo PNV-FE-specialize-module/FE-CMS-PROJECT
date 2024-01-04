@@ -1,3 +1,4 @@
+
 import React from 'react'
 import { Dashboard } from '../pages/dashboard/components/Dashboard';
 import ListProject from '../pages/project/components/ListProject';
@@ -12,6 +13,7 @@ const AppRoutes = [
         element: <ShowEmployees />,
         errorElement: <div>Not found</div>,
         title:"List Employee"
+
     },
     {
         path: "/employee/:id",
@@ -25,8 +27,12 @@ const AppRoutes = [
         // element: <Login />,
     },
 
+
 ]
 
 export default AppRoutes;
 
+
+
+]);
 
