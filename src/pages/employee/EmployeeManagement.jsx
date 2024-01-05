@@ -6,15 +6,56 @@ import axios from 'axios';
 import "../../style/EmployeeManagement.css";
 import {Link} from "react-router-dom";
 import {useDeleteEmployee} from "../../hooks/useEmployee.jsx";
+import Swal from "sweetalert2";
 
 
 const ShowEmployees = () => {
-    const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-    const [employeeToDelete, setEmployeeToDelete] = useState(null);
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
     const { mutate: deleteEmployee } = useDeleteEmployee();
+    const handleDeleteConfirm = (record) => {
+        Swal.fire({
+            title: 'Confirmation',
+            text: 'Are you sure you want to delete this employee?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Delete',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteEmployee(record.key)
+                    .then(() => {
+                        Swal.fire({
+                            title: 'Success',
+                            text: 'Employee deleted successfully.',
+                            icon: 'success',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        // Fetch the updated employee list
+                        axios.get('http://localhost:3000/employee')
+                            .then(response => {
+                                setEmployees(response.data.data);
+                            })
+                            .catch(error => {
+                                console.error('Error fetching employee data:', error);
+                            });
+                    })
+                    .catch(() => {
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Failed to delete employee.',
+                            icon: 'error',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    });
+            }
+        });
+    };
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
@@ -24,6 +65,7 @@ const ShowEmployees = () => {
         clearFilters();
         setSearchText('');
     };
+
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
             <div
@@ -149,24 +191,6 @@ const ShowEmployees = () => {
         const codeB = b.code.toString();
         return codeA.localeCompare(codeB, undefined, { numeric: true, sensitivity: 'base' });
     };
-    const showDeleteConfirmationModal = (employee) => {
-        setEmployeeToDelete(employee);
-        setDeleteModalVisible(true);
-    };
-
-    const handleDeleteConfirm = async () => {
-        if (employeeToDelete) {
-            await deleteEmployee(employeeToDelete.key);
-            setDeleteModalVisible(false);
-            setEmployeeToDelete(null);
-        }
-    };
-
-    const handleDeleteCancel = () => {
-        setDeleteModalVisible(false);
-        setEmployeeToDelete(null);
-    };
-
 
     const columns = [
         {
@@ -270,7 +294,7 @@ const ShowEmployees = () => {
                     <Link to={`/employee/${record.key}`} className="text-edit">
                         <EyeOutlined />
                     </Link>
-                    <Button type="danger" onClick={() => deleteEmployee(record.key)}>
+                    <Button type="danger" onClick={() => handleDeleteConfirm(record)}>
                         <DeleteOutlined />
                     </Button>
 
@@ -308,14 +332,6 @@ const ShowEmployees = () => {
                 }}
                 onChange={handleChange}
             />
-            <Modal
-                title="Confirm Deletion"
-                visible={deleteModalVisible}
-                onOk={handleDeleteConfirm}
-                onCancel={handleDeleteCancel}
-            >
-                <p>Are you sure you want to delete this employee?</p>
-            </Modal>
         </>
     );
 };

@@ -35,7 +35,7 @@ export const LayoutDashboard = ({children, pageTitle }) => {
         <div
           style={{
             padding: 24,
-            minHeight: 610,
+            minHeight: 600,
             background: colorBgContainer,
             borderRadius: borderRadiusLG,
             color:"#000000"

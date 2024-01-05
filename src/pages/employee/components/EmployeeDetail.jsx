@@ -5,6 +5,8 @@ import {Row, Col, Button, Form, Input, Typography, Card, Select, Table} from 'an
 import moment from "moment";
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.css';
+import { Widget } from 'react-cloudinary-upload-widget';
+// import { Image, Transformation, Widget } from 'cloudinary-react';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -23,6 +25,15 @@ const EmployeeDetail = () => {
   if (isError) {
     return <div>404 Not Found</div>;
   }
+  // const handleImageUpload = (result) => {
+  //   // 'result' contains information about the uploaded image
+  //   const { event, info } = result;
+  //   const imageUrl = info.secure_url; // The URL of the uploaded image
+  //   setEditedEmployee((prev) => ({
+  //     ...prev,
+  //     avatar: imageUrl,
+  //   }));
+  // };
 
 
   const handleEditClick = () => {
@@ -37,7 +48,7 @@ const EmployeeDetail = () => {
       ...prevState,
       skills: [
         ...prevState.skills,
-        { name: '', exp: '' } // Initial values for the new skill
+        { name: '', exp: '' }
       ],
     }));
   };
@@ -63,7 +74,7 @@ const EmployeeDetail = () => {
       ...prevState,
       langFrame: [
         ...prevState.langFrame,
-        { name: '', exp: '' } // Initial values for the new language/framework
+        { name: '', exp: '' }
       ],
     }));
   };
@@ -90,7 +101,7 @@ const EmployeeDetail = () => {
       ...prevState,
       tech: [
         ...prevState.tech,
-        { name: '', exp: '' } // Initial values for the new tech
+        { name: '', exp: '' }
       ],
     }));
   };
@@ -121,7 +132,14 @@ const EmployeeDetail = () => {
       [name]: value,
     }));
   };
-
+  const handleImageUpload = (result) => {
+    const { event, info } = result;
+    const imageUrl = info.secure_url;
+    setEditedEmployee((prev) => ({
+      ...prev,
+      avatar: imageUrl,
+    }));
+  };
 
   const {
     avatar,
@@ -181,7 +199,16 @@ const EmployeeDetail = () => {
             </Row>
             <Row gutter={32} align="middle" justify="center">
               <Col>
-                <Button>Edit Image</Button>
+                <Widget
+                    sources={['local', 'url', 'camera', 'facebook', 'google_photos']}
+                    resourceType="image"
+                    cloudName="da9hiv52w"
+                    uploadPreset="avatar"
+                    buttonText="Upload Image"
+                    folder="avatars"
+                    onSuccess={handleImageUpload}
+                    onFailure={() => console.log('Image upload failed')}
+                />
               </Col>
             </Row>
           </Col>
