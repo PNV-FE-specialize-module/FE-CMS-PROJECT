@@ -31,7 +31,7 @@ export const getStatusColor = (status) => {
       case StatusProjectEnum.CLOSED:
         return 'blue';
       default:
-        return 'grey'; // You can set a default color or handle unknown statuses
+        return 'grey'; 
     }
 }
   

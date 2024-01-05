@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getprojects } from "../api/Project";
+import { getDetailProject, getprojects } from "../api/Project";
 
 export const useGetProject = () => {
     return useQuery({
@@ -15,3 +15,19 @@ export const useGetProject = () => {
         }
     });
 };
+
+export const useGetDetaiProject = (id) => {
+    return useQuery({
+        queryKey: ["PROJECT", id],
+        queryFn: async () => {
+            try {
+                const { data } = await getDetailProject(id);
+                return data;
+            } catch (error) {
+                console.error("Error:", error);
+                throw error;
+            }
+        }
+    });
+};
+
