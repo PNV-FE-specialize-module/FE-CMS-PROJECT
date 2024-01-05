@@ -4,10 +4,11 @@ import {
   EyeOutlined,
   DeleteOutlined
 } from "@ant-design/icons";
-import { checkProjectStatus, getStatusColor } from '../../../components/enum/enum';
-import { useGetProject } from '../../../hooks/useProject';
-
+import { checkProjectStatus, getStatusColor } from '../../components/enum/enum';
+import { useGetProject } from '../../hooks/useProject';
+import { Link } from 'react-router-dom';
 const ListProject = () => {
+  
   const { data: projects, isLoading, isError, error } = useGetProject();
 
   const columns = [
@@ -75,7 +76,9 @@ const ListProject = () => {
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <EyeOutlined />
+          <Link to={`/project/${record.id}`}>
+            <EyeOutlined />
+          </Link>
           <DeleteOutlined />
         </Space>
       ),
