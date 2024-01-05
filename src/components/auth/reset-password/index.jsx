@@ -17,7 +17,6 @@ export const ResetPwd = () => {
       .then((response) => {
         console.log("Successfully send mail", response.data);
         alert("Mail sent successfully");
-        
         navigate('/login');
       })
       .catch((error) => {

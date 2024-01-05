@@ -4,7 +4,6 @@ import { Dashboard } from '../pages/dashboard/components/Dashboard';
 import ListProject from '../pages/project/components/ListProject';
 import EmployeeDetail from "../pages/employee/components/EmployeeDetail.jsx";
 import ShowEmployees from "../pages/employee/EmployeeManagement.jsx";
-import Login from '../components/auth/login/index.jsx';
 import { ResetPwd } from '../components/auth/reset-password/index.jsx';
 import { Logout } from '../components/auth/logout/index.jsx';
 
@@ -35,9 +34,6 @@ const AppRoutes = [
         element: <Logout/>,
         title: 'Signout'
     },
-
-
-
 ]
 
 export default AppRoutes;

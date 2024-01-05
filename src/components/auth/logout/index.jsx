@@ -5,6 +5,8 @@ export const Logout = () => {
   // Temporary
   localStorage.removeItem("user");
   return (
-    <></>
+    <Flex>
+      
+    </Flex>
   )
 }

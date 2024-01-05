@@ -2,10 +2,13 @@ import { Form, Button, Input, Checkbox, Flex } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import axios from "axios";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthContext";
 
 const Login = () => {
   const [error, setError] = useState("");
+  const { setIsLogin } = useAuth();
+  const navigate= useNavigate()
 
   const onFinish = (values) => {
     const requestData = { email: values.email, password: values.password };
@@ -19,6 +22,8 @@ const Login = () => {
       .then((response) => {
         console.log("Successfully logged in", response.data.user);
         localStorage.setItem("user", JSON.stringify(response.data.user));
+        setIsLogin(true);
+        navigate('/');
       })
       .catch((error) => {
         console.error("Error logging in:", error.response.data.message);
