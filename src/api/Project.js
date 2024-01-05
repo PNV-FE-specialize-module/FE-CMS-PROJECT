@@ -6,7 +6,11 @@ export const getprojects = async () => {
     return await baseAxios.get(`${ENDPOINT}`);
 }
 
+export const getDetailProject = async (id, params = {}) => {
+  return await baseAxios.get(`${ENDPOINT}/${id}`, params);
+};
 
 export default {
-  getprojects
+  getprojects,
+  getDetailProject
 }

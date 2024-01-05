@@ -1,12 +1,19 @@
 import React from 'react'
 import { Dashboard } from '../pages/dashboard/components/Dashboard';
-import ListProject from '../pages/project/components/ListProject';
+import ListProject from '../pages/project/ListProject';
 import EmployeeDetail from "../pages/employee/components/EmployeeDetail.jsx";
 import ShowEmployees from "../pages/employee/EmployeeManagement.jsx";
+import { ProjectDetail } from '../pages/project/components/ProjectDetail.jsx';
+
 
 const AppRoutes = [
     { path: "/", element: <Dashboard /> , title:"Dashboard"  },
     { path: "/listproject", element: <ListProject/>, title:"List Project" },
+    {
+        path: "/project/:id",
+        element: <ProjectDetail />,
+        title:"Edit Project"
+    },
     {
         path: "/listemployee",
         element: <ShowEmployees />,
@@ -21,7 +28,8 @@ const AppRoutes = [
         // errorElement: <div>Not found</div>,
     },
     {
-        path: "/login",
+        path: "/logout",
+
         // element: <Login />,
     },
 

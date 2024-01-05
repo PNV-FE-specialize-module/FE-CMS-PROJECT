@@ -17,6 +17,7 @@ const EmployeeDetail = () => {
   if ( isError) {
     return <div>404</div>;
   }
+  
 
   const {
     avatar,
@@ -33,6 +34,9 @@ const EmployeeDetail = () => {
     description,
     manager,
   } = employee?.employee;
+  
+  console.log(name)
+  
 
   return (
       <Card>
