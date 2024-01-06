@@ -1,5 +1,5 @@
 .ant-modal-content {
-    width: 1000px;
+    width: 900px;
     left: 50%;
     transform: translateX(-50%);
   }
@@ -11,9 +11,18 @@
 }
 input{
     height: 40px;
+    width: 100%;
 }
 .ant-picker{
     height: 40px;
+}
+.ant-title{
+    color: #5D5FEF;
+    font-size: 18px;
+}
+.ant-select{
+    height: 40px;
+    width: 100%;
 }
 .option{
     color: #fff;
