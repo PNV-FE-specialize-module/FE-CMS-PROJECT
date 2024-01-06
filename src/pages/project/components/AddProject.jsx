@@ -8,32 +8,50 @@ import axios from 'axios';
 const { TextArea } = Input;
 const { Option } = Select;
 
-const AddProject = () => {
+export const AddProject = () => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
-  const [selectedMembers, setSelectedMembers] = useState([]);
-  const [employeeOptions, setEmployeeOptions] = useState([]);
-  useEffect(() => {
-    const fetchEmployees = async () => {
-      try {
-        await axios.get('http://localhost:3000/employee').then(res => {
-        const data = res.data.data
+  // const [selectedMembers, setSelectedMembers] = useState([]);
+  // const [employeeOptions, setEmployeeOptions] = useState([]);
+  const [selectedManagers, setSelectedManagers] = useState([]);
+  const [managerOptions, setManagerOptions] = useState([]);
 
-        setEmployeeOptions(data.map(employee => employee.id))
+  useEffect(() => {
+    const fetchManagers = async () => {
+      try {
+        await axios.get('http://localhost:3000/employee/managers').then(res => {
+        const data = res.data
+
+        setManagerOptions(data.map(manager => manager.id))
         })
       } catch (error) {
         console.error('Error fetching employees:', error);
       }
     };
 
-    fetchEmployees();
+    fetchManagers();
 
   }, []);
 
-  
-  console.log(employeeOptions);
+  // useEffect(() => {
+  //   const fetchEmployees = async () => {
+  //     try {
+  //       await axios.get('http://localhost:3000/employee').then(res => {
+  //       const data = res.data.data
+
+  //       setEmployeeOptions(data.map(employee => employee.id))
+  //       })
+  //     } catch (error) {
+  //       console.error('Error fetching employees:', error);
+  //     }
+  //   };
+
+  //   fetchEmployees();
+
+  // }, []);
+
   const showModal = () => {
     setIsModalVisible(true);
   };
@@ -56,29 +74,22 @@ const AddProject = () => {
   };
 
   const onFinish = async (values) => {
+    values.startDate  = values.startDate.toISOString();
+    values.endDate= values.endDate.toISOString();
+    if (!values.description) {
+      values.description=null
+    }
     try {
-      const { data } = await postAddProject(values);
-
+      const {data} = await postAddProject(values);
       setSuccessMessage('Data added successfully!');
-      setErrorMessage(null);
-
-      form.resetFields();
-      setIsModalVisible(false);
     } catch (error) {
-      console.error('Error while saving data:', error);
-
-      setSuccessMessage(null);
       setErrorMessage('Failed to add data. Please try again.');
-
-      if (error.response) {
-        console.error('Server Error Response:', error.response.data);
-      }
     }
   };
 
   return (
     <>
-      <Button type="primary" onClick={showModal}>
+      <Button type="primary" onClick={showModal} >
         Add Project
       </Button>
       <Modal
@@ -108,7 +119,7 @@ const AddProject = () => {
           layout="horizontal"
           onFinish={onFinish}
           style={{
-            height: 350,
+            height: 300,
           }}
         >
           <Row gutter={[16, 16]}>
@@ -125,25 +136,21 @@ const AddProject = () => {
                 name="managerId"
                 rules={[{ required: true, message: 'Please enter Manager ID!' }]}
               >
-                <Input />
+                 <Select
+                  placeholder=""
+                  value={selectedManagers}
+                  onChange={setSelectedManagers}
+                  style={{ width: '100%' }}
+                >
+                  {managerOptions.map((managerOption) => (
+                    <Option value={managerOption}/>
+                  ))}
+                </Select>
               </Form.Item>
-              <Form.Item
-                label="Description"
-                name="description"
-                rules={[{ required: true, message: 'Please enter Description!' }]}
-              >
-                <TextArea rows={4} />
-              </Form.Item>
-              <Form.Item
-                label="Specification"
-                name="specification"
-                rules={[{ required: true, message: 'Please enter Specification!' }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
+              {/* <Form.Item
                 label="Members"
                 name="selectedMembers"
+                rules={[{ required: true, message: 'Please enter members' }]}
               >
 
                 <Select
@@ -157,35 +164,44 @@ const AddProject = () => {
                     <Option value={employeeOption}/>
                   ))}
                 </Select>
+              </Form.Item> */}
+              <Form.Item
+                label="Description"
+                name="description"
+                rules={[{ required: true, message: 'Please enter description' }]}
+              >
+                <TextArea rows={4} />
               </Form.Item>
             </Col>
             <Col xs={24} sm={12}>
-              <Form.Item
-                label="Status"
-                name="status"
-                rules={[{ required: true, message: 'Please select Status!' }]}
-              >
-                
-                <Select className="option">
-                  <Option className="done" value="done">Done</Option>
-                  <Option className="onp" value="on_progress">On Progress</Option>
-                  <Option className="pending" value="pending">Pending</Option>
-                  <Option className="closed" value="closed">Closed</Option>
-                </Select>
-              </Form.Item>
               <Form.Item
                 label="Language/Framework"
                 name="langFrame"
                 rules={[{ required: true, message: 'Please enter Language/Framework!' }]}
               >
-                <Input />
+                 <Select  mode="multiple">
+                  <Option value="reactjs">ReactJs</Option>
+                  <Option value="htmlcss">HTML/CSS</Option>
+                  <Option value="nodejs">NodeJs</Option>
+                  <Option value="net">.NET</Option>
+                  <Option value="py">Python</Option>
+                  <Option value="java">Java</Option>
+                  <Option value="ang">AngularJs</Option>
+                </Select>
               </Form.Item>
               <Form.Item
                 label="Technology"
                 name="technology"
                 rules={[{ required: true, message: 'Please enter Technology!' }]}
               >
-                <Input />
+                <Select  mode="multiple">
+                  <Option value="git">Git</Option>
+                  <Option value="github">GitLab</Option>
+                  <Option value="gitlab">GitHub</Option>
+                  <Option value="aws">AWS CodeCommit</Option>
+                  <Option value="bitb">Bitbucket</Option>
+                  <Option value="blockc">Blockchain</Option>
+                </Select>
               </Form.Item>
               <Form.Item
                 label="Start Date"
@@ -200,21 +216,6 @@ const AddProject = () => {
                 rules={[{ required: true, message: 'Please select End Date!' }]}
               >
                 <DatePicker />
-              </Form.Item>
-              <Form.Item
-                label="Role"
-                name="role"
-                rules={[{ required: true, message: 'Please select Role!' }]}
-              >
-                <Select>
-                  <Option value="fe">Front-end</Option>
-                  <Option value="be">Back-end</Option>
-                  <Option value="qa">QA</Option>
-                  <Option value="ba">Business Analyst</Option>
-                  <Option value="fullstack">Full-Stack</Option>
-                  <Option value="devops">DevOps Engineer</Option>
-                  <Option value="ui_ux">UI/UX Designer</Option>
-                </Select>
               </Form.Item>
             </Col>
           </Row>

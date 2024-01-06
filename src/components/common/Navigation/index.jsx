@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Avatar, Layout, Menu, Space, Typography } from "antd";
 import menuItem from "../Menu";
-import {
-  UserOutlined
-} from "@ant-design/icons";
+import userImage from "../../../../public/logocms.png";
+
 
 const { Title } = Typography;
 const { Sider } = Layout;
@@ -22,15 +21,17 @@ function Navigation() {
     >
       <div className="demo-logo-vertical">
         <Space size={16}>
-          <Avatar
-            style={{
-              backgroundColor: '#87d068',
-            }}
-            icon={<UserOutlined />}
-            size="large" 
-            shape="square"
+          <img
+              src={userImage}
+              alt="User"
+              style={{
+                width: "50px", // Đặt kích thước tùy ý
+                height: "35px", // Đặt kích thước tùy ý
+                borderRadius: "50%", // Để bo góc và tạo hình tròn nếu muốn
+              }}
           />
-          <Title level={5} style={{marginBottom:0}}> Design</Title>
+
+          <Title level={5} style={{marginBottom:0}}> CMS SYSTEM</Title>
         </Space>
       </div>
       <Menu
