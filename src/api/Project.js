@@ -10,7 +10,12 @@ export const getDetailProject = async (id, params = {}) => {
   return await baseAxios.get(`${ENDPOINT}/${id}`, params);
 };
 
+export const updateProjectApi =  async (projectId, params ={}) => {
+  return await baseAxios.patch(`${ENDPOINT}/${projectId}`, {...params})
+}
+
 export default {
   getprojects,
-  getDetailProject
+  getDetailProject,
+  updateProjectApi
 }

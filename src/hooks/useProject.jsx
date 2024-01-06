@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { getDetailProject, getprojects } from "../api/Project";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import { getDetailProject, getprojects, updateProjectApi } from "../api/Project";
 
 export const useGetProject = () => {
     return useQuery({
@@ -29,5 +29,20 @@ export const useGetDetaiProject = (id) => {
             }
         }
     });
+};
+
+export const useUpdateProject = (id) => {
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation(
+        (params) => updateProjectApi(id, params),
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries('project');
+            },
+        }
+    );
+
+    return mutation;
 };
 

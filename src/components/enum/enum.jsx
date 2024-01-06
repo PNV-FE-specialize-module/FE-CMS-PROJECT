@@ -1,4 +1,4 @@
-const StatusProjectEnum = {
+export const StatusProjectEnum = {
     PENDING: 'pending',
     DONE: 'done',
     ON_PROGRESS: 'on_progress',

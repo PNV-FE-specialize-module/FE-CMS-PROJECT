@@ -329,7 +329,6 @@ const EmployeeDetail = () => {
                             disabled
                         />
                     )}
-
                   </Form.Item>
                 </Col>
                 <Col span={12}>
