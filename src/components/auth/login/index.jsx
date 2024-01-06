@@ -66,7 +66,7 @@ const Login = () => {
             color: "#5D5FEF",
           }}
         >
-          CMS SYSTEM
+          THE NINEAM
         </p>
         <Form
           style={{ width: "100%" }}

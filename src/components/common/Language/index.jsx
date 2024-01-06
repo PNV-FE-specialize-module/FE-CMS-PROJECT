@@ -35,7 +35,7 @@ const Language = () => (
         <a onClick={(e) => e.preventDefault()}>
             <Space>
                 <Avatar size={20} icon={<img src={usFlag} alt="avatar" />} />
-                <div>Eng (US)</div>
+                <div style={{fontSize:'17px', color:'#5D5FEF'}}>Eng (US)</div>
                 <DownOutlined style={{ fontSize: 10 }} />
             </Space>
         </a>

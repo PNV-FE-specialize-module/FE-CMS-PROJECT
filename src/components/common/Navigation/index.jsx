@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Avatar, Layout, Menu, Space, Typography } from "antd";
+import { Link } from "react-router-dom";
+import { Layout, Menu, Typography } from "antd";
 import menuItem from "../Menu";
 import userImage from "../../../../public/logocms.png";
-
 
 const { Title } = Typography;
 const { Sider } = Layout;
@@ -20,25 +19,24 @@ function Navigation() {
       onCollapse={(value) => setCollapsed(value)}
     >
       <div className="demo-logo-vertical">
-        <Space size={16}>
           <img
               src={userImage}
               alt="User"
               style={{
-                width: "50px", // Đặt kích thước tùy ý
-                height: "35px", // Đặt kích thước tùy ý
+                width: "70px", // Đặt kích thước tùy ý
+                height: "50px", // Đặt kích thước tùy ý
                 borderRadius: "50%", // Để bo góc và tạo hình tròn nếu muốn
               }}
           />
 
-          <Title level={5} style={{marginBottom:0}}> CMS SYSTEM</Title>
-        </Space>
+          <Title level={5} className={collapsed ? 'hidden-title' : ''} style={{ fontWeight:'700', fontSize:'18px'}}>THE NINEAM</Title>
+
       </div>
       <Menu
         defaultSelectedKeys={['1']}
         mode="inline"
         inlineCollapsed={collapsed}
-
+        style={{fontSize:'15px'}}
       >
         {menuItem.map((item) => (
           <Menu.Item key={item.key} icon={item.icon}>
