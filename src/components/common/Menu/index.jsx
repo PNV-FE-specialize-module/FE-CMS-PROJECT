@@ -28,7 +28,7 @@ const menuItem  = [
     {
         key: '/signout',
         icon: <LogoutOutlined />,
-        label: "logout"
+        label: "Log out"
         
     }
 ]

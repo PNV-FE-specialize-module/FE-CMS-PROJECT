@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
   const storedUser = localStorage.getItem('user');
   useEffect(() => {
     if (storedUser) {

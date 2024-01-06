@@ -15,7 +15,7 @@ export const LayoutDashboard = ({children, pageTitle }) => {
   return (
     <Layout
       style={{
-        minHeight: '100vh',
+        height:'100vh'
       }}>
       <Navigation />
       <Layout>
@@ -24,6 +24,7 @@ export const LayoutDashboard = ({children, pageTitle }) => {
       <Content
         style={{
           margin: '0 16px',
+          overflow: 'auto',
         }}
       >
         <Breadcrumb
