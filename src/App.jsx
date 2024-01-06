@@ -12,11 +12,11 @@ import { ResetPwd } from "./components/auth/reset-password";
 import "./style/App.css";
 import { useAuth } from "./components/auth/AuthContext";
 
-function PrivateRoute({ children }) {
-  const { isLogin } = useAuth();
-  console.log('sdd',isLogin);
-  return isLogin ? <>{children}</> : <Navigate to="/login" />;
-}
+// function PrivateRoute({ children }) {
+//   const { isLogin } = useAuth();
+//   console.log('sdd',isLogin);
+//   return isLogin ? <>{children}</> : <Navigate to="/login" />;
+// }
 function App() {
   console.log('log')
   return (
@@ -29,7 +29,7 @@ function App() {
             <Route
               key={index}
               path={route.path}
-              element={<PrivateRoute><LayoutDashboard pageTitle={route.title}>{route.element}</LayoutDashboard></PrivateRoute>}
+              element={<LayoutDashboard pageTitle={route.title}>{route.element}</LayoutDashboard>}
             />
           ))
         }

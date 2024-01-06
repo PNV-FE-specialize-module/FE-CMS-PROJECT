@@ -7,6 +7,7 @@ import ShowEmployees from "../pages/employee/EmployeeManagement.jsx";
 import { ResetPwd } from '../components/auth/reset-password/index.jsx';
 import { Logout } from '../components/auth/logout/index.jsx';
 import { ProjectDetail } from '../pages/project/components/ProjectDetail.jsx';
+import AddEmployee from '../pages/employee/components/AddEmployee.jsx'
 
 
 const AppRoutes = [
@@ -27,6 +28,12 @@ const AppRoutes = [
     {
         path: "/employee/:id",
         element: <EmployeeDetail />,
+        title:"Edit Employee"
+
+    },
+    {
+        path: "/add",
+        element: <AddEmployee />,
         title:"Edit Employee"
 
     },
