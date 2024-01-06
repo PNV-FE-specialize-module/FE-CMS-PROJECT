@@ -1,11 +1,10 @@
 
 import React from 'react'
-import { Dashboard } from '../pages/dashboard/components/Dashboard';
-import ListProject from '../pages/project/ListProject';
+import { Dashboard } from '../pages/dashboard/components/Dashboard.jsx';
+import ListProject from '../pages/project/ListProject.jsx';
 import EmployeeDetail from "../pages/employee/components/EmployeeDetail.jsx";
 import ShowEmployees from "../pages/employee/EmployeeManagement.jsx";
 import { ResetPwd } from '../components/auth/reset-password/index.jsx';
-import { Logout } from '../components/auth/logout/index.jsx';
 import { ProjectDetail } from '../pages/project/components/ProjectDetail.jsx';
 
 
@@ -35,12 +34,7 @@ const AppRoutes = [
         element: <ResetPwd/>,
         title: 'Reset Password'
     },
-    // Temporary
-    {
-        path: "/signout",
-        element: <Logout/>,
-        title: 'Signout'
-    },
+    
 ]
 
 export default AppRoutes;
