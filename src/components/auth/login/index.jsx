@@ -20,7 +20,6 @@ const Login = () => {
         },
       })
       .then((response) => {
-        console.log("Successfully logged in", response.data.user);
         localStorage.setItem("user", JSON.stringify(response.data.user));
         setIsLogin(true);
         navigate('/');
@@ -85,7 +84,7 @@ const Login = () => {
             ]}
             style={{ fontWeight: "500" }}
           >
-            <Input placeholder="Enter your email" />
+            <Input placeholder="Enter your email" style={{height:35}} />
           </Form.Item>
           <Form.Item
             type="password"
@@ -94,7 +93,7 @@ const Login = () => {
             rules={[{ required: true, message: "Password is required" }]}
             style={{ fontWeight: "500" }}
           >
-            <Input.Password />
+            <Input.Password style={{height:35, minWidth: '100%'}}/>
           </Form.Item>
           <Flex justify="space-between">
             <Form.Item name="remember" valuePropName="checked">
