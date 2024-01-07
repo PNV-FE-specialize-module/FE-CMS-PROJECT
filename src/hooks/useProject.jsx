@@ -1,13 +1,10 @@
-import {getTotalEmployee} from "../api/EmployeeApi.js";
 import {getTotalProject} from "../api/ProjectApi.js";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import { getDetailProject, getprojects, updateProjectApi } from "../api/Project";
-import { useTranslation} from 'react-i18next';
 import { deleteProjectApi } from "../api/ProjectApi";
 import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
 
-// import {getTotalEmployee} from "../api/EmployeeApi.js";
 
 export const useGetProject = () => {
     return useQuery({
