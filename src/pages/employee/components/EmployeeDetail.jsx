@@ -510,6 +510,7 @@ const EmployeeDetail = () => {
                             </div>
                         ))
                     )}
+
                     {editMode && (
                         // Button to add a new language/framework input field
                         <Button type="primary" onClick={handleAddLangFrame}>
