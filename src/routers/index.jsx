@@ -6,6 +6,7 @@ import EmployeeDetail from "../pages/employee/components/EmployeeDetail.jsx";
 import ShowEmployees from "../pages/employee/EmployeeManagement.jsx";
 import { ResetPwd } from '../components/auth/reset-password/index.jsx';
 import { ProjectDetail } from '../pages/project/components/ProjectDetail.jsx';
+import AddProject from '../pages/project/components/AddProject.jsx';
 import CreateEmployee from "../pages/employee/components/AddEmployee.jsx";
 
 
@@ -31,6 +32,16 @@ const AppRoutes = [
 
     },
     {
+        path: "/add",
+        element: <AddProject />,
+        title:"Edit Employee"
+
+        // errorElement: <div>Not found</div>,
+    },
+    {
+        path: "/login",
+        // element: <Login />,
+    },
         path: "/addEmployee",
         element: <CreateEmployee />,
         title:"Create Employee"

@@ -76,7 +76,7 @@ const ShowEmployees = () => {
                     padding: 8,
                 }}
                 onKeyDown={(e) => e.stopPropagation()}
-            >
+                >
                 <Input
                     ref={searchInput}
                     placeholder={`Search ${dataIndex}`}
@@ -158,7 +158,7 @@ const ShowEmployees = () => {
                     searchWords={[searchText]}
                     autoEscape
                     textToHighlight={text ? text.toString() : ''}
-                />
+                    />
             ) : (
                 text
             ),
