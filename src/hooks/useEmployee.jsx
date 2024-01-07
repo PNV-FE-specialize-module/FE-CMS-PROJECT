@@ -1,5 +1,11 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {deleteEmployeeApi, getDetailEmployee, updateEmployeeApi} from "../api/EmployeeApi.js";
+import {
+    addEmployeeApi,
+    deleteEmployeeApi,
+    getDetailEmployee, getManager, getTotalEmployee,
+    updateEmployeeApi
+} from "../api/EmployeeApi.js";
+import {useNavigate} from "react-router";
 
 export const useGetDetailEmployee = (id) => {
     return useQuery({
@@ -14,6 +20,23 @@ export const useGetDetailEmployee = (id) => {
             }
         }
     });
+};
+export const useCreateEmployee = () => {
+    const queryClient = useQueryClient();
+    const navigate = useNavigate();
+    const mutation = useMutation(
+        (newEmployee) => addEmployeeApi(newEmployee),
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries(["EMPLOYEE"]);
+                navigate("/listemployee")
+
+            },
+
+        },
+    );
+
+    return mutation;
 };
 
 export const useUpdateEmployee = (id) => {
@@ -43,3 +66,15 @@ export const useDeleteEmployee = () => {
         },
     });
 };
+export const useGetManager = () =>
+    useQuery(["EMPLOYEE"], async () => {
+        const { data } = await getManager();
+        return data;
+    });
+
+export const useGetEmployeeTotal = (params) =>
+    useQuery(["EMPLOYEE_TOTAL", params.period], async () => {
+        const { data } = await getTotalEmployee(params);
+        return data;
+    });
+

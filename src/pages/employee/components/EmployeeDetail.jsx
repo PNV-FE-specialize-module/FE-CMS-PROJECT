@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, {useRef, useState} from 'react';
 import { useParams } from "react-router-dom";
-import { useGetDetailEmployee, useUpdateEmployee } from "../../../hooks/useEmployee.jsx";
-import {Row, Col, Button, Form, Input, Typography, Card, Select, Table} from 'antd';
+import { useGetDetailEmployee, useUpdateEmployee, useGetManager } from "../../../hooks/useEmployee.jsx";
+import {Row, Col, Button, Form, Input, Typography, Card, Select, message, Space, Timeline, DatePicker} from 'antd';
 import moment from "moment";
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.css';
-import { Widget } from 'react-cloudinary-upload-widget';
+// import { Widget } from 'react-cloudinary-upload-widget';
 // import { Image, Transformation, Widget } from 'cloudinary-react';
+
+import { Cloudinary } from "@cloudinary/url-gen";
+import axios from "axios";
+import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -17,6 +21,14 @@ const EmployeeDetail = () => {
   const updateEmployeeMutation = useUpdateEmployee(id);
   const [editMode, setEditMode] = useState(false);
   const [editedEmployee, setEditedEmployee] = useState({});
+
+  const [imageUrl, setImageUrl] = useState("");
+  const [newAvatar, setNewAvatar] = useState(null);
+  const [loadingAvatar, setLoadingAvatar] = useState(false);
+  const cld = new Cloudinary({ cloud: { cloudName: "da9hiv52w" } });
+  const fileInputRef = useRef();
+  const { data: managers } = useGetManager();
+
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -34,6 +46,9 @@ const EmployeeDetail = () => {
   //     avatar: imageUrl,
   //   }));
   // };
+  const disabledDate = (current) => {
+    return current && current > moment().endOf('day');
+  };
 
 
   const handleEditClick = () => {
@@ -132,21 +147,63 @@ const EmployeeDetail = () => {
       [name]: value,
     }));
   };
-  const handleImageUpload = (result) => {
-    const { event, info } = result;
-    const imageUrl = info.secure_url;
-    setEditedEmployee((prev) => ({
-      ...prev,
-      avatar: imageUrl,
+  const handleDateOfBirthChange = (date, dateString) => {
+    setEditedEmployee((prevState) => ({
+      ...prevState,
+      dateOfBirth: dateString,
     }));
   };
+  const handleFileChange = async (file) => {
+    setLoadingAvatar(true);
+    const formData = new FormData();
+    if (file instanceof FileList) {
+      for (const individualFile of file) {
+        formData.append("file", individualFile);
+        formData.append("upload_preset", "ay2jrgsp");
 
+        try {
+          const res = await axios.post(
+              "https://api.cloudinary.com/v1_1/da9hiv52w/image/upload",
+              formData,
+          );
+
+          setEditedEmployee((prev) => ({
+            ...prev,
+            avatar: res.data.secure_url, // Update the avatar property
+          }));
+
+          message.success("Avatar uploaded successfully, Click change to apply ");
+        } finally {
+          setLoadingAvatar(false);
+        }
+
+        formData.delete("file");
+      }
+    } else {
+      formData.append("file", file);
+      formData.append("upload_preset", "ay2jrgsp");
+
+      try {
+        const res = await axios.post(
+            "https://api.cloudinary.com/v1_1/da9hiv52w/image/upload",
+            formData,
+        );
+
+        setImageUrl(res.data.secure_url);
+      } catch (err) {
+        console.error(err.response.data);
+      }
+
+    }
+
+  };
   const {
     avatar,
     name,
     code,
     email,
     phone,
+    address,
     identityCard,
     dateOfBirth,
     gender,
@@ -187,19 +244,68 @@ const EmployeeDetail = () => {
         <Row gutter={32}>
           <Col md={24} lg={8}>
             <Row gutter={32} align="middle" justify="center" style={{ marginBottom: 16 }}>
-              <Col>
+              <Col span={24}>
                 <img
-                    width="200px"
-                    height="200px"
-                    style={{ borderRadius: "100%" }}
-                    src={avatar}
-                    alt={avatar}
+                    name="avatar"
+                    style={{
+                      width: "200px",
+                      height: "200px",
+                      borderRadius: "100%",
+                    }}
+                    src={
+                        imageUrl ||
+                        (newAvatar
+                            ? URL.createObjectURL(newAvatar)
+                            : (editMode ? editedEmployee.avatar : employee.employee.avatar))
+                    }
+
+                    alt="Employee Avatar"
                 />
+                {loadingAvatar && (
+                    <div
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          width: "100%",
+                          height: "100%",
+                          background: "rgba(255, 255, 255, 0.8)",
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          zIndex: 999,
+                        }}
+                    >
+                      {/*<Spin size="large" />*/}
+                    </div>
+                )}
+              </Col>
+              <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileChange(e.target.files)}
+                  style={{ display: "none" }}
+                  ref={fileInputRef}
+              />
+              <Col span={24}>
+                {editMode && (
+                    <Button
+                        style={{
+                          margin: "10px",
+                          borderRadius: "50px",
+                          height: "35px",
+                        }}
+                        onClick={() => fileInputRef.current.click()}
+                    >
+                      Upload
+                    </Button>
+                )}
               </Col>
             </Row>
             <Row gutter={32} align="middle" justify="center">
               <Col>
-                <Widget
+                {/* <Widget
                     sources={['local', 'url', 'camera', 'facebook', 'google_photos']}
                     resourceType="image"
                     cloudName="da9hiv52w"
@@ -208,7 +314,7 @@ const EmployeeDetail = () => {
                     folder="avatars"
                     onSuccess={handleImageUpload}
                     onFailure={() => console.log('Image upload failed')}
-                />
+                /> */}
               </Col>
             </Row>
           </Col>
@@ -230,11 +336,22 @@ const EmployeeDetail = () => {
                 </Col>
                 <Col span={12}>
                   <Form.Item label="Manager Name">
-                    <Input
-                        name="managerName"
-                        value={manager?.name ? manager.name : "No Manager"}
-                        style={{ maxWidth: "300px" }}
-                    />
+
+                    {editMode ? (
+                        <Select>
+                          {(managers || []).map((manager) => (
+                              <Select.Option key={manager.id} value={manager.id}>
+                                {manager.name}
+                              </Select.Option>
+                          ))}
+                        </Select>
+                    ) : (
+                        <Input
+                            value={editMode ? editedEmployee.manager.name : name}
+                            style={{ maxWidth: "300px" }}
+                            disabled
+                        />
+                    )}
                   </Form.Item>
                 </Col>
                 <Col span={12}>
@@ -316,12 +433,13 @@ const EmployeeDetail = () => {
                 <Col span={12}>
                   <Form.Item label="Date of birth">
                     {editMode ? (
-                        <Input
-                            value={moment(editedEmployee.dateOfBirth).format("DD-MM-YYYY")}
+                        <DatePicker
+                            value={moment(editedEmployee.dateOfBirth)}
                             style={{ maxWidth: "300px" }}
-                            onChange={handleInputChange}
-                            name="dateOfBirth"
+                            onChange={handleDateOfBirthChange}
+                            disabledDate={disabledDate}
                         />
+
                     ) : (
                         <Input
                             value={moment(dateOfBirth).format("DD-MM-YYYY")}
@@ -329,7 +447,6 @@ const EmployeeDetail = () => {
                             disabled
                         />
                     )}
-
                   </Form.Item>
                 </Col>
                 <Col span={12}>
@@ -406,16 +523,22 @@ const EmployeeDetail = () => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Description">
+                  <Form.Item label="Address">
                     {editMode ? (
-                        <TextArea
+                        <Input
                             rows={4}
-                            value={editedEmployee.description}
+                            value={editedEmployee.address}
                             onChange={handleInputChange}
-                            name="description"
+                            name="address"
+                            style={{ maxWidth: '300px' }}
                         />
                     ) : (
-                        <TextArea rows={4} value={description} disabled />
+                        <Input
+                            name="address"
+                            value={address}
+                            style={{ maxWidth: '300px' }}
+                            disabled
+                        />
                     )}
                   </Form.Item>
                 </Col>
@@ -436,9 +559,12 @@ const EmployeeDetail = () => {
                                   style={{ width: '80px', marginRight: '8px' }}
                                   placeholder="Experience"
                               />
-                              <Button type="danger" onClick={() => handleRemoveSkill(index)}>
-                                Remove
-                              </Button>
+                              <Button
+                                  type="danger"
+                                  icon={<DeleteOutlined />}
+                                  onClick={() => handleRemoveSkill(index)}
+                              />
+
                             </div>
                         ))
                     ) : (
@@ -460,9 +586,11 @@ const EmployeeDetail = () => {
                         ))
                     )}
                     {editMode && (
-                        // Button to add a new skill input field
-                        <Button type="primary" onClick={handleAddSkill}>
-                          Add Skill
+                        <Button
+                            type="primary"
+                            icon={<PlusOutlined />}
+                            onClick={handleAddSkill}
+                        >
                         </Button>
                     )}
                   </Form.Item>
@@ -484,9 +612,11 @@ const EmployeeDetail = () => {
                                   style={{ width: '80px', marginRight: '8px' }}
                                   placeholder="Experience"
                               />
-                              <Button type="danger" onClick={() => handleRemoveLangFrame(index)}>
-                                Remove
-                              </Button>
+                              <Button
+                                  type="danger"
+                                  icon={<DeleteOutlined />}
+                                  onClick={() => handleRemoveLangFrame(index)}
+                              />
                             </div>
                         ))
                     ) : (
@@ -505,16 +635,15 @@ const EmployeeDetail = () => {
                                   placeholder="Experience"
                                   disabled
                               />
-                              <Button type="danger" onClick={() => handleRemoveLangFrame(index)}>
-                                <i className="fas fa-trash"></i>
-                              </Button>
                             </div>
                         ))
                     )}
                     {editMode && (
-                        // Button to add a new language/framework input field
-                        <Button type="primary" onClick={handleAddLangFrame}>
-                          Add Language/Framework
+                        <Button
+                            type="primary"
+                            icon={<PlusOutlined />}
+                            onClick={handleAddLangFrame}
+                        >
                         </Button>
                     )}
                   </Form.Item>
@@ -537,9 +666,11 @@ const EmployeeDetail = () => {
                                   style={{ width: '80px', marginRight: '8px' }}
                                   placeholder="Experience"
                               />
-                              <Button type="danger" onClick={() => handleRemoveTech(index)}>
-                                Remove
-                              </Button>
+                              <Button
+                                  type="danger"
+                                  icon={<DeleteOutlined />}
+                                  onClick={() => handleRemoveTech(index)}
+                              />
                             </div>
                         ))
                     ) : (
@@ -566,8 +697,11 @@ const EmployeeDetail = () => {
                     )}
                     {editMode && (
                         // Button to add a new tech input field
-                        <Button type="primary" onClick={handleAddTech}>
-                          Add Tech
+                        <Button
+                            type="primary"
+                            icon={<PlusOutlined />}
+                            onClick={handleAddTech}
+                        >
                         </Button>
                     )}
                   </Form.Item>
