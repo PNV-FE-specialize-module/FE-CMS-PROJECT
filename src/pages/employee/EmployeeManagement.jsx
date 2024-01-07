@@ -1,19 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {Space, Table, Avatar, Input, Button, Modal} from 'antd';
-import {DeleteOutlined, EyeOutlined, SearchOutlined} from '@ant-design/icons';
+import {DeleteOutlined, EyeOutlined, PlusOutlined, SearchOutlined} from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import axios from 'axios';
 import "../../style/EmployeeManagement.css";
 import {Link} from "react-router-dom";
 import {useDeleteEmployee} from "../../hooks/useEmployee.jsx";
 import Swal from "sweetalert2";
+import {useNavigate} from "react-router";
 
 
 const ShowEmployees = () => {
+    const navigate = useNavigate();
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
     const { mutate: deleteEmployee } = useDeleteEmployee();
+
     const handleDeleteConfirm = (record) => {
         Swal.fire({
             title: 'Confirmation',
@@ -320,6 +323,17 @@ const ShowEmployees = () => {
     }));
     return (
         <>
+
+            <Link to={`/addEmployee/`} className="text-edit">
+                <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    style={{ float: 'right', margin: '10px' }}
+                    onClick={() => navigate("listEmployee/addEmployee")}
+                >
+                    Add Project
+                </Button>
+            </Link>
             <Table
                 className="custom-table"
                 columns={columns}

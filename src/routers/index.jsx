@@ -4,7 +4,9 @@ import { Dashboard } from '../pages/dashboard/components/Dashboard';
 import ListProject from '../pages/project/ListProject';
 import EmployeeDetail from "../pages/employee/components/EmployeeDetail.jsx";
 import ShowEmployees from "../pages/employee/EmployeeManagement.jsx";
+import { ResetPwd } from '../components/auth/reset-password/index.jsx';
 import { ProjectDetail } from '../pages/project/components/ProjectDetail.jsx';
+import CreateEmployee from "../pages/employee/components/AddEmployee.jsx";
 
 
 const AppRoutes = [
@@ -19,7 +21,7 @@ const AppRoutes = [
         path: "/listemployee",
         element: <ShowEmployees />,
         errorElement: <div>Not found</div>,
-        title:"List Employee"
+        title:"List Employee",
 
     },
     {
@@ -27,14 +29,19 @@ const AppRoutes = [
         element: <EmployeeDetail />,
         title:"Edit Employee"
 
-        // errorElement: <div>Not found</div>,
     },
     {
-        path: "/logout",
+        path: "/addEmployee",
+        element: <CreateEmployee />,
+        title:"Create Employee"
 
-        // element: <Login />,
     },
 
+    {
+        path: "/resetPwd",
+        element: <ResetPwd/>,
+        title: 'Reset Password'
+    },
 
 ]
 
