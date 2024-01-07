@@ -24,7 +24,8 @@
     "react-highlight-words": "^0.20.0",
     "react-query": "^3.39.3",
     "react-router-dom": "^6.21.1",
-    "sweetalert2": "^11.10.2"
+    "sweetalert2": "^11.10.2",
+    "use-sync-external-store": "^1.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

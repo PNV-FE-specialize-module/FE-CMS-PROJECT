@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Spin, Alert, Space, Tag } from 'antd';
+import {Table, Spin, Alert, Space, Tag, Button} from 'antd';
 import {
   EyeOutlined,
-  DeleteOutlined
+  DeleteOutlined, PlusOutlined
 } from "@ant-design/icons";
 import { checkProjectStatus, getStatusColor } from '../../components/enum/enum';
 import { useGetProject } from '../../hooks/useProject';
@@ -87,18 +87,31 @@ const ListProject = () => {
 
   return (
 
-    <Spin spinning={isLoading} tip="Loading...">
-      {isError && <Alert message={error.message} type="error" />}
-      {projects && projects.data ? (
-        Array.isArray(projects.data) && projects.data.length > 0 ? (
-          <Table columns={columns} dataSource={projects.data} rowKey={(record) => record.id} />
+
+      <Spin spinning={isLoading} tip="Loading...">
+        {isError && <Alert message={error.message} type="error" />}
+        {projects && projects.data ? (
+            Array.isArray(projects.data) && projects.data.length > 0 ? (
+                <>
+                  <Link to={`/addProject/`} className="text-edit">
+                    <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        style={{ float: 'right', margin: '10px' }}
+
+                    >
+                      Add Project
+                    </Button>
+                  </Link>
+                  <Table columns={columns} dataSource={projects.data} rowKey={(record) => record.id} />
+                </>
+            ) : (
+                <p>No data to display</p>
+            )
         ) : (
-          <p>No data to display</p>
-        )
-      ) : (
-        <p>Loading...</p>
-      )}
-    </Spin>
+            <p>Loading...</p>
+        )}
+      </Spin>
 
 
   );
