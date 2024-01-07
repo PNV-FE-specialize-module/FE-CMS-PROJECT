@@ -1,5 +1,5 @@
 .ant-menu-light .ant-menu-item-selected{
-    background-color: #1677ff;
+    background-color: #5D5FEF;
     color:white;
 }
 
@@ -9,18 +9,20 @@
 
 }
 
-
 .demo-logo-vertical {
-    height: 32px;
-    margin: 16px;
-    border-radius: 6px;
-    color:"#000000";
+    align-items: center;
     display: flex;
     justify-content:center;
+    white-space: nowrap;
+    margin: 2em 0;
 }
 
+.hidden-title {
+    display: none;
+  }
+
 .ant-layout .ant-layout-sider-trigger{
-    background-color:#1677ff;
+    background-color:#5D5FEF;
 }
 
 
