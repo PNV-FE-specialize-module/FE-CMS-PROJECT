@@ -1,11 +1,5 @@
-<<<<<<< HEAD
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import { getDetailProject, getprojects, updateProjectApi } from "../api/Project";
-=======
-import { useQuery } from "@tanstack/react-query";
-import { getDetailProject, getprojects } from "../api/Project";
-import {getTotalEmployee} from "../api/EmployeeApi.js";
->>>>>>> fcdca14c8e498142894b79afbdad336bf06167bf
 
 export const useGetProject = () => {
     return useQuery({
@@ -37,7 +31,6 @@ export const useGetDetaiProject = (id) => {
     });
 };
 
-<<<<<<< HEAD
 export const useUpdateProject = (id) => {
     const queryClient = useQueryClient();
 
@@ -52,6 +45,4 @@ export const useUpdateProject = (id) => {
 
     return mutation;
 };
-=======
->>>>>>> fcdca14c8e498142894b79afbdad336bf06167bf
 
