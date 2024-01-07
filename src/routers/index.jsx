@@ -5,9 +5,9 @@ import ListProject from '../pages/project/ListProject';
 import EmployeeDetail from "../pages/employee/components/EmployeeDetail.jsx";
 import ShowEmployees from "../pages/employee/EmployeeManagement.jsx";
 import { ResetPwd } from '../components/auth/reset-password/index.jsx';
-import { Logout } from '../components/auth/logout/index.jsx';
 import { ProjectDetail } from '../pages/project/components/ProjectDetail.jsx';
 import AddProject from '../pages/project/components/AddProject.jsx';
+import CreateEmployee from "../pages/employee/components/AddEmployee.jsx";
 
 
 const AppRoutes = [
@@ -22,7 +22,7 @@ const AppRoutes = [
         path: "/listemployee",
         element: <ShowEmployees />,
         errorElement: <div>Not found</div>,
-        title:"List Employee"
+        title:"List Employee",
 
     },
     {
@@ -42,6 +42,18 @@ const AppRoutes = [
         path: "/login",
         // element: <Login />,
     },
+        path: "/addEmployee",
+        element: <CreateEmployee />,
+        title:"Create Employee"
+
+    },
+
+    {
+        path: "/resetPwd",
+        element: <ResetPwd/>,
+        title: 'Reset Password'
+    },
+
 ]
 
 export default AppRoutes;

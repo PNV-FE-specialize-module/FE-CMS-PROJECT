@@ -1,11 +1,12 @@
 import React from 'react'
-import { Form, Button, Input, Flex } from "antd";
+import { Form, Button, Input, Flex, Modal } from "antd";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 
 export const ResetPwd = () => {
   const [error, setError] = useState("");
+  const [isShow, setIsShow] = useState(false);
   const navigate = useNavigate();
   const onFinish = (email) => {
     axios
@@ -14,17 +15,18 @@ export const ResetPwd = () => {
           "Content-Type": "application/json",
         },
       })
-      .then((response) => {
-        console.log("Successfully send mail", response.data);
-        alert("Mail sent successfully");
-        navigate('/login');
+      .then(() => {
+        setIsShow(true)
       })
       .catch((error) => {
         console.error("Error logging in:", error.response.data.message);
         setError(error.response.data.message);
       });
   };
-
+  const handleClick = () => {
+    setIsShow(false);
+    navigate('/login');
+  }
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
@@ -107,6 +109,17 @@ export const ResetPwd = () => {
           </Form.Item>
         </Form>
       </Flex>
+      <Modal
+        title="We sent a new password to your email. Please check."
+        open={isShow}
+        footer={(
+          <div>
+            <Button key="ok" type="primary" onClick={handleClick}>
+              OK
+            </Button>
+          </div>
+        )}
+      />
     </Flex>
   )
 }
