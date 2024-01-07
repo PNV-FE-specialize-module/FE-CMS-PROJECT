@@ -8,7 +8,11 @@ export const postAddProject = async (params = {}) => {
     console.log(12,`${ENDPOINT}`, params);
     return await baseAxios.post(`${ENDPOINT}`, params);
 };
+export const getTotalProject = async () =>{
+    return await baseAxios.get(`${ENDPOINT}/total`)
+}
 
 export default {
-    postAddProject
+    postAddProject,
+    getTotalProject
 }

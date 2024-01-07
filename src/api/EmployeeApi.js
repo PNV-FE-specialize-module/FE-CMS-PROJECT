@@ -21,12 +21,16 @@ export const deleteEmployeeApi =  async (employId) => {
 export const getManager = async () => {
     return await baseAxios.get(`${ENDPOINT}/managers`);
 }
+export const getTotalEmployee = async () =>{
+    return await baseAxios.get(`${ENDPOINT}/total`)
+}
 
 export default {
     getDetailEmployee,
     updateEmployeeApi,
     deleteEmployeeApi,
     addEmployeeApi,
-    getManager
+    getManager,
+    getTotalEmployee
 
 }
