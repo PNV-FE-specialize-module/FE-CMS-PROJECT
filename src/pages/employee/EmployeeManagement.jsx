@@ -329,9 +329,8 @@ const ShowEmployees = () => {
                     type="primary"
                     icon={<PlusOutlined />}
                     style={{ float: 'right', margin: '10px' }}
-                    onClick={() => navigate("listEmployee/addEmployee")}
                 >
-                    Add Project
+                    Add Employee
                 </Button>
             </Link>
             <Table
