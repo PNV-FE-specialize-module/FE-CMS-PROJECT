@@ -32,7 +32,7 @@ const AppRoutes = [
 
     },
     {
-        path: "/add",
+        path: "/addProject",
         element: <AddProject />,
         title:"Edit Employee"
 
@@ -42,6 +42,7 @@ const AppRoutes = [
         path: "/login",
         // element: <Login />,
     },
+    {
         path: "/addEmployee",
         element: <CreateEmployee />,
         title:"Create Employee"

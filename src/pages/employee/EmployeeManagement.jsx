@@ -76,7 +76,7 @@ const ShowEmployees = () => {
                     padding: 8,
                 }}
                 onKeyDown={(e) => e.stopPropagation()}
-                >
+            >
                 <Input
                     ref={searchInput}
                     placeholder={`Search ${dataIndex}`}
@@ -158,7 +158,7 @@ const ShowEmployees = () => {
                     searchWords={[searchText]}
                     autoEscape
                     textToHighlight={text ? text.toString() : ''}
-                    />
+                />
             ) : (
                 text
             ),
@@ -329,9 +329,8 @@ const ShowEmployees = () => {
                     type="primary"
                     icon={<PlusOutlined />}
                     style={{ float: 'right', margin: '10px' }}
-                    onClick={() => navigate("listEmployee/addEmployee")}
                 >
-                    Add Project
+                    Add Employee
                 </Button>
             </Link>
             <Table
