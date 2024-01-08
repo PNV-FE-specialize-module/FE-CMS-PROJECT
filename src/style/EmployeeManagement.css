@@ -14,14 +14,14 @@ body{
 }
 .custom-table td {
     border-collapse: collapse;
-    /* border: 1px solid #ccc; */
     padding: 8px;
     text-align: left;
 }
-.ant-table-cell.name {
-    font-weight: bold;
+.custom-table .langFrame td {
+  display: flex;
+  flex-direction: row;
 }
-.ant-table-cell .name {
+.ant-table-cell.name {
     font-weight: bold;
 }
 .ant-table-wrapper .ant-table-thead >tr>th{
