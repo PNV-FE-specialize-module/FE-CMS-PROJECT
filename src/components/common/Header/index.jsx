@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Layout, Avatar, Input, Tooltip, Space, Dropdown} from "antd";
+import { useTranslation} from 'react-i18next';
+
 import {
   UserOutlined,
   SearchOutlined,
@@ -11,9 +13,12 @@ import Language from "../Language";
 
 const { Header } = Layout;
 
+
 export default function HeaderContent({ pageTitle }) {
 
   const [collapsed, setCollapsed] = useState(false);
+  const { t, i18n } = useTranslation();
+
 
 
   return (
@@ -23,7 +28,7 @@ export default function HeaderContent({ pageTitle }) {
     >
       {pageTitle}
       <Input
-        placeholder="Search here..."
+        placeholder={t("main.Search here...")}
         prefix={<SearchOutlined className="site-form-item-icon" />}
         suffix={
           <Tooltip title="Micro">

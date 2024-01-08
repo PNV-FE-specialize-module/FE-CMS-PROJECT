@@ -3,11 +3,16 @@ import { Form, Button, Input, Flex, Modal } from "antd";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import { useTranslation} from 'react-i18next';
+
+
 
 export const ResetPwd = () => {
   const [error, setError] = useState("");
   const [isShow, setIsShow] = useState(false);
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
+
   const onFinish = (email) => {
     axios
       .post("http://localhost:3000/user/reset", JSON.stringify(email), {
@@ -19,7 +24,7 @@ export const ResetPwd = () => {
         setIsShow(true)
       })
       .catch((error) => {
-        console.error("Error logging in:", error.response.data.message);
+        console.error(t("main.Error logging in:"), error.response.data.message);
         setError(error.response.data.message);
       });
   };
@@ -28,7 +33,7 @@ export const ResetPwd = () => {
     navigate('/login');
   }
   const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+    console.log(t("main.Failed:"), errorInfo);
   };
   return (
     <Flex
@@ -64,7 +69,7 @@ export const ResetPwd = () => {
             color: "#5D5FEF",
           }}
         >
-          RESET PASSWORD
+          {t("main.Reset Password")}
         </p>
         <Form
           style={{ width: "100%" }}
@@ -74,15 +79,15 @@ export const ResetPwd = () => {
           autoComplete="off"
         >
           <Form.Item
-            label="Email"
+            label={t("main.Email")}
             name={"email"}
             rules={[
-              { required: true, message: "Email is required" },
-              { type: "email", message: "Email is invalid" },
+              { required: true, message: t("main.Email is required") },
+              { type: "email", message: t("main.Email is invalid") },
             ]}
             style={{ fontWeight: "500" }}
           >
-            <Input placeholder="Enter your email" />
+            <Input placeholder={t("main.Enter your email")} />
           </Form.Item>
           {error && (
             <Flex
@@ -104,18 +109,18 @@ export const ResetPwd = () => {
                 color: "#FFF",
               }}
             >
-              Send Mail
+              {t("main.Send Mail")}
             </Button>
           </Form.Item>
         </Form>
       </Flex>
       <Modal
-        title="We sent a new password to your email. Please check."
+        title={t("main.We sent a new password to your email. Please check.")}
         open={isShow}
         footer={(
           <div>
             <Button key="ok" type="primary" onClick={handleClick}>
-              OK
+              {t("main.OK")}
             </Button>
           </div>
         )}

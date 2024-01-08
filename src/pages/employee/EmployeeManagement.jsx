@@ -8,6 +8,8 @@ import {Link} from "react-router-dom";
 import {useDeleteEmployee} from "../../hooks/useEmployee.jsx";
 import Swal from "sweetalert2";
 import {useNavigate} from "react-router";
+import { useTranslation} from 'react-i18next';
+
 
 
 const ShowEmployees = () => {
@@ -16,11 +18,13 @@ const ShowEmployees = () => {
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
     const { mutate: deleteEmployee } = useDeleteEmployee();
+    const { t, i18n } = useTranslation();
+
 
     const handleDeleteConfirm = (record) => {
         Swal.fire({
-            title: 'Confirmation',
-            text: 'Are you sure you want to delete this employee?',
+            title: t('main.Confirmation'),
+            text: t('main.Are you sure you want to delete this employee?'),
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
@@ -32,8 +36,8 @@ const ShowEmployees = () => {
                 deleteEmployee(record.key)
                     .then(() => {
                         Swal.fire({
-                            title: 'Success',
-                            text: 'Employee deleted successfully.',
+                            title: t('main.Success'),
+                            text: t('main.Employee deleted successfully.'),
                             icon: 'success',
                             timer: 2000,
                             showConfirmButton: false
@@ -44,13 +48,13 @@ const ShowEmployees = () => {
                                 setEmployees(response.data.data);
                             })
                             .catch(error => {
-                                console.error('Error fetching employee data:', error);
+                                console.error(t('main.Error fetching employee data:'), error);
                             });
                     })
                     .catch(() => {
                         Swal.fire({
-                            title: 'Error',
-                            text: 'Failed to delete employee.',
+                            title: t('main.Error'),
+                            text: t('main.Failed to delete employee.'),
                             icon: 'error',
                             timer: 2000,
                             showConfirmButton: false
@@ -98,7 +102,7 @@ const ShowEmployees = () => {
                             width: 90,
                         }}
                     >
-                        Search
+                        {t("main.Search")}
                     </Button>
                     <Button
                         onClick={() => clearFilters && handleReset(clearFilters)}
@@ -107,7 +111,7 @@ const ShowEmployees = () => {
                             width: 90,
                         }}
                     >
-                        Reset
+                        {t("main.Reset")}
                     </Button>
                     <Button
                         type="link"
@@ -120,7 +124,7 @@ const ShowEmployees = () => {
                             setSearchedColumn(dataIndex);
                         }}
                     >
-                        Filter
+                        {t("main.Filter")}
                     </Button>
                     <Button
                         type="link"
@@ -129,7 +133,7 @@ const ShowEmployees = () => {
                             close();
                         }}
                     >
-                        close
+                        {t("main.Close")}
                     </Button>
                 </Space>
             </div>
@@ -166,7 +170,7 @@ const ShowEmployees = () => {
     const [filteredInfo, setFilteredInfo] = useState({});
     const [sortedInfo, setSortedInfo] = useState({});
     const handleChange = (pagination, filters, sorter) => {
-        console.log('Various parameters', pagination, filters, sorter);
+        console.log(t('main.Various parameters'), pagination, filters, sorter);
         setFilteredInfo(filters);
         setSortedInfo(sorter);
     };
@@ -181,11 +185,11 @@ const ShowEmployees = () => {
     useEffect(() => {
         axios.get('http://localhost:3000/employee')
             .then(response => {
-                console.log('Employee data:', response.data);
+                console.log(t('main.Employee data:'), response.data);
                 setEmployees(response.data.data);
             })
             .catch(error => {
-                console.error('Error fetching employee data:', error);
+                console.error(t('main.Error fetching employee data:'), error);
             });
     }, []);
 
@@ -197,13 +201,13 @@ const ShowEmployees = () => {
 
     const columns = [
         {
-            title: 'Avatar',
+            title: t('main.Avatar'),
             dataIndex: 'avatar',
             key: 'avatar',
             render: (avatar) => <Avatar src={avatar} />,
         },
         {
-            title: 'Name',
+            title: t('main.Name'),
             dataIndex: 'name',
             key: 'name',
             ...getColumnSearchProps('name'),
@@ -212,7 +216,7 @@ const ShowEmployees = () => {
             ellipsis: true,
         },
         {
-            title: 'Code',
+            title: t('main.Code'),
             dataIndex: 'code',
             key: 'code',
             sorter: alphanumericSorter,
@@ -220,17 +224,17 @@ const ShowEmployees = () => {
             ellipsis: true,
         },
         {
-            title: 'Email',
+            title: t('main.Email'), //'Mail',
             dataIndex: 'email',
             key: 'email',
         },
         {
-            title: 'Phone',
+            title: t('main.Phone'), //'Phone' 
             dataIndex: 'phone',
             key: 'phone',
         },
         {
-            title: 'Position',
+            title: t('main.Position'),
             dataIndex: 'position',
             key: 'position',
             filters: [
@@ -267,16 +271,16 @@ const ShowEmployees = () => {
             onFilter: (value, record) => record.position.includes(value),
         },
         {
-            title: 'Status',
+            title: t('main.Status'),
             dataIndex: 'status',
             key: 'status',
             filters: [
                 {
-                    text: 'Active',
+                    text: t('main.Active'),
                     value: 'active',
                 },
                 {
-                    text: 'Inactive',
+                    text: t('main.Inactive'),
                     value: 'inactive',
                 },
             ],
@@ -290,7 +294,7 @@ const ShowEmployees = () => {
         },
 
         {
-            title: 'Action',
+            title: t('main.Action'),
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
@@ -330,7 +334,7 @@ const ShowEmployees = () => {
                     icon={<PlusOutlined />}
                     style={{ float: 'right', margin: '10px' }}
                 >
-                    Add Employee
+                    {t("main.Add Employee")}
                 </Button>
             </Link>
             <Table
