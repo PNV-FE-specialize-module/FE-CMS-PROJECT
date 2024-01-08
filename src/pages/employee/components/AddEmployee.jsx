@@ -83,7 +83,7 @@ const CreateEmployee = () => {
         "https://res.cloudinary.com/da9hiv52w/image/upload/v1704559896/xljfi1wpvhfabwihemgr.png",
     );
     const [loading, setLoading] = useState(false);
-    const cld = new Cloudinary({ cloud: { cloudName: "dvm8fnczy" } });
+    const cld = new Cloudinary({ cloud: { cloudName: "da9hiv52w" } });
     const navigate = useNavigate();
     const [confirmLoading, setConfirmLoading] = useState(false);
     const { data: managers } = useGetManager();

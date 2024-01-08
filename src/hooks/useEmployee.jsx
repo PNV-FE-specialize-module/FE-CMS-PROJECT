@@ -46,7 +46,7 @@ export const useUpdateEmployee = (id) => {
         (params) => updateEmployeeApi(id, params),
         {
             onSuccess: () => {
-                queryClient.invalidateQueries('employee');
+                queryClient.invalidateQueries('EMPLOYEE');
             },
         }
     );
@@ -62,7 +62,7 @@ export const useDeleteEmployee = () => {
     };
     return useMutation(deleteEmployee, {
         onSuccess: () => {
-            queryClient.invalidateQueries("employee");
+            queryClient.invalidateQueries("EMPLOYEE");
         },
     });
 };
