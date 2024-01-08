@@ -2,20 +2,15 @@ import React, { useState, useEffect } from 'react';
 import "../../../style/AddProject.css"
 import { Button, DatePicker, Form, Input, Row, Col, Modal, Select } from 'antd';
 import { postAddProject } from '../../../api/ProjectApi';
-import { getDetailEmployee } from '../../../api/EmployeeApi';
 import axios from 'axios';
  
 const { TextArea } = Input;
 const { Option } = Select;
 
-export const AddProject = () => {
+export const AddProject = ({isModalVisible,setIsModalVisible}) => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [form] = Form.useForm();
-  const [selectedMembers, setSelectedMembers] = useState([]);
-  const [memberOption, setMemberOptions] = useState([]);
-  const [selectedRoles, setSelectedRoles] = useState({});
   const [selectedManagers, setSelectedManagers] = useState([]);
   const [managerOptions, setManagerOptions] = useState([]);
 
@@ -46,7 +41,7 @@ export const AddProject = () => {
           id: employee.id,
           name: employee.name,
         }));
-        setMemberOptions(employeeData);
+        setManagerOptions(employeeData);
       } catch (error) {
         console.error('Error fetching employees:', error);
       }
@@ -54,11 +49,6 @@ export const AddProject = () => {
 
     fetchEmployees();
   }, []);
-
-
-  const showModal = () => {
-    setIsModalVisible(true);
-  };
 
   const handleOk = () => {
     form
@@ -75,14 +65,10 @@ export const AddProject = () => {
 
   const handleCancel = () => {
     setIsModalVisible(false);
+    form.resetFields();
   };
 
   const onFinish = async (values) => {
-    values.startDate  = values.startDate.toISOString();
-    values.endDate= values.endDate.toISOString();
-    if (!values.description) {
-      values.description=null
-    }
     try {
       const {data} = await postAddProject(values);
       setSuccessMessage('Data added successfully!');
@@ -93,12 +79,9 @@ export const AddProject = () => {
 
   return (
     <>
-      <Button type="primary" onClick={showModal}>
-        Add Project
-      </Button>
       <Modal
         title="Add Project"
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
         footer={[
@@ -198,9 +181,6 @@ export const AddProject = () => {
                   <Option value="blockc">Blockchain</Option>
                 </Select>
               </Form.Item>
-          
-              
-              
               <Form.Item
                 label="Description"
                 name="description"

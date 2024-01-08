@@ -1,0 +1,8 @@
+{
+  "main": {
+    "header": "Welcome to the app!",
+    "Dashboard":"Dashboard",
+    "Employees": "Employees",
+    "Name": "Name"
+  }
+}
