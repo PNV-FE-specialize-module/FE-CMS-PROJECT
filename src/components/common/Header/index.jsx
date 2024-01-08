@@ -19,7 +19,7 @@ export default function HeaderContent({ pageTitle }) {
   return (
     <Header
       className="site-layout-background"
-      style={{ padding: 0, background: "#ffffff" }}
+      style={{ padding: '0 2em', background: "#ffffff", fontSize: "20px", fontWeight:'500', color:'#5D5FEF' }}
     >
       {pageTitle}
       <Input

@@ -1,19 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {Space, Table, Avatar, Input, Button, Modal} from 'antd';
-import {DeleteOutlined, EyeOutlined, SearchOutlined} from '@ant-design/icons';
+import {Space, Table, Avatar, Input, Button,Tag, Modal} from 'antd';
+import { Tooltip } from 'antd';
+import {DeleteOutlined, EyeOutlined, PlusOutlined, SearchOutlined} from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import axios from 'axios';
 import "../../style/EmployeeManagement.css";
 import {Link} from "react-router-dom";
 import {useDeleteEmployee} from "../../hooks/useEmployee.jsx";
 import Swal from "sweetalert2";
+import {useNavigate} from "react-router";
 
 
 const ShowEmployees = () => {
+    const navigate = useNavigate();
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
     const { mutate: deleteEmployee } = useDeleteEmployee();
+
     const handleDeleteConfirm = (record) => {
         Swal.fire({
             title: 'Confirmation',
@@ -178,26 +182,33 @@ const ShowEmployees = () => {
     useEffect(() => {
         axios.get('http://localhost:3000/employee')
             .then(response => {
-                console.log('Employee data:', response.data);
+                // console.log('Employee data:', response.data);
                 setEmployees(response.data.data);
+                console.log(8289, response.data.data);
             })
             .catch(error => {
                 console.error('Error fetching employee data:', error);
             });
     }, []);
+    // console.log(employees,'ssss')
 
     const alphanumericSorter = (a, b) => {
         const codeA = a.code.toString();
         const codeB = b.code.toString();
         return codeA.localeCompare(codeB, undefined, { numeric: true, sensitivity: 'base' });
     };
-
+    const StatusCell = ({ value }) => (
+        <span className={`status-wrapper ${value.toLowerCase()}`}>
+            {value}
+        </span>
+    );
     const columns = [
         {
             title: 'Avatar',
             dataIndex: 'avatar',
             key: 'avatar',
             render: (avatar) => <Avatar src={avatar} />,
+            width: 80, 
         },
         {
             title: 'Name',
@@ -207,62 +218,57 @@ const ShowEmployees = () => {
             sorter: (a, b) => a.name.length - b.name.length,
             sortOrder: sortedInfo.columnKey === 'name' ? sortedInfo.order : null,
             ellipsis: true,
-        },
+            width: 150, 
+        }, 
         {
-            title: 'Code',
-            dataIndex: 'code',
-            key: 'code',
-            sorter: alphanumericSorter,
-            sortOrder: sortedInfo.columnKey === 'code' ? sortedInfo.order : null,
-            ellipsis: true,
-        },
+            title: 'LangFrame',
+            dataIndex: 'langFrame',
+            key: 'langFrame',
+            render: (record) => {
+              return (
+                <>
+                  {record?.map((langFrame) => (
+                    <span key={langFrame.name} style={{ color: '#1d39c4', background: '#f0f5ff', border: '1px solid #adc6ff', marginRight: '8px' }}>
+                      {langFrame.name} ({langFrame.exp})
+                    </span>
+                  ))}
+                </>
+              );
+            },
+          },             
         {
-            title: 'Email',
-            dataIndex: 'email',
-            key: 'email',
-        },
-        {
-            title: 'Phone',
-            dataIndex: 'phone',
-            key: 'phone',
-        },
-        {
-            title: 'Position',
-            dataIndex: 'position',
-            key: 'position',
-            filters: [
-                {
-                    text: 'Front-end',
-                    value: 'fe',
-                },
-                {
-                    text: 'Full-stack',
-                    value: 'fullstack',
-                },
-                {
-                    text: 'Back-end',
-                    value: 'be',
-                },
-                {
-                    text: 'BA',
-                    value: 'ba',
-                },
-                {
-                    text: 'QA',
-                    value: 'qa',
-                },
-                {
-                    text: 'Devops',
-                    value: 'devops',
-                },
-                {
-                    text: 'UX-UI',
-                    value: 'ux-ui',
-                },
-            ],
-            filteredValue: filteredInfo.position || null,
-            onFilter: (value, record) => record.position.includes(value),
-        },
+            title: 'Technical',
+            dataIndex: 'tech',
+            key: 'tech',
+            render: (record) => {
+              return (
+                <>
+                  {record?.map((tech) => (
+                    <span key={tech.name} style={{ color: '#1d39c4', background: '#f0f5ff', border: '1px solid #adc6ff', marginRight: '8px' }}>
+                      {tech.name} ({tech.exp})
+                    </span>
+                  ))}
+                </>
+              );
+            },
+          },
+            {
+            title: 'Project',
+            dataIndex: 'employee_project',
+            key: 'employee_project',
+            render: (text, record) => {
+                return (
+                  <>
+                    {record.employee_project?.map((item) => (
+                      <span key={item}>
+                        {item.project.name}
+                      </span>
+                    ))}
+                  </>
+                );
+              },
+              
+        },                    
         {
             title: 'Status',
             dataIndex: 'status',
@@ -270,7 +276,7 @@ const ShowEmployees = () => {
             filters: [
                 {
                     text: 'Active',
-                    value: 'active',
+                    value: 'cctive',
                 },
                 {
                     text: 'Inactive',
@@ -312,14 +318,26 @@ const ShowEmployees = () => {
         key: employee.id,
         avatar: employee.avatar,
         name: employee.name,
-        code: employee.code,
-        email: employee.email,
-        phone: employee.phone,
+        langFrame: employee.langFrame,
+        tech: employee.tech,
+        manager: employee.isManager ? 'True' : 'False',
         position: employee.position,
         status: employee.status,
+        employee_project: employee.employee_project
     }));
     return (
         <>
+
+            <Link to={`/addEmployee/`} className="text-edit">
+                <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    style={{ float: 'right', margin: '10px' }}
+                    onClick={() => navigate("listEmployee/addEmployee")}
+                >
+                    Add Project
+                </Button>
+            </Link>
             <Table
                 className="custom-table"
                 columns={columns}

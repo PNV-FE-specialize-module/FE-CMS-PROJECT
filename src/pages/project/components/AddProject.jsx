@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'; 
 import "../../../style/AddProject.css"
 import { Button, DatePicker, Form, Input, Row, Col, Modal, Select } from 'antd';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.css';
 import { postAddProject } from '../../../api/ProjectApi';
 import { getDetailEmployee } from '../../../api/EmployeeApi';
 import axios from 'axios';
@@ -83,13 +85,25 @@ export const AddProject = () => {
       values.description=null
     }
     try {
-      const {data} = await postAddProject(values);
-      setSuccessMessage('Data added successfully!');
+      const { data } = await postAddProject(values);
+      console.log('Mutation result:', data); 
+      console.log('Employee updated successfully!');
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Employee updated successfully!',
+      });
     } catch (error) {
-      setErrorMessage('Failed to add data. Please try again.');
-    }
-  };
-
+      console.error('Error updating employee:', error);
+    
+      // Show error alert
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to update employee. Please try again.',
+      });
+    } 
+  };   
   return (
     <>
       <Button type="primary" onClick={showModal}>

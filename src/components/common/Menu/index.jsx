@@ -25,12 +25,6 @@ const menuItem  = [
         label: "Projects"
         
     },
-    {
-        key: '/signout',
-        icon: <LogoutOutlined />,
-        label: "logout"
-        
-    }
 ]
 
 export default menuItem

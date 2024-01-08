@@ -76,7 +76,7 @@ const ListProject = () => {
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <Link to={`/add`}>
+          <Link to={`/addProject`}>
             <EyeOutlined />
           </Link>
           <DeleteOutlined />
