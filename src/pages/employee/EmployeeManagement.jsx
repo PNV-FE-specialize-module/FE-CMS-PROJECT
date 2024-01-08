@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {Space, Table, Avatar, Input, Button,Tag, Modal} from 'antd';
-import { Tooltip } from 'antd';
+import {Space, Table, Avatar, Input, Button, Modal} from 'antd';
 import {DeleteOutlined, EyeOutlined, PlusOutlined, SearchOutlined} from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import axios from 'axios';
@@ -77,7 +76,7 @@ const ShowEmployees = () => {
                     padding: 8,
                 }}
                 onKeyDown={(e) => e.stopPropagation()}
-                >
+            >
                 <Input
                     ref={searchInput}
                     placeholder={`Search ${dataIndex}`}
@@ -159,7 +158,7 @@ const ShowEmployees = () => {
                     searchWords={[searchText]}
                     autoEscape
                     textToHighlight={text ? text.toString() : ''}
-                    />
+                />
             ) : (
                 text
             ),
@@ -333,9 +332,8 @@ const ShowEmployees = () => {
                     type="primary"
                     icon={<PlusOutlined />}
                     style={{ float: 'right', margin: '10px' }}
-                    onClick={() => navigate("listEmployee/addEmployee")}
                 >
-                    Add Project
+                    Add Employee
                 </Button>
             </Link>
             <Table

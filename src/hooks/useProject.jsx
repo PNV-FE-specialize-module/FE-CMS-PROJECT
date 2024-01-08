@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getDetailProject, getprojects } from "../api/Project";
+// import {getTotalEmployee} from "../api/EmployeeApi.js";
 
 export const useGetProject = () => {
     return useQuery({
@@ -30,4 +31,5 @@ export const useGetDetaiProject = (id) => {
         }
     });
 };
+
 

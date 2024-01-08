@@ -2,7 +2,7 @@ import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {
     addEmployeeApi,
     deleteEmployeeApi,
-    getDetailEmployee, getManager,
+    getDetailEmployee, getManager, getTotalEmployee,
     updateEmployeeApi
 } from "../api/EmployeeApi.js";
 import {useNavigate} from "react-router";
@@ -71,3 +71,10 @@ export const useGetManager = () =>
         const { data } = await getManager();
         return data;
     });
+
+export const useGetEmployeeTotal = (params) =>
+    useQuery(["EMPLOYEE_TOTAL", params.period], async () => {
+        const { data } = await getTotalEmployee(params);
+        return data;
+    });
+

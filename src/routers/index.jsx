@@ -11,7 +11,7 @@ import CreateEmployee from "../pages/employee/components/AddEmployee.jsx";
 
 
 const AppRoutes = [
-    { path: "/", element: <Dashboard /> , title:"Dashboard"  },
+    { path: "/", element: <Dashboard/> , title:"Dashboard"  },
     { path: "/listproject", element: <ListProject/>, title:"List Project" },
     {
         path: "/project/:id",
