@@ -48,7 +48,7 @@ export const LayoutDashboard = ({ children, pageTitle }) => {
             textAlign: "center",
           }}
         >
-          Ant Design ©{new Date().getFullYear()} Created by Ant UED
+          THE NINEAM ©{new Date().getFullYear()} Created by The Nineam
         </Footer>
       </Layout>
     </Layout>
