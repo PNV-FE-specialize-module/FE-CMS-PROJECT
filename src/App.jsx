@@ -20,8 +20,6 @@ function PrivateRoute({ children }) {
   return isLogin ? <>{children}</> : <Navigate to="/login" />;
 }
 function App() {
-  console.log(444);
-  // const { t, i18n } = useTranslation();
   return (
     <Router>
       <Routes>

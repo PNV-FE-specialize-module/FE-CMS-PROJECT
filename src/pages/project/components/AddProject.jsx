@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react'; 
-import "../../../style/AddProject.css"
-import { Button, DatePicker, Form, Input, Row, Col, Modal, Select } from 'antd';
-import { postAddProject } from '../../../api/ProjectApi';
-import axios from 'axios';
-import Swal from 'sweetalert2';
-import 'sweetalert2/dist/sweetalert2.css';
+import React, { useState, useEffect } from "react";
+import "../../../style/AddProject.css";
+import { Button, DatePicker, Form, Input, Row, Col, Modal, Select } from "antd";
+import { postAddProject } from "../../../api/ProjectApi";
+import axios from "axios";
+import Swal from "sweetalert2";
+import "sweetalert2/dist/sweetalert2.css";
 
 const { TextArea } = Input;
 const { Option } = Select;
 
-export const AddProject = ({isModalVisible,setIsModalVisible}) => {
+export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
   const [form] = Form.useForm();
   const [selectedManagers, setSelectedManagers] = useState([]);
   const [managerOptions, setManagerOptions] = useState([]);
@@ -17,15 +17,17 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
   useEffect(() => {
     const fetchManagers = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/employee/managers');
+        const response = await axios.get(
+          "http://localhost:3000/employee/managers"
+        );
         const data = response.data;
-        const managerData = data.map(manager => ({
+        const managerData = data.map((manager) => ({
           id: manager.id,
           name: manager.name,
         }));
         setManagerOptions(managerData);
       } catch (error) {
-        console.error('Error fetching managers:', error);
+        console.error("Error fetching managers:", error);
       }
     };
 
@@ -35,15 +37,15 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/employee');
+        const response = await axios.get("http://localhost:3000/employee");
         const data = response.data.data;
-        const employeeData = data.map(employee => ({
+        const employeeData = data.map((employee) => ({
           id: employee.id,
           name: employee.name,
         }));
         setManagerOptions(employeeData);
       } catch (error) {
-        console.error('Error fetching employees:', error);
+        console.error("Error fetching employees:", error);
       }
     };
 
@@ -59,7 +61,7 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
         onFinish(values);
       })
       .catch((info) => {
-        console.log('Validate Failed:', info);
+        console.error("Validate Failed:", info);
       });
   };
 
@@ -72,20 +74,20 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
     try {
       const { data } = await postAddProject(values);
       Swal.fire({
-        icon: 'success',
-        title: 'Success',
-        text: 'Employee updated successfully!',
+        icon: "success",
+        title: "Success",
+        text: "Employee updated successfully!",
       });
     } catch (error) {
-      console.error('Error updating employee:', error);
-    
+      console.error("Error updating employee:", error);
+
       // Show error alert
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Failed to update employee. Please try again.',
+        icon: "error",
+        title: "Error",
+        text: "Failed to update employee. Please try again.",
       });
-    } 
+    }
   };
   return (
     <>
@@ -100,14 +102,14 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
           </Button>,
           <Button key="submit" type="primary" onClick={handleOk}>
             Add
-          </Button>
+          </Button>,
         ]}
       >
         <Form
           form={form}
           labelCol={{
             xs: { span: 6 },
-            sm: { span: 6},
+            sm: { span: 6 },
           }}
           wrapperCol={{
             xs: { span: 24 },
@@ -122,20 +124,22 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
                 placeholder="Enter project name"
                 label="Project name"
                 name="name"
-                rules={[{ required: true, message: 'Please enter Name!' }]}
+                rules={[{ required: true, message: "Please enter Name!" }]}
               >
                 <Input placeholder="Enter project name" />
               </Form.Item>
               <Form.Item
                 label="Manager"
                 name="managerId"
-                rules={[{ required: true, message: 'Please select a Manager!' }]}
+                rules={[
+                  { required: true, message: "Please select a Manager!" },
+                ]}
               >
                 <Select
                   placeholder="Choose manager"
                   value={selectedManagers}
                   onChange={setSelectedManagers}
-                  style={{ width: '100%' }}
+                  style={{ width: "100%" }}
                 >
                   {managerOptions.map((managerOption) => (
                     <Option key={managerOption.id} value={managerOption.id}>
@@ -144,30 +148,44 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
                   ))}
                 </Select>
               </Form.Item>
-              
+
               <Form.Item
                 label="Start Date"
                 name="startDate"
-                rules={[{ required: true, message: 'Please select Start Date!' }]}
+                rules={[
+                  { required: true, message: "Please select Start Date!" },
+                ]}
               >
                 <DatePicker />
               </Form.Item>
               <Form.Item
                 label="End Date"
                 name="endDate"
-                rules={[{ required: true, message: 'Please select End Date!' }]}
+                rules={[{ required: true, message: "Please select End Date!" }]}
               >
                 <DatePicker />
               </Form.Item>
-             
             </Col>
             <Col xs={24} sm={12}>
               <Form.Item
                 label="LangFrame"
                 name="langFrame"
-                rules={[{ required: true, message: 'Please enter Language/Framework!' }]}
-              >
-                <Select mode="multiple" placeholder="Choose Languages and Framework">
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter Language/Framework!",
+                  },
+                ]}
+                wrapperCol={{ span: 14 }}
+                style={{ height: 'fit-content', display: 'flex', flexDirection: 'column' }}
+                >
+                <Select
+                  mode="multiple"
+                  placeholder="Choose Languages and Framework"
+                  autoSize={{ minRows: 2, maxRows: 6 }}
+                  style={{ height: 'auto', maxHeight: '100px' }}
+
+                >
                   <Option value="reactjs">ReactJs</Option>
                   <Option value="htmlcss">HTML/CSS</Option>
                   <Option value="nodejs">NodeJs</Option>
@@ -180,9 +198,15 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
               <Form.Item
                 label="Technology"
                 name="technology"
-                rules={[{ required: true, message: 'Please enter Technology!' }]}
+                rules={[
+                  { required: true, message: "Please enter Technology!" },
+                ]}
+                wrapperCol={{ span: 14 }}
+                style={{ height: 'fit-content', display: 'flex', flexDirection: 'column' }}
               >
-                <Select mode="multiple" placeholder="Choose Technologies">
+                <Select mode="multiple" placeholder="Choose Technologies"
+                autoSize={{ minRows: 2, maxRows: 6 }}
+                style={{ height: 'auto', maxHeight: '100px' }}>
                   <Option value="git">Git</Option>
                   <Option value="github">GitLab</Option>
                   <Option value="gitlab">GitHub</Option>
@@ -194,17 +218,17 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
               <Form.Item
                 label="Description"
                 name="description"
-                rules={[{ required: true, message: 'Please enter description' }]}
+                rules={[
+                  { required: true, message: "Please enter description" },
+                ]}
               >
                 <TextArea rows={4} placeholder="Description of project" />
               </Form.Item>
-             
             </Col>
           </Row>
-          <Row gutter={[2,2]}>
-            <Col span={24}>
-            </Col>
-            </Row>
+          <Row gutter={[2, 2]}>
+            <Col span={24}></Col>
+          </Row>
         </Form>
       </Modal>
     </>

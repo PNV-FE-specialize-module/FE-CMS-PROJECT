@@ -115,7 +115,6 @@ const ShowEmployees = () => {
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
   const handleChange = (pagination, filters, sorter) => {
-    console.log('Various parameters', pagination, filters, sorter);
     setFilteredInfo(filters);
     setSortedInfo(sorter);
   };
@@ -130,7 +129,6 @@ const ShowEmployees = () => {
   useEffect(() => {
     axios.get('http://localhost:3000/employee')
       .then(response => {
-        console.log('Employee data:', response.data);
         setEmployees(response.data.data);
       })
       .catch(error => {

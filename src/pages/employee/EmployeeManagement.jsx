@@ -1,64 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {Space, Table, Avatar, Input, Button, Modal} from 'antd';
-import {DeleteOutlined, EyeOutlined, PlusOutlined, SearchOutlined} from '@ant-design/icons';
+import {Space, Table, Avatar, Input, Button} from 'antd';
+import { EyeOutlined, PlusOutlined, SearchOutlined} from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import axios from 'axios';
 import "../../style/EmployeeManagement.css";
 import {Link} from "react-router-dom";
-import {useDeleteEmployee} from "../../hooks/useEmployee.jsx";
-import Swal from "sweetalert2";
-import {useNavigate} from "react-router";
 
 
 const ShowEmployees = () => {
-    const navigate = useNavigate();
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
-    const { mutate: deleteEmployee } = useDeleteEmployee();
 
-    const handleDeleteConfirm = (record) => {
-        Swal.fire({
-            title: 'Confirmation',
-            text: 'Are you sure you want to delete this employee?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Delete',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                deleteEmployee(record.key)
-                    .then(() => {
-                        Swal.fire({
-                            title: 'Success',
-                            text: 'Employee deleted successfully.',
-                            icon: 'success',
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
-                        // Fetch the updated employee list
-                        axios.get('http://localhost:3000/employee')
-                            .then(response => {
-                                setEmployees(response.data.data);
-                            })
-                            .catch(error => {
-                                console.error('Error fetching employee data:', error);
-                            });
-                    })
-                    .catch(() => {
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'Failed to delete employee.',
-                            icon: 'error',
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
-                    });
-            }
-        });
-    };
+  
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
@@ -166,7 +120,6 @@ const ShowEmployees = () => {
     const [filteredInfo, setFilteredInfo] = useState({});
     const [sortedInfo, setSortedInfo] = useState({});
     const handleChange = (pagination, filters, sorter) => {
-        console.log('Various parameters', pagination, filters, sorter);
         setFilteredInfo(filters);
         setSortedInfo(sorter);
     };
@@ -181,7 +134,6 @@ const ShowEmployees = () => {
     useEffect(() => {
         axios.get('http://localhost:3000/employee')
             .then(response => {
-                console.log('Employee data:', response.data);
                 setEmployees(response.data.data);
             })
             .catch(error => {
@@ -297,18 +249,15 @@ const ShowEmployees = () => {
                     <Link to={`/employee/${record.key}`} className="text-edit">
                         <EyeOutlined />
                     </Link>
-                    <Button type="danger" onClick={() => handleDeleteConfirm(record)}>
-                        <DeleteOutlined />
-                    </Button>
 
                 </Space>
             ),
         },
     ];
 
-    const handleTableChange = (pagination) => {
-        setPagination(pagination);
-    };
+    // const handleTableChange = (pagination) => {
+    //     setPagination(pagination);
+    // };
 
 
     const employeesWithStatus = employees.map(employee => ({

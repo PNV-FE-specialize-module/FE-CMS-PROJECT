@@ -1,12 +1,10 @@
 import React, {useRef, useState} from 'react';
-import { useParams } from "react-router-dom";
-import { useGetDetailEmployee, useUpdateEmployee, useGetManager } from "../../../hooks/useEmployee.jsx";
+import { useNavigate, useParams } from "react-router-dom";
+import { useGetDetailEmployee, useUpdateEmployee, useGetManager, useDeleteEmployee } from "../../../hooks/useEmployee.jsx";
 import {Row, Col, Button, Form, Input, Typography, Card, Select, message, Space, Timeline, DatePicker} from 'antd';
 import moment from "moment";
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.css';
-import { Widget } from 'react-cloudinary-upload-widget';
-// import { Image, Transformation, Widget } from 'cloudinary-react';
 
 import { Cloudinary } from "@cloudinary/url-gen";
 import axios from "axios";
@@ -19,6 +17,7 @@ const EmployeeDetail = () => {
   const { id } = useParams();
   const { data: employee, isLoading, isError } = useGetDetailEmployee(id);
   const updateEmployeeMutation = useUpdateEmployee(id);
+  const { mutate: deleteEmployee } = useDeleteEmployee();
   const [editMode, setEditMode] = useState(false);
   const [editedEmployee, setEditedEmployee] = useState({});
 
@@ -28,6 +27,7 @@ const EmployeeDetail = () => {
   const cld = new Cloudinary({ cloud: { cloudName: "da9hiv52w" } });
   const fileInputRef = useRef();
   const { data: managers } = useGetManager();
+  const navigate= useNavigate()
 
 
   if (isLoading) {
@@ -37,19 +37,38 @@ const EmployeeDetail = () => {
   if (isError) {
     return <div>404 Not Found</div>;
   }
-  // const handleImageUpload = (result) => {
-  //   // 'result' contains information about the uploaded image
-  //   const { event, info } = result;
-  //   const imageUrl = info.secure_url; // The URL of the uploaded image
-  //   setEditedEmployee((prev) => ({
-  //     ...prev,
-  //     avatar: imageUrl,
-  //   }));
-  // };
+ 
   const disabledDate = (current) => {
     return current && current > moment().endOf('day');
   };
 
+  const handleDeleteConfirm = async () => {
+    try {
+        const result = await Swal.fire({
+            title: 'Confirmation',
+            text: 'Are you sure you want to delete this employee?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Delete',
+            cancelButtonText: 'Cancel'
+        });
+
+        if (result.isConfirmed) {
+          deleteEmployee(id);
+          navigate('/listemployee')
+        }
+    } catch (error) {
+        Swal.fire({
+            title: 'Error',
+            text: 'Failed to delete employee.',
+            icon: 'error',
+            timer: 1000,
+            showConfirmButton: false
+        });
+    }
+};
 
   const handleEditClick = () => {
     setEditMode(!editMode);
@@ -219,9 +238,6 @@ const EmployeeDetail = () => {
   const handleSaveClick = async () => {
     try {
       const result = await updateEmployeeMutation.mutateAsync(editedEmployee);
-
-      console.log('Mutation result:', result);
-      console.log('Employee updated successfully!');
       setEditMode(false)
       Swal.fire({
         icon: 'success',
@@ -745,7 +761,7 @@ const EmployeeDetail = () => {
                   )}
                 </Col>
                 <Col>
-                  <Button type="primary">Delete</Button>
+                  <Button type="primary"  onClick={handleDeleteConfirm} >Delete</Button>
                 </Col>
               </Row>
             </Form>
