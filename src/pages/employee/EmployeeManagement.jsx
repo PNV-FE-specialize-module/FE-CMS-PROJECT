@@ -33,7 +33,7 @@ const ShowEmployees = () => {
                     .then(() => {
                         Swal.fire({
                             title: 'Success',
-                            text: 'Employee deleted successfully.',
+                            text: 'Project deleted successfully.',
                             icon: 'success',
                             timer: 2000,
                             showConfirmButton: false
@@ -59,11 +59,13 @@ const ShowEmployees = () => {
             }
         });
     };
+
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
         setSearchedColumn(dataIndex);
     };
+
     const handleReset = (clearFilters) => {
         clearFilters();
         setSearchText('');
@@ -321,6 +323,7 @@ const ShowEmployees = () => {
         position: employee.position,
         status: employee.status,
     }));
+    
     return (
         <>
 

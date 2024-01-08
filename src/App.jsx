@@ -27,7 +27,7 @@ function App() {
             <Route
               key={index}
               path={route.path}
-              element={<PrivateRoute><LayoutDashboard pageTitle={route.title}>{route.element}</LayoutDashboard></PrivateRoute>}
+              element={<LayoutDashboard pageTitle={route.title}>{route.element}</LayoutDashboard>}
             />
           ))
         }

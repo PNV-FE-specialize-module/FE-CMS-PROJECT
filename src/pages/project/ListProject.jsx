@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Table, Spin, Alert, Space, Tag, Button} from 'antd';
+import { Table, Spin, Alert, Space, Tag, Button } from 'antd';
 import {
   EyeOutlined,
   DeleteOutlined, PlusOutlined
@@ -7,9 +7,61 @@ import {
 import { checkProjectStatus, getStatusColor } from '../../components/enum/enum';
 import { useGetProject } from '../../hooks/useProject';
 import { Link } from 'react-router-dom';
+import { useDeleteProject } from "../../hooks/useProject.jsx";
+import { useQueryClient } from 'react-query';
+
+
 const ListProject = () => {
-  
-  const { data: projects, isLoading, isError, error } = useGetProject();
+
+  // const { data: projects, isLoading, isError, error, setProjects } = useGetProject();
+  const { data: projects, isLoading, isError, error, refetch } = useGetProject();
+
+  const { mutate: deleteProject } = useDeleteProject();
+
+
+  const handleDeleteConfirm = (record) => {
+    Swal.fire({
+      title: 'Confirmation',
+      text: 'Are you sure you want to delete this project?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteProject(record.key)
+          .then(() => {
+            Swal.fire({
+              title: 'Success',
+              text: 'Employee deleted successfully.',
+              icon: 'success',
+              timer: 2000,
+              showConfirmButton: false
+            });
+            // Fetch the updated employee list
+            axios.get('http://localhost:3000/project')
+              .then(response => {
+                setProjects(response.data.data);
+              })
+              .catch(error => {
+                console.error('Error fetching project data:', error);
+              });
+          })
+          .catch(() => {
+            Swal.fire({
+              title: 'Error',
+              text: 'Failed to delete project.',
+              icon: 'error',
+              timer: 2000,
+              showConfirmButton: false
+            });
+          });
+      }
+    });
+  };
+
 
   const columns = [
     {
@@ -71,15 +123,29 @@ const ListProject = () => {
       render: (text) => new Date(text).toLocaleDateString('en-US'),
 
     },
+    // {
+    //   title: 'Action',
+    //   key: 'action',
+    //   render: (_, record) => (
+    //     <Space size="middle">
+    //       <Link to={`/project/${record.id}`}>
+    //         <EyeOutlined />
+    //       </Link>
+    //       <DeleteOutlined />
+    //     </Space>
+    //   ),
+    // },
     {
       title: 'Action',
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
-          <Link to={`/project/${record.id}`}>
+          <Link to={`/project/${record.id}`} className="text-edit">
             <EyeOutlined />
           </Link>
-          <DeleteOutlined />
+          <Button type="danger" onClick={() => handleDeleteConfirm(record)}>
+            <DeleteOutlined />
+          </Button>
         </Space>
       ),
     },
@@ -88,30 +154,30 @@ const ListProject = () => {
   return (
 
 
-      <Spin spinning={isLoading} tip="Loading...">
-        {isError && <Alert message={error.message} type="error" />}
-        {projects && projects.data ? (
-            Array.isArray(projects.data) && projects.data.length > 0 ? (
-                <>
-                  <Link to={`/addProject/`} className="text-edit">
-                    <Button
-                        type="primary"
-                        icon={<PlusOutlined />}
-                        style={{ float: 'right', margin: '10px' }}
+    <Spin spinning={isLoading} tip="Loading...">
+      {isError && <Alert message={error.message} type="error" />}
+      {projects && projects.data ? (
+        Array.isArray(projects.data) && projects.data.length > 0 ? (
+          <>
+            <Link to={`/addProject/`} className="text-edit">
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                style={{ float: 'right', margin: '10px' }}
 
-                    >
-                      Add Project
-                    </Button>
-                  </Link>
-                  <Table columns={columns} dataSource={projects.data} rowKey={(record) => record.id} />
-                </>
-            ) : (
-                <p>No data to display</p>
-            )
+              >
+                Add Project
+              </Button>
+            </Link>
+            <Table columns={columns} dataSource={projects.data} rowKey={(record) => record.id} />
+          </>
         ) : (
-            <p>Loading...</p>
-        )}
-      </Spin>
+          <p>No data to display</p>
+        )
+      ) : (
+        <p>Loading...</p>
+      )}
+    </Spin>
 
 
   );
