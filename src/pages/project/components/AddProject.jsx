@@ -3,13 +3,13 @@ import "../../../style/AddProject.css"
 import { Button, DatePicker, Form, Input, Row, Col, Modal, Select } from 'antd';
 import { postAddProject } from '../../../api/ProjectApi';
 import axios from 'axios';
- 
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.css';
+
 const { TextArea } = Input;
 const { Option } = Select;
 
 export const AddProject = ({isModalVisible,setIsModalVisible}) => {
-  const [successMessage, setSuccessMessage] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
   const [form] = Form.useForm();
   const [selectedManagers, setSelectedManagers] = useState([]);
   const [managerOptions, setManagerOptions] = useState([]);
@@ -70,13 +70,23 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
 
   const onFinish = async (values) => {
     try {
-      const {data} = await postAddProject(values);
-      setSuccessMessage('Data added successfully!');
+      const { data } = await postAddProject(values);
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Employee updated successfully!',
+      });
     } catch (error) {
-      setErrorMessage('Failed to add data. Please try again.');
-    }
+      console.error('Error updating employee:', error);
+    
+      // Show error alert
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to update employee. Please try again.',
+      });
+    } 
   };
-
   return (
     <>
       <Modal
@@ -197,8 +207,6 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
             </Row>
         </Form>
       </Modal>
-      {successMessage && <div style={{ color: 'green' }}>{successMessage}</div>}
-      {errorMessage && <div style={{ color: 'red' }}>{errorMessage}</div>}
     </>
   );
 };
