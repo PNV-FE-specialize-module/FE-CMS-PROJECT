@@ -5,7 +5,6 @@ import {Row, Col, Button, Form, Input, Typography, Card, Select, message, Space,
 import moment from "moment";
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.css';
-import { Widget } from 'react-cloudinary-upload-widget';
 // import { Image, Transformation, Widget } from 'cloudinary-react';
 
 import { Cloudinary } from "@cloudinary/url-gen";

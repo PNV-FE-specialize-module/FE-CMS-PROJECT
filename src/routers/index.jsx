@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Dashboard } from '../pages/dashboard/components/Dashboard';
+import  Dashboard  from '../pages/dashboard/components/Dashboard';
 import ListProject from '../pages/project/ListProject';
 import EmployeeDetail from "../pages/employee/components/EmployeeDetail.jsx";
 import ShowEmployees from "../pages/employee/EmployeeManagement.jsx";
@@ -23,7 +23,6 @@ const AppRoutes = [
         element: <ShowEmployees />,
         errorElement: <div>Not found</div>,
         title:"List Employee",
-
     },
     {
         path: "/employee/:id",

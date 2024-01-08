@@ -7,9 +7,7 @@ const ENDPOINT="employee";
 export const getDetailEmployee = async () => {
     return await baseAxios.get(`${ENDPOINT}`);
 };
-export const addEmployeeApi = async (params) => {
-    return await baseAxios.post(`${ENDPOINT}`, params);
-};
+
 
 export const updateEmployeeApi =  async (employId, params ={}) => {
     return await baseAxios.patch(`${ENDPOINT}/${employId}`, {...params})
@@ -21,10 +19,13 @@ export const deleteEmployeeApi =  async (employId) => {
 export const getManager = async () => {
     return await baseAxios.get(`${ENDPOINT}/managers`);
 }
-export const getTotalEmployee = async () =>{
-    return await baseAxios.get(`${ENDPOINT}/total`)
+export const getTotalEmployee = async (params) =>{
+    return await baseAxios.get(`${ENDPOINT}/total`,{ params })
 }
 
+export const addEmployeeApi = async (params) => {
+    return await baseAxios.post(`employee`, params);
+};
 export default {
     getDetailEmployee,
     updateEmployeeApi,
