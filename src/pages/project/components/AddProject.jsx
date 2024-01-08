@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect } from 'react';
 import "../../../style/AddProject.css"
 import { Button, DatePicker, Form, Input, Row, Col, Modal, Select } from 'antd';
 import { postAddProject } from '../../../api/ProjectApi';
 import { getDetailEmployee } from '../../../api/EmployeeApi';
 import axios from 'axios';
- 
+
 const { TextArea } = Input;
 const { Option } = Select;
 
@@ -78,13 +78,13 @@ export const AddProject = () => {
   };
 
   const onFinish = async (values) => {
-    values.startDate  = values.startDate.toISOString();
-    values.endDate= values.endDate.toISOString();
+    values.startDate = values.startDate.toISOString();
+    values.endDate = values.endDate.toISOString();
     if (!values.description) {
-      values.description=null
+      values.description = null
     }
     try {
-      const {data} = await postAddProject(values);
+      const { data } = await postAddProject(values);
       setSuccessMessage('Data added successfully!');
     } catch (error) {
       setErrorMessage('Failed to add data. Please try again.');
@@ -114,7 +114,7 @@ export const AddProject = () => {
           form={form}
           labelCol={{
             xs: { span: 6 },
-            sm: { span: 6},
+            sm: { span: 6 },
           }}
           wrapperCol={{
             xs: { span: 24 },
@@ -151,7 +151,7 @@ export const AddProject = () => {
                   ))}
                 </Select>
               </Form.Item>
-              
+
               <Form.Item
                 label="Start Date"
                 name="startDate"
@@ -166,7 +166,7 @@ export const AddProject = () => {
               >
                 <DatePicker />
               </Form.Item>
-             
+
             </Col>
             <Col xs={24} sm={12}>
               <Form.Item
@@ -198,9 +198,9 @@ export const AddProject = () => {
                   <Option value="blockc">Blockchain</Option>
                 </Select>
               </Form.Item>
-          
-              
-              
+
+
+
               <Form.Item
                 label="Description"
                 name="description"
@@ -208,13 +208,13 @@ export const AddProject = () => {
               >
                 <TextArea rows={4} placeholder="Description of project" />
               </Form.Item>
-             
+
             </Col>
           </Row>
-          <Row gutter={[2,2]}>
+          <Row gutter={[2, 2]}>
             <Col span={24}>
             </Col>
-            </Row>
+          </Row>
         </Form>
       </Modal>
       {successMessage && <div style={{ color: 'green' }}>{successMessage}</div>}

@@ -147,6 +147,8 @@ const EmployeeDetail = () => {
       [name]: value,
     }));
   };
+
+  
   const handleDateOfBirthChange = (date, dateString) => {
     setEditedEmployee((prevState) => ({
       ...prevState,
