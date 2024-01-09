@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {Space, Table, Avatar, Input, Button} from 'antd';
+import {Space, Table, Avatar, Input, Button, Flex} from 'antd';
 import { EyeOutlined, PlusOutlined, SearchOutlined} from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import axios from 'axios';
 import "../../style/EmployeeManagement.css";
-import {Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 
 const ShowEmployees = () => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
-
+    const navigate= useNavigate()
   
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -30,7 +30,7 @@ const ShowEmployees = () => {
                     padding: 8,
                 }}
                 onKeyDown={(e) => e.stopPropagation()}
-            >
+                >
                 <Input
                     ref={searchInput}
                     placeholder={`Search ${dataIndex}`}
@@ -112,7 +112,7 @@ const ShowEmployees = () => {
                     searchWords={[searchText]}
                     autoEscape
                     textToHighlight={text ? text.toString() : ''}
-                />
+                    />
             ) : (
                 text
             ),
@@ -135,6 +135,7 @@ const ShowEmployees = () => {
         axios.get('http://localhost:3000/employee')
             .then(response => {
                 setEmployees(response.data.data);
+                console.log(8289, response.data.data);
             })
             .catch(error => {
                 console.error('Error fetching employee data:', error);
@@ -146,13 +147,81 @@ const ShowEmployees = () => {
         const codeB = b.code.toString();
         return codeA.localeCompare(codeB, undefined, { numeric: true, sensitivity: 'base' });
     };
-
+    const StatusCell = ({ value }) => (
+        <span className={`status-wrapper ${value.toLowerCase()}`}>
+            {value}
+        </span>
+    );
+    const [showAllLangFrames, setShowAllLangFrames] = useState(false);
+    const [showAllTechs, setShowAllTechs] = useState(false);
+  
+    const handleLangFrameHover = () => {
+      setShowAllLangFrames(true);
+    };
+  
+    const handleTechHover = () => {
+      setShowAllTechs(true);
+    };
+    const renderLangFrames = (langFrames) => {
+        const visibleLangFrames = showAllLangFrames ? langFrames : langFrames.slice(0, 2);
+      
+        return (
+          <>
+          <Flex wrap='wrap' gap={3} >
+            {visibleLangFrames.map((langFrame, index) => (
+              <React.Fragment key={index}>
+                <Flex  vertical wrap='wrap' align='center'>
+                <span style={{ color: '#1d39c4', background: '#f0f5ff', border: '1px solid #adc6ff', padding: '5px', borderRadius:'3px'}}>
+                  {langFrame.name} 
+                </span>
+                <p style={{color:'gray'}}>{langFrame.exp} year</p>
+                </Flex>
+                {(index + 1) % 2 === 0 && <br style={{ lineHeight: '30px' }} />}
+              </React.Fragment>
+            ))}
+            </Flex>
+            {!showAllLangFrames && langFrames.length > 2 && (
+              <span style={{ color: '#1d39c4', cursor: 'pointer', padding: '7px' }} onMouseOver={handleLangFrameHover}>
+                +
+              </span>
+            )}
+          </>
+        );
+      };
+      
+      const renderTechs = (techs) => {
+        const visibleTechs = showAllTechs ? techs : techs.slice(0, 2);
+        return (
+            <>
+            <Flex wrap='wrap' gap={3} >
+              {visibleTechs.map((tech, index) => (
+                <React.Fragment key={index}>
+                  <Flex  vertical wrap='wrap' align='center'>
+                  <span style={{ color: '#1d39c4', background: '#f0f5ff', border: '1px solid #adc6ff', padding: '5px', borderRadius:'3px'}}>
+                    {tech.name} 
+                  </span>
+                  <p style={{color:'gray'}}>{tech.exp} year</p>
+                  </Flex>
+                  {(index + 1) % 2 === 0 && <br style={{ lineHeight: '30px' }} />}
+                </React.Fragment>
+              ))}
+              </Flex>
+              {!showAllTechs && techs.length > 2 && (
+                <span style={{ color: '#1d39c4', cursor: 'pointer', padding: '7px' }} onMouseOver={handleTechHover}>
+                  +
+                </span>
+              )}
+            </>
+          );
+        };
+      
     const columns = [
         {
             title: 'Avatar',
             dataIndex: 'avatar',
             key: 'avatar',
             render: (avatar) => <Avatar src={avatar} />,
+            width: 80, 
         },
         {
             title: 'Name',
@@ -162,30 +231,52 @@ const ShowEmployees = () => {
             sorter: (a, b) => a.name.length - b.name.length,
             sortOrder: sortedInfo.columnKey === 'name' ? sortedInfo.order : null,
             ellipsis: true,
+            width: 120, 
         },
         {
-            title: 'Code',
-            dataIndex: 'code',
-            key: 'code',
-            sorter: alphanumericSorter,
-            sortOrder: sortedInfo.columnKey === 'code' ? sortedInfo.order : null,
-            ellipsis: true,
-        },
-        {
-            title: 'Email',
-            dataIndex: 'email',
-            key: 'email',
-        },
-        {
-            title: 'Phone',
-            dataIndex: 'phone',
-            key: 'phone',
-        },
+            title: 'LangFrame',
+            dataIndex: 'langFrame',
+            key: 'langFrame',
+            render: renderLangFrames,
+            width: 200,
+          },
+          {
+            title: 'Technical',
+            dataIndex: 'tech',
+            key: 'tech',
+            render: renderTechs,
+            width: 180,
+          },      
+          {
+            title: 'Project',
+            dataIndex: 'employee_project',
+            key: 'employee_project',
+            render: (text, record) => {
+              const projects = record.employee_project?.map((item) => item.project.name) || [];
+          
+              return (
+                <>
+                  {projects.map((project, index) => (
+                    <React.Fragment key={project}>
+                      <span>{project}</span>
+                      {index < projects.length - 1 && ', '}
+                    </React.Fragment>
+                  ))}
+                </>
+              );
+            },
+            width: 250,
+          },
+          
         {
             title: 'Position',
             dataIndex: 'position',
             key: 'position',
             filters: [
+                {
+                    text: 'Back-end',
+                    value: 'be',
+                },
                 {
                     text: 'Front-end',
                     value: 'fe',
@@ -195,29 +286,34 @@ const ShowEmployees = () => {
                     value: 'fullstack',
                 },
                 {
-                    text: 'Back-end',
-                    value: 'be',
+                    text: 'UX-UI',
+                    value: 'ux-ui',
                 },
                 {
                     text: 'BA',
                     value: 'ba',
                 },
                 {
-                    text: 'QA',
-                    value: 'qa',
-                },
-                {
-                    text: 'Devops',
+                    text: 'DevOps',
                     value: 'devops',
-                },
-                {
-                    text: 'UX-UI',
-                    value: 'ux-ui',
                 },
             ],
             filteredValue: filteredInfo.position || null,
             onFilter: (value, record) => record.position.includes(value),
-        },
+            render: (position) => (
+                <span>{getPositionTitle(position)}</span>
+            ),
+            width: 150,
+          },
+        {
+            title: 'Manager',
+            dataIndex: 'manager',
+            key: 'manager',
+            render: (manager) => (
+              <span>{manager ? manager.name : 'N/A'}</span>
+            ),
+            width: 150,
+          },         
         {
             title: 'Status',
             dataIndex: 'status',
@@ -239,21 +335,25 @@ const ShowEmployees = () => {
           {status}
         </span>
             ),
-        },
-
-        {
-            title: 'Action',
-            key: 'action',
-            render: (_, record) => (
-                <Space size="middle">
-                    <Link to={`/employee/${record.key}`} className="text-edit">
-                        <EyeOutlined />
-                    </Link>
-
-                </Space>
-            ),
+            with:100,
         },
     ];
+    const getPositionTitle = (position) => {
+        const positionMap = {
+          be: 'Back-end',
+          fe: 'Front-end',
+          fullstack: 'Full-stack',
+          devops:'DevOps',
+          ba:'Business Analysis',
+          qa:'Quality Assurance'
+        };
+      
+        return positionMap[position] || 'N/A';
+      };
+    const handleTableChange = (pagination) => {
+        setPagination(pagination);
+    };
+        
 
     // const handleTableChange = (pagination) => {
     //     setPagination(pagination);
@@ -264,11 +364,13 @@ const ShowEmployees = () => {
         key: employee.id,
         avatar: employee.avatar,
         name: employee.name,
-        code: employee.code,
-        email: employee.email,
-        phone: employee.phone,
+        langFrame: employee.langFrame,
+        tech: employee.tech,
+        manager: employee.isManager ? 'True' : 'False',
         position: employee.position,
         status: employee.status,
+        manager: employee.manager,
+        employee_project: employee.employee_project
     }));
     return (
         <>
@@ -278,8 +380,9 @@ const ShowEmployees = () => {
                     type="primary"
                     icon={<PlusOutlined />}
                     style={{ float: 'right', margin: '10px' }}
+                    onClick={() => navigate("listEmployee/addEmployee")}
                 >
-                    Add Employee
+                    Add Project
                 </Button>
             </Link>
             <Table
@@ -293,6 +396,14 @@ const ShowEmployees = () => {
                     showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
                 }}
                 onChange={handleChange}
+                onRow={(record, rowIndex) => {
+                    return {
+                        onClick: (event) => {
+                            navigate(`/employee/${record.key}`);
+                        },
+                    };
+                }}
+            
             />
         </>
     );

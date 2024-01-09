@@ -11,7 +11,7 @@ import CreateEmployee from "../pages/employee/components/AddEmployee.jsx";
 
 
 const AppRoutes = [
-    { path: "/", element: <Dashboard /> , title:"Dashboard"  },
+    { path: "/", element: <Dashboard/> , title:"Dashboard"  },
     { path: "/listproject", element: <ListProject/>, title:"List Project" },
     {
         path: "/project/:id",
@@ -39,10 +39,7 @@ const AppRoutes = [
         // errorElement: <div>Not found</div>,
     },
     {
-        path: "/login",
-        // element: <Login />,
-    },
-    {
+       
         path: "/addEmployee",
         element: <CreateEmployee />,
         title:"Create Employee"
