@@ -22,8 +22,11 @@ export const ProjectDetail = () => {
 
   const { id } = useParams();
   const { data: project, isLoading, isError, error } = useGetDetaiProject(id);
+
   const { data: managers } = useGetManager();
-  const {data: ListEmployee } = useGetAllEmployee()
+
+  const {data: listEmployee } = useGetAllEmployee()
+ 
 
   const updateProject = useUpdateProject(id);
   
@@ -32,10 +35,8 @@ export const ProjectDetail = () => {
   const [editedProject, setEditedProject] = useState({});
 
   const {mutate: assignEmployee} = useAssignEmployee();
-  const [addAssignEmployee, setAddssignEmployee] = useState({});
 
 
-console.log("Employee List:", ListEmployee)
 
 
 
@@ -194,18 +195,16 @@ console.log("Employee List:", ListEmployee)
 
   const handleAddAssignEmployee = async () => {
     try {
-      // Validate if both employeeId and selectedRole are present before making the mutation
-      if (editedProject.employeeId) {
+      if (editedProject.employeeId && editedProject.roles) {
         await assignEmployee([
           {
             employeeId: editedProject.employeeId,
-            projectId: editedProject.id, // Replace with the actual project ID
+            projectId: editedProject.id, 
             roles: editedProject.roles,
             joinDate: new Date(),
           },
         ]);
 
-        // Do any additional logic or state updates after a successful assignment
       }
     } catch (error) {
       console.error('Error assigning employee:', error);
@@ -294,7 +293,7 @@ console.log("Employee List:", ListEmployee)
                 </Col>
 
                 <Col span={24}>
-                  <Form.Item label="Team Member" initialValue={ListEmployee}>
+                  <Form.Item label="Team Member">
                     {
                       editMode ? (
                         <Row gutter={24}>
@@ -305,7 +304,7 @@ console.log("Employee List:", ListEmployee)
                                 onChange={(value) => handleInputChange({ target: { name: "employeeId", value } })}
                                 style={{ maxWidth: "300px" }}
                               >
-                                {ListEmployee.map((member, index) => (
+                                {listEmployee.data.map((member, index) => (
                                   <Option key={index} value={member.id}>
                                     <Avatar
                                       src={member.avatar ?

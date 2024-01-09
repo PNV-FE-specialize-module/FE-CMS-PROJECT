@@ -26,6 +26,9 @@ export const useGetAllEmployee = () => {
 };
 
 
+
+
+
 export const useGetDetailEmployee = (id) => {
     return useQuery({
         queryKey: ["EMPLOYEE", id],
@@ -66,7 +69,7 @@ export const useUpdateEmployee = (id) => {
         (params) => updateEmployeeApi(id, params),
         {
             onSuccess: () => {
-                queryClient.invalidateQueries('employee');
+                queryClient.invalidateQueries('EMPLOYEE');
             },
         }
     );
@@ -82,13 +85,13 @@ export const useDeleteEmployee = () => {
     };
     return useMutation(deleteEmployee, {
         onSuccess: () => {
-            queryClient.invalidateQueries("employee");
+            queryClient.invalidateQueries("EMPLOYEE");
         },
     });
 };
 
 export const useGetManager = () =>
-    useQuery(["EMPLOYEE"], async () => {
+    useQuery(["EMPLOYEE_MANAGER"], async () => {
         const { data } = await getManager();
         return data;
     });
