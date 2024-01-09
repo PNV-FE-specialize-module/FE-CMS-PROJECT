@@ -1,30 +1,26 @@
-import {
-  CheckCircleOutlined,
-  FallOutlined,
-  ProjectOutlined,
-  RiseOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
-import { Card, Col, Row, Select, Space, Spin, Typography } from "antd";
+import { Card, Col, Row, Select, Space, Spin } from "antd";
 import React, { useState } from "react";
-import ReactApexChart from "react-apexcharts";
+import {CheckCircleOutlined, ProjectOutlined, UserOutlined,} from "@ant-design/icons";
 import "./Dashboard.css";
+import ReactApexChart from "react-apexcharts";
 import {useGetEmployeeTotal} from "../../../hooks/useEmployee.jsx";
 import {useGetProjectTotal} from "../../../hooks/useProject.jsx";
-const { Option } = Select;
+import {useTranslation} from "react-i18next";
 
+
+const { Option } = Select;
 const Dashboard = () => {
-  // const { t } = useTranslation();
-  const [selectedPeriod, setSelectedPeriod] = useState("year");
-  const handlePeriodChange = (value) => {
-    setSelectedPeriod(value);
+  const { t } = useTranslation();
+  const [selectedYear, setSelectedYear] = useState("year");
+  const handleYearChange = (value) => {
+    setSelectedYear(value);
   };
 
   const { data: employeeTotal } = useGetEmployeeTotal({
-    period: selectedPeriod,
+    period: selectedYear,
   });
   const { data: projectTotal } = useGetProjectTotal({
-    period: selectedPeriod,
+    period: selectedYear,
   });
 
   const { data: employeeCountJoin } = useGetEmployeeTotal({
@@ -47,14 +43,21 @@ const Dashboard = () => {
   console.log(projectTotal,'q')
 
 
+  const formattedDates = dates.map((date) => {
+    const formattedDate = new Date(date);
+    const year = formattedDate.getFullYear();
+    const month = (formattedDate.getMonth() + 1).toString().padStart(2, '0');
+    return `${year}-${month}`;
+  });
+
   const areaChartState = {
     series: [
       {
-        name: "PROJECT",
+        name: t('main.PROJECT'),
         data: formattedProjectData,
       },
       {
-        name: "EMPLOYEE",
+        name: t('main.EMPLOYEE'),
         data: formattedEmployeeData,
       },
     ],
@@ -77,15 +80,15 @@ const Dashboard = () => {
       },
       xaxis: {
         type: "datetime",
-        categories: dates,
+        categories: formattedDates,
       },
       tooltip: {
         x: {
-          format: "dd/MM/yy HH:mm",
+          format: "yyyy-MM",
         },
       },
       title: {
-        text: "CHART",
+        text: t('main.OVERVIEW'),
         align: "center",
       },
     },
@@ -94,74 +97,90 @@ const Dashboard = () => {
   const circleChartState = {
     series: [
       (projectTotal && projectTotal.donePercentage)
-          ? projectTotal.donePercentage
+          ? Math.round(projectTotal.donePercentage)
           : 0,
       (projectTotal && projectTotal.onProgressPercentage)
-          ? projectTotal.onProgressPercentage
+          ? Math.round(projectTotal.onProgressPercentage)
           : 0,
       (projectTotal && projectTotal.pendingPercentage)
-          ? projectTotal.pendingPercentage
+          ? Math.round(projectTotal.pendingPercentage)
           : 0,
     ],
     options: {
       chart: {
-        height: 350,
-        type: "radialBar",
+        height: 250,
+        type: "donut",
       },
       plotOptions: {
-        radialBar: {
+        pie: {
+          offsetX: 0,
+          offsetY: 0,
+          customScale: 1,
           dataLabels: {
-            name: {
-              fontSize: "22px",
-            },
-            value: {
-              fontSize: "16px",
-            },
-            total: {
+            offset: 0,
+            minAngleToShowLabel: 10,
+          },
+          donut: {
+            size: "70%",
+            background: "transparent",
+            labels: {
               show: true,
-              label: "TOTAL",
-              formatter: function () {
-                return projectTotal ? projectTotal.total : 0;
+              name: {
+                show: true,
+                fontSize: "22px",
+                fontFamily: undefined,
+                fontWeight: 600,
+                color: undefined,
+                offsetY: -10,
+              },
+              value: {
+                show: true,
+                fontSize: "16px",
+                fontFamily: undefined,
+                fontWeight: 400,
+                color: undefined,
+                offsetY: 16,
+                formatter: function (val) {
+                  return val;
+                },
+              },
+              total: {
+                show: true,
+                label: t('main.TOTAL'),
+                formatter: function () {
+                  return projectTotal ? projectTotal.total : 0;
+                },
               },
             },
           },
         },
       },
-      labels: ["DONE", "ON PROGRESS", "PENDING"],
+      labels: [t('main.Done'), t('main.Onprogress'), t('main.Pending')],
       title: {
-        text: "Current project",
+        text: t('main.PROJECT'),
         align: "center",
       },
+
     },
   };
 
-
-  // const isPositiveProjectPercentageChange =
-  //     projectTotal?.percentageProjectChange > 0;
-  // const isPositiveEmployeePercentageChange =
-  //     employeeTotal?.percentageChange > 0;
-  // const isPositiveProjectDonePercentageChange =
-  //     projectTotal?.percentageDoneChange > 0;
-
-  // const breadcrumbItems = [{ key: "dashboard" }];
 
   return (
       <>
         {projectTotal ? (
             <div style={{ marginLeft: 20 }}>
-              {/*<Breadcrumb items={breadcrumbItems} />*/}
               <Row justify="end">
                 <Select
-                    defaultValue={selectedPeriod}
-                    onChange={handlePeriodChange}
+                    defaultValue={selectedYear}
+                    onChange={handleYearChange}
                     style={{ width: 120, marginRight: 10, marginBottom: 10 }}
                 >
-                  <Option value="year">{"YEAR"}</Option>
-                  <Option value="month">{"MONTH"}</Option>
+                  <Option value="year"> {t("main.YEAR")}</Option>
+                  <Option value="month"> {t("main.MONTH")}</Option>
                 </Select>
               </Row>
 
-              <Row gutter={10} style={{ marginBottom: 20 }}>
+              <Row gutter={10} style={{ marginBottom: 20 }} className="tablet-layout">
                 <Col span={8} className="chart-items">
                   <Space direction="horizontal">
                     <Card
@@ -184,7 +203,7 @@ const Dashboard = () => {
                         <div className="card-infor">
                           <h1>{projectTotal?.total}</h1>
                           <strong style={{ color: "#383838" }}>
-                            {"PROJECT"}
+                            {t("main.PROJECT")}
                           </strong>
                         </div>
                       </div>
@@ -214,7 +233,7 @@ const Dashboard = () => {
                         <div className="card-infor">
                           <h1>{employeeTotal?.total}</h1>
                           <strong style={{ color: "#383838" }}>
-                            {"EMPLOYEE"}
+                            {t("main.EMPLOYEE")}
                           </strong>
                         </div>
 
@@ -245,54 +264,37 @@ const Dashboard = () => {
                         <div className="card-infor">
                           <h1>{projectTotal?.currentDoneCount}</h1>
                           <strong style={{ color: "#383838" }}>
-                            DONE PROJECT
+                            {t("main.DONE PROJECT")}
                           </strong>
                         </div>
-                        {/*<Space*/}
-                        {/*    direction="horizontal"*/}
-                        {/*    style={{*/}
-                        {/*      background: "rgba(255, 255, 255, 0.3)",*/}
-                        {/*      borderRadius: 15,*/}
-                        {/*      padding: 5,*/}
-                        {/*      marginBottom: 20,*/}
-                        {/*      border: "1px solid white",*/}
-                        {/*    }}*/}
-                        {/*>*/}
-                        {/*  {isPositiveProjectDonePercentageChange ? (*/}
-                        {/*      <RiseOutlined style={{ color: "green" }} />*/}
-                        {/*  ) : (*/}
-                        {/*      <FallOutlined style={{ color: "red" }} />*/}
-                        {/*  )}*/}
-                        {/*  <h5>{projectTotal?.percentageDoneChange}%</h5>*/}
-                        {/*</Space>*/}
                       </div>
                     </Card>
                   </Space>
                 </Col>
               </Row>
 
-              <Row gutter={10}>
+              <Row gutter={10} className="tablet-layout">
                 <Col span={8}>
                   <div id="circleChart">
                     <ReactApexChart
                         options={circleChartState.options}
                         series={circleChartState.series}
-                        type="radialBar"
-                        height={350}
+                        type="donut"
+                        height={400}
                     />
                   </div>
                 </Col>
 
-                {/*<Col span={16}>*/}
-                {/*  <div id="chart">*/}
-                {/*    <ReactApexChart*/}
-                {/*        options={areaChartState.options}*/}
-                {/*        series={areaChartState.series}*/}
-                {/*        type="area"*/}
-                {/*        height={370}*/}
-                {/*    />*/}
-                {/*  </div>*/}
-                {/*</Col>*/}
+                <Col span={16}>
+                  <div id="chartArea">
+                    <ReactApexChart
+                        options={areaChartState.options}
+                        series={areaChartState.series}
+                        type="area"
+                        height={350}
+                    />
+                  </div>
+                </Col>
               </Row>
             </div>
         ) : (

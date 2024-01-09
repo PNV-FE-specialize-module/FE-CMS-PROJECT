@@ -1,7 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
-import { getDetailProject, getprojects } from "../api/Project";
 import {getTotalEmployee} from "../api/EmployeeApi.js";
 import {getTotalProject} from "../api/ProjectApi.js";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import { getDetailProject, getprojects, updateProjectApi } from "../api/Project";
+
+// import {getTotalEmployee} from "../api/EmployeeApi.js";
 
 export const useGetProject = () => {
     return useQuery({
@@ -33,6 +35,20 @@ export const useGetDetaiProject = (id) => {
     });
 };
 
+export const useUpdateProject = (id) => {
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation(
+        (params) => updateProjectApi(id, params),
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries('project');
+            },
+        }
+    );
+
+    return mutation;
+};
 export const useGetProjectTotal = (params) =>
     useQuery(["PROJECT_TOTAL", params.period], async () => {
         const { data } = await getTotalProject(params);
