@@ -10,6 +10,8 @@ export const getTotalProject = async () =>{
     return await baseAxios.get(`${ENDPOINT}/total`)
 }
 
+export const deleteProjectApi =  async (projectId) => await baseAxios.delete(`${ENDPOINT}/${projectId}`)
+
 export default {
     postAddProject,
     getTotalProject

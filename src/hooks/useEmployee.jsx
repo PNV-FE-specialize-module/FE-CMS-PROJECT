@@ -8,6 +8,7 @@ import {
 } from "../api/EmployeeApi.js";
 import { useNavigate } from "react-router";
 import { useTranslation } from 'react-i18next';
+import Swal from "sweetalert2";
 
 
 export const useGetAllEmployee = () => {
@@ -44,7 +45,6 @@ export const useGetDetailEmployee = (id) => {
 };
 
 export const useCreateEmployee = () => {
-    const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const mutation = useMutation(
@@ -63,7 +63,6 @@ export const useCreateEmployee = () => {
 };
 
 export const useUpdateEmployee = (id) => {
-    const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
 
     const mutation = useMutation(
@@ -79,9 +78,7 @@ export const useUpdateEmployee = (id) => {
 };
 
 export const useDeleteEmployee = () => {
-    const { t, i18n } = useTranslation();
-    const queryClient = useQueryClient();
-
+    const navigate = useNavigate()
     const deleteEmployee = async (employeeId) => await deleteEmployeeApi(employeeId)
 
     return useMutation(deleteEmployee, {
@@ -95,6 +92,7 @@ export const useDeleteEmployee = () => {
                     timer: 1000,
                     showConfirmButton: false
                 })
+                navigate('/listemployee')
             }
             else{
                 Swal.fire({
