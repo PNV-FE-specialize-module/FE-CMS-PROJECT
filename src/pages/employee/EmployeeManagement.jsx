@@ -1,64 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {Space, Table, Avatar, Input, Button,Tag, Modal, Flex} from 'antd';
-import {DeleteOutlined, EyeOutlined, PlusOutlined, SearchOutlined} from '@ant-design/icons';
+import {Space, Table, Avatar, Input, Button, Flex} from 'antd';
+import { EyeOutlined, PlusOutlined, SearchOutlined} from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import axios from 'axios';
 import "../../style/EmployeeManagement.css";
 import {Link} from "react-router-dom";
-import {useDeleteEmployee} from "../../hooks/useEmployee.jsx";
-import Swal from "sweetalert2";
-import {useNavigate} from "react-router";
 
 
 const ShowEmployees = () => {
-    const navigate = useNavigate();
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
-    const { mutate: deleteEmployee } = useDeleteEmployee();
 
-    const handleDeleteConfirm = (record) => {
-        Swal.fire({
-            title: 'Confirmation',
-            text: 'Are you sure you want to delete this employee?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Delete',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                deleteEmployee(record.key)
-                    .then(() => {
-                        Swal.fire({
-                            title: 'Success',
-                            text: 'Employee deleted successfully.',
-                            icon: 'success',
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
-                        // Fetch the updated employee list
-                        axios.get('http://localhost:3000/employee')
-                            .then(response => {
-                                setEmployees(response.data.data);
-                            })
-                            .catch(error => {
-                                console.error('Error fetching employee data:', error);
-                            });
-                    })
-                    .catch(() => {
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'Failed to delete employee.',
-                            icon: 'error',
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
-                    });
-            }
-        });
-    };
+  
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
@@ -166,7 +120,6 @@ const ShowEmployees = () => {
     const [filteredInfo, setFilteredInfo] = useState({});
     const [sortedInfo, setSortedInfo] = useState({});
     const handleChange = (pagination, filters, sorter) => {
-        console.log('Various parameters', pagination, filters, sorter);
         setFilteredInfo(filters);
         setSortedInfo(sorter);
     };
@@ -228,9 +181,22 @@ const ShowEmployees = () => {
             ))}
             </Flex>
             {!showAllLangFrames && langFrames.length > 2 && (
-              <span style={{ color: '#1d39c4', cursor: 'pointer', padding: '7px' }} onMouseOver={handleLangFrameHover}>
-                +
-              </span>
+               <span
+               style={{
+               display: 'flex', 
+               justifyContent: 'center', 
+               alignItems: 'center',
+               width: '20px',
+               height: '20px',
+               color: '#1d39c4',
+               cursor: 'pointer',
+               border: '1px solid #1d39c4',
+               borderRadius: '50%',
+               }}
+               onMouseOver={handleLangFrameHover}
+           >
+               +
+           </span>
             )}
           </>
         );
@@ -254,10 +220,23 @@ const ShowEmployees = () => {
               ))}
               </Flex>
               {!showAllTechs && techs.length > 2 && (
-                <span style={{ color: '#1d39c4', cursor: 'pointer', padding: '7px' }} onMouseOver={handleTechHover}>
-                  +
+                <span
+                    style={{
+                    display: 'inline-flex', 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                    width: '18px',
+                    height: '18px',
+                    color: '#1d39c4',
+                    cursor: 'pointer',
+                    border: '1px solid #1d39c4',
+                    borderRadius: '50%',
+                    }}
+                    onMouseOver={handleTechHover}
+                >
+                    +
                 </span>
-              )}
+                )}
             </>
           );
         };
@@ -312,7 +291,7 @@ const ShowEmployees = () => {
                 </>
               );
             },
-            width: 250,
+            width: 220,
           },
           
         {
@@ -350,7 +329,7 @@ const ShowEmployees = () => {
             render: (position) => (
                 <span>{getPositionTitle(position)}</span>
             ),
-            width: 150,
+            width: 100,
           },
         {
             title: 'Manager',
@@ -359,7 +338,7 @@ const ShowEmployees = () => {
             render: (manager) => (
               <span>{manager ? manager.name : 'N/A'}</span>
             ),
-            width: 150,
+            width: 120,
           },         
         {
             title: 'Status',
@@ -382,26 +361,36 @@ const ShowEmployees = () => {
           {status}
         </span>
             ),
-            with:100,
+            with:150,
         },
 
+        {
+            title: 'Action',
+            key: 'action',
+            render: (_, record) => (
+                <Space size="middle">
+                    <Link to={`/employee/${record.key}`} className="text-edit">
+                        <EyeOutlined />
+                    </Link>
+
+                </Space>
+            ),
+            with:50,
+        },
     ];
     const getPositionTitle = (position) => {
         const positionMap = {
-          be: 'Back-end',
-          fe: 'Front-end',
-          fullstack: 'Full-stack',
-          devops:'DevOps',
-          ba:'Business Analysis',
-          qa:'Quality Assurance'
+            be: 'Back-end',
+            fe: 'Front-end',
+            fullstack: 'Full-stack',
+            devops: 'DevOps',
+            ba: 'Business Analysis',
+            qa: 'Quality Assurance'
         };
-      
+    
         return positionMap[position] || 'N/A';
-      };
-    const handleTableChange = (pagination) => {
-        setPagination(pagination);
     };
-
+    
 
     const employeesWithStatus = employees.map(employee => ({
         key: employee.id,
