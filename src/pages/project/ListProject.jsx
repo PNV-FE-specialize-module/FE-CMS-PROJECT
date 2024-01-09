@@ -1,28 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import {Table, Spin, Alert, Space, Tag, Button} from 'antd';
-import {
-  EyeOutlined,
-  DeleteOutlined, PlusOutlined
-} from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import { checkProjectStatus, getStatusColor } from '../../components/enum/enum';
 import { useGetProject } from '../../hooks/useProject';
-import { Link } from 'react-router-dom';
 import AddProject from './components/AddProject';
 import { useTranslation} from 'react-i18next';
+import { useNavigate } from 'react-router';
 
 const ListProject = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { data: projects, isLoading, isError, error } = useGetProject();
   const { t, i18n } = useTranslation();
-
-  // const [listProject, setListProject]=useState()
+  const navigate = useNavigate()
   const showModal = () => {
     setIsModalVisible(true);
   };
   
-  // useEffect(()=>{
-  //   projects && setListProject(projects.data)
-  // },[])
 
   const columns = [
     {
@@ -84,18 +77,6 @@ const ListProject = () => {
       render: (text) => new Date(text).toLocaleDateString('en-US'),
 
     },
-    {
-      title: t('main.Action'),
-      key: 'action',
-      render: (_, record) => (
-        <Space size="middle">
-          <Link to={`/project/${record.id}`}>
-            <EyeOutlined />
-          </Link>
-          <DeleteOutlined />
-        </Space>
-      ),
-    },
   ];
 
   return (
@@ -114,7 +95,14 @@ const ListProject = () => {
                     </Button>
                     <AddProject isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} data={projects.data}/>
                   <Table columns={columns} 
-                  // dataSource={listProject} 
+                  onRow={(record, rowIndex) => {
+                    console.log(record);
+                    return {
+                        onClick: (event) => {
+                            navigate(`/project/${record.id}`);
+                        },
+                    };
+                }} 
                   dataSource={projects.data}
                   rowKey={(record) => record.id} />
                 </>
