@@ -32,18 +32,18 @@ const ListProject = () => {
       render: (text) => <a>{text}</a>,
     },
     {
-      title: 'Description',
+      title: t('main.Description'),
       dataIndex: 'description',
       key: 'description',
     },
     {
-      title: 'Manager Project',
+      title: t('main.Manager Project'),
       dataIndex: 'managerProject',
       key: 'managerProject',
       render: (managerProject) => managerProject.name,
     },
     {
-      title: 'Technology',
+      title: t('main.Technology'),
       key: 'technology',
       dataIndex: 'technology',
       render: (text, record) => (
@@ -63,7 +63,7 @@ const ListProject = () => {
       ),
     },
     {
-      title: 'Status',
+      title: t('main.Status'),
       dataIndex: 'status',
       key: 'status',
       render: (text, record) => {
@@ -72,20 +72,20 @@ const ListProject = () => {
       },
     },
     {
-      title: 'Start Date',
+      title: t('main.Start Date'),
       dataIndex: 'startDate',
       key: 'startDate',
       render: (text) => new Date(text).toLocaleDateString('en-US'),
     },
     {
-      title: 'End Date',
+      title: t('main.End Date'),
       dataIndex: 'endDate',
       key: 'endDate',
       render: (text) => new Date(text).toLocaleDateString('en-US'),
 
     },
     {
-      title: 'Action',
+      title: t('main.Action'),
       key: 'action',
       render: (_, record) => (
         <Space size="middle">
@@ -99,7 +99,7 @@ const ListProject = () => {
   ];
 
   return (
-      <Spin spinning={isLoading} tip="Loading...">
+      <Spin spinning={isLoading} tip={t('main.Loading...')}>
         {isError && <Alert message={error.message} type="error" />}
         {projects && projects.data ? (
             Array.isArray(projects.data) && projects.data.length > 0 ? (
@@ -110,7 +110,7 @@ const ListProject = () => {
                         style={{ float: 'right', margin: '10px' }}
                         onClick={showModal}
                     >
-                      Add Project
+                      {t('main.Add Project')}
                     </Button>
                     <AddProject isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} data={projects.data}/>
                   <Table columns={columns} 
@@ -119,10 +119,10 @@ const ListProject = () => {
                   rowKey={(record) => record.id} />
                 </>
             ) : (
-                <p>No data to display</p>
+                <p>{t('main.No data to display')}</p>
             )
         ) : (
-            <p>Loading...</p>
+            <p>{t('main.Loading...')}</p>
         )}
       </Spin>
   );

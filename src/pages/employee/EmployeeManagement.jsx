@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {Space, Table, Avatar, Input, Button, Flex} from 'antd';
-import { EyeOutlined, PlusOutlined, SearchOutlined} from '@ant-design/icons';
+import {PlusOutlined, SearchOutlined} from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import axios from 'axios';
 import "../../style/EmployeeManagement.css";
-import {Link, useNavigate} from "react-router-dom";
+import {Link} from "react-router-dom";
+import {useNavigate} from "react-router";
+import { useTranslation} from 'react-i18next';
+
 
 
 const ShowEmployees = () => {
@@ -12,7 +15,7 @@ const ShowEmployees = () => {
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
     const navigate= useNavigate()
-  
+    const { t, i18n } = useTranslation();
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
@@ -52,7 +55,7 @@ const ShowEmployees = () => {
                             width: 90,
                         }}
                     >
-                        Search
+                        {t("main.Search")}
                     </Button>
                     <Button
                         onClick={() => clearFilters && handleReset(clearFilters)}
@@ -61,7 +64,7 @@ const ShowEmployees = () => {
                             width: 90,
                         }}
                     >
-                        Reset
+                        {t("main.Reset")}
                     </Button>
                     <Button
                         type="link"
@@ -74,7 +77,7 @@ const ShowEmployees = () => {
                             setSearchedColumn(dataIndex);
                         }}
                     >
-                        Filter
+                        {t("main.Filter")}
                     </Button>
                     <Button
                         type="link"
@@ -83,7 +86,7 @@ const ShowEmployees = () => {
                             close();
                         }}
                     >
-                        close
+                        {t("main.Close")}
                     </Button>
                 </Space>
             </div>
@@ -138,7 +141,7 @@ const ShowEmployees = () => {
                 console.log(8289, response.data.data);
             })
             .catch(error => {
-                console.error('Error fetching employee data:', error);
+                console.error(t('main.Error fetching employee data:'), error);
             });
     }, []);
 
@@ -217,14 +220,14 @@ const ShowEmployees = () => {
       
     const columns = [
         {
-            title: 'Avatar',
+            title: t('main.Avatar'),
             dataIndex: 'avatar',
             key: 'avatar',
             render: (avatar) => <Avatar src={avatar} />,
             width: 80, 
         },
         {
-            title: 'Name',
+            title: t('main.Name'),
             dataIndex: 'name',
             key: 'name',
             ...getColumnSearchProps('name'),
@@ -234,21 +237,21 @@ const ShowEmployees = () => {
             width: 120, 
         },
         {
-            title: 'LangFrame',
+            title: t('main.LangFrame'),
             dataIndex: 'langFrame',
             key: 'langFrame',
             render: renderLangFrames,
             width: 200,
           },
           {
-            title: 'Technical',
+            title: t('main.Technology'),
             dataIndex: 'tech',
             key: 'tech',
             render: renderTechs,
             width: 180,
           },      
           {
-            title: 'Project',
+            title: t('main.Project'),
             dataIndex: 'employee_project',
             key: 'employee_project',
             render: (text, record) => {
@@ -269,7 +272,7 @@ const ShowEmployees = () => {
           },
           
         {
-            title: 'Position',
+            title: t('main.Position'),
             dataIndex: 'position',
             key: 'position',
             filters: [
@@ -306,7 +309,7 @@ const ShowEmployees = () => {
             width: 150,
           },
         {
-            title: 'Manager',
+            title: t('main.Manager'),
             dataIndex: 'manager',
             key: 'manager',
             render: (manager) => (
@@ -315,16 +318,16 @@ const ShowEmployees = () => {
             width: 150,
           },         
         {
-            title: 'Status',
+            title: t('main.Status'),
             dataIndex: 'status',
             key: 'status',
             filters: [
                 {
-                    text: 'Active',
+                    text: t('main.Active'),
                     value: 'active',
                 },
                 {
-                    text: 'Inactive',
+                    text: t('main.Inactive'),
                     value: 'inactive',
                 },
             ],
@@ -350,10 +353,6 @@ const ShowEmployees = () => {
       
         return positionMap[position] || 'N/A';
       };
-    const handleTableChange = (pagination) => {
-        setPagination(pagination);
-    };
-        
 
     // const handleTableChange = (pagination) => {
     //     setPagination(pagination);
@@ -382,7 +381,7 @@ const ShowEmployees = () => {
                     style={{ float: 'right', margin: '10px' }}
                     onClick={() => navigate("listEmployee/addEmployee")}
                 >
-                    Add Project
+                    {t("main.Add Employee")}
                 </Button>
             </Link>
             <Table

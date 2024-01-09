@@ -12,28 +12,34 @@ import "./style/App.css";
 import { useAuth } from "./components/auth/AuthContext";
 import { LayoutDashboard } from "./components/common/Layout";
 import { Suspense } from 'react';
-import { useTranslation} from 'react-i18next';
-
+import { useTranslation } from 'react-i18next';
 
 function PrivateRoute({ children }) {
   const { isLogin } = useAuth();
   return isLogin ? <>{children}</> : <Navigate to="/login" />;
 }
+
 function App() {
+  const { t, i18n } = useTranslation(); 
+
   return (
     <Router>
       <Routes>
         <Route path="/resetPwd" element={<ResetPwd />} />
         <Route path="/login" element={<Login />} />
-        {
-          AppRoutes.map((route, index) => (
-            <Route
-              key={index}
-              path={route.path}
-              element={<PrivateRoute><LayoutDashboard pageTitle={route.title}>{route.element}</LayoutDashboard></PrivateRoute>}
-            />
-          ))
-        }
+        {AppRoutes().map((route, index) => (
+          <Route
+            key={index}
+            path={route.path}
+            element={
+              <PrivateRoute>
+                <LayoutDashboard pageTitle={t(route.title)}>
+                  {route.element}
+                </LayoutDashboard>
+              </PrivateRoute>
+            }
+          />
+        ))}
       </Routes>
     </Router>
   );
@@ -41,10 +47,10 @@ function App() {
 
 export default App;
 
-export  function WrappedApp() {
+export function WrappedApp() {
   return (
     <Suspense fallback="...loading">
       <App />
     </Suspense>
-  )
+  );
 }

@@ -11,6 +11,8 @@ import { Divider } from "antd";
 import { useNavigate } from "react-router";
 import {useCreateEmployee, useGetManager} from "../../../hooks/useEmployee.jsx";
 const { useForm } = Form;
+import { useTranslation} from 'react-i18next';
+
 
 const CreateEmployee = () => {
     const [formCreate] = useForm();
@@ -38,16 +40,18 @@ const CreateEmployee = () => {
     const [newTechs, setNewTechs] = useState([]);
     const [newTech, setNewTech] = useState("");
     const [newTechExperience, setNewTechExperience] = useState("");
+    const { t, i18n } = useTranslation();
+
 
 
     const skills = [
         {
-            title: "SOFT SKILL",
+            title: t("main.Soft skill"),
             dataIndex: "name",
             key: "name",
         },
         {
-            title: "EXPERIENCE",
+            title: t("main.Experience"),
             dataIndex: "exp",
             key: "exp",
         },
@@ -55,12 +59,12 @@ const CreateEmployee = () => {
 
     const langFrames = [
         {
-            title: "LANG FRAME",
+            title: t("main.LangFrame"),
             dataIndex: "name",
             key: "name",
         },
         {
-            title: "EXPERIENCE",
+            title: t("main.Experience"),
             dataIndex: "exp",
             key: "exp",
         },
@@ -68,12 +72,12 @@ const CreateEmployee = () => {
 
     const techs = [
         {
-            title: "TECHNOLOGY NAME",
+            title: t("main.Technology"),
             dataIndex: "name",
             key: "name",
         },
         {
-            title: "EXPERIENCE",
+            title: t("main.Experience"),
             dataIndex: "exp",
             key: "exp",
         },
@@ -91,13 +95,13 @@ const CreateEmployee = () => {
 
     const addToSkills = () => {
         if (!newSkill || !newExperience) {
-            message.error("ERROR SKILL");
+            message.error(t("main.Error skill"));
             return;
         }
         const existingSkill = newSkills.find((skill) => skill.name === newSkill);
 
         if (existingSkill) {
-            message.error("EXIST SKILL");
+            message.error(t("main.Exist skill"));
             return;
         }
         const newEntry = {
@@ -114,7 +118,7 @@ const CreateEmployee = () => {
     };
     const addToLangFrame = () => {
         if (!newLangFrame || !newLangExperience) {
-            message.error("ERROR LANGUAGE");
+            message.error(t("main.Error Language"));
             return;
         }
         const existingLangFrame = newLangFrames.find(
@@ -122,7 +126,7 @@ const CreateEmployee = () => {
         );
 
         if (existingLangFrame) {
-            message.error("EXIST LANGUAGE");
+            message.error(t("main.Exist Language"));
             return;
         }
         const newLangEntry = {
@@ -145,13 +149,13 @@ const CreateEmployee = () => {
     //Technology
     const addToTech = () => {
         if (!newTech || !newTechExperience) {
-            message.error("ERROR TECH");
+            message.error(t("main.Error Tech"));
             return;
         }
         const existingTech = newTechs.find((tech) => tech.name === newTech);
 
         if (existingTech) {
-            message.error("EXIST TECHNOLOGY");
+            message.error(t("main.Exist Technology"));
             return;
         }
         const newTechEntry = {
@@ -170,14 +174,14 @@ const CreateEmployee = () => {
         "https://res.cloudinary.com/da9hiv52w/image/upload/v1704559896/xljfi1wpvhfabwihemgr.png";
 
     const handleChange = (info) => {
-        if (info.file.status === "uploading") {
+        if (info.file.status === t("main.uploading")) {
             setLoading(true);
             return;
         }
-        if (info.file.status === "done") {
+        if (info.file.status === t("main.done")) {
             setImageUrl(info.file.response.secure_url);
             setNewAvatar(info.file.response.secure_url);
-            message.success(`uploaded successfully`);
+            message.success(t(`main.uploaded successfully`));
             setLoading(false);
         } else {
             setImageUrl(defaultImageUrl);
@@ -201,23 +205,23 @@ const CreateEmployee = () => {
             });
             Swal.fire({
                 icon: 'success',
-                title: 'Employee Created Successfully!',
+                title: t('main.Employee Created Successfully!'),
                 showConfirmButton: false,
                 timer: 1500, // Optional: You can customize the time the success message stays visible
             });
 
         } catch (error) {
-            message.error("ERROR EMPLOYEE");
+            message.error(t("main.Error Employee"));
         }
     };
 
     useEffect(() => {
-        formCreate.setFields([{ name: "email", errors: [] }]);
+        formCreate.setFields([{ name: t("main.Email"), errors: [] }]);
 
         if (isError) {
             formCreate.setFields([
                 {
-                    name: "email",
+                    name: t("main.Email"),
                     errors: [error.response.data.message],
                 },
             ]);
@@ -293,7 +297,7 @@ const CreateEmployee = () => {
                     <Col md={24} lg={8}>
                         <Form.Item
                             name="code"
-                            label="CODE"
+                            label={t("main.Code")}
                             style={{ width: "100%" }}
                             required
                         >
@@ -302,9 +306,9 @@ const CreateEmployee = () => {
 
                         <Form.Item
                             name="name"
-                            label="NAME"
+                            label={t("main.Name")}
                             style={{ width: "100%" }}
-                            rules={[{ required: true, message: "NAME"}]}
+                            rules={[{ required: true, message: t("main.Name")}]}
                         >
                             <Input
                                 value={newName}
@@ -314,13 +318,13 @@ const CreateEmployee = () => {
 
                         <Form.Item
                             name="phone"
-                            label="PHONE"
+                            label={t("main.Phone")}
                             style={{ width: "100%" }}
                             rules={[
                                 {
                                     required: true,
                                     pattern: /^[0-9]{10}$/,
-                                    message: "PHONE",
+                                    message: t("main.Phone"),
                                 },
                             ]}
                         >
@@ -331,9 +335,9 @@ const CreateEmployee = () => {
                         </Form.Item>
                         <Form.Item
                             name="address"
-                            label="ADDRESS"
+                            label={t("main.Address")}
                             style={{ width: "100%" }}
-                            rules={[{ required: true, message: "ADDRESS" }]}
+                            rules={[{ required: true, message: t("main.Address")}]}
                         >
                             <Input
                                 value={newAddress}
@@ -342,26 +346,26 @@ const CreateEmployee = () => {
                         </Form.Item>
                         <Form.Item
                             name="status"
-                            label="STATUS"
+                            label={t("main.Status")}
                             style={{ width: "100%" }}
-                            rules={[{ required: true, message: "STATUS" }]}
+                            rules={[{ required: true, message: t("main.Status") }]}
                         >
                             <Select
                                 value={newStatus}
                                 onChange={(value) => setNewStatus(value)}
                             >
                                 <Select.Option value="inactive">
-                                    {"INACTIVE"}
+                                    {t("main.Inative")}
                                 </Select.Option>
-                                <Select.Option value="active">{"ACTIVE"}</Select.Option>
+                                <Select.Option value="active">{t("main.Active")}</Select.Option>
                             </Select>
                         </Form.Item>
 
                         <Form.Item
                             name="position"
-                            label="POSITION"
+                            label={t("main.Position")}
                             style={{ width: "100%" }}
-                            rules={[{ required: true, message: "POSITION" }]}
+                            rules={[{ required: true, message: t("main.Position")}]}
                         >
                             <Select
                                 value={newPosition}
@@ -378,30 +382,30 @@ const CreateEmployee = () => {
                         </Form.Item>
                         <Form.Item
                             name="joinDate"
-                            label="JOIN DATE"
-                            rules={[{ required: true, message: "JOINDATE" }]}
+                            label={t("main.Join Date")}
+                            rules={[{ required: true, message: t("main.Join Date") }]}
                         >
                             <DatePicker
                                 style={{ width: "100%" }}
                                 value={moment(newJoinDate)}
-                                placeholder="SELECT JOINDATE"
+                                placeholder={t("main.Select Join Date")}
                                 onChange={(e) => {
-                                    setNewJoinDate(e ? e.format("DD/MM/YYYY") : null);
+                                    setNewJoinDate(e ? e.format(t("main.DD/MM/YYYY")) : null);
                                 }}
-                                format="DD/MM/YYYY"
+                                format={t("main.DD/MM/YYYY")}
                             />
                         </Form.Item>
                     </Col>
                     <Col md={24} lg={8}>
                         <Form.Item
                             name="email"
-                            label="EMAIL"
+                            label={t("main.Email")}
                             style={{ width: "100%" }}
                             rules={[
-                                { required: true, message: "EMAIL" },
+                                { required: true, message: t("main.Email") },
                                 {
                                     type: "email",
-                                    message: "VALIDEMAIL",
+                                    message: t("main.Valid Email"),
                                 },
                             ]}
                         >
@@ -412,23 +416,23 @@ const CreateEmployee = () => {
                         </Form.Item>
                         <Form.Item
                             name="dateOfBirth"
-                            label=" DATE OF BIRTH"
+                            label={t("main.Date of birth")}
                             style={{ width: "100%" }}
                             rules={[
                                 {
                                     required: true,
-                                    message: "Date of birth",
+                                    message: t("main.Date of birth"),
                                 },
                             ]}
                         >
                             <DatePicker
                                 style={{ width: "100%" }}
                                 value={moment(newDob)}
-                                placeholder={"SELECT DATE OF BIRTH"}
+                                placeholder={t("main.Select Date of birth")}
                                 onChange={(date) => {
-                                    setNewDob(date.format("DD/MM/YYYY"));
+                                    setNewDob(date.format(t("main.DD/MM/YYYY")));
                                 }}
-                                format="DD/MM/YYYY"
+                                format={t("main.DD/MM/YYYY")}
                                 disabledDate={(current) => {
                                     return current && current > moment().endOf("day");
                                 }}
@@ -436,13 +440,13 @@ const CreateEmployee = () => {
                         </Form.Item>
                         <Form.Item
                             name="identityCard"
-                            label="IDENTITY"
+                            label={t("main.Identity")}
                             style={{ width: "100%" }}
                             rules={[
                                 {
                                     required: true,
                                     pattern: /^[0-9]{9,12}$/,
-                                    message: "IDENTITY",
+                                    message: t("main.Identity"),
                                 },
                             ]}
                         >
@@ -454,27 +458,27 @@ const CreateEmployee = () => {
 
                         <Form.Item
                             name="gender"
-                            label="GENDER"
+                            label={t("main.Gender")}
                             style={{ width: "100%" }}
-                            rules={[{ required: true, message: "GENDER" }]}
+                            rules={[{ required: true, message: t("main.Gender") }]}
                         >
                             <Select
                                 value={newGender}
                                 onChange={(value) => setNewGender(value)}
                             >
-                                <Select.Option value="male">{"MALE"}</Select.Option>
-                                <Select.Option value="female">{"FEMALE"}</Select.Option>
+                                <Select.Option value="male">{t("main.Male")}</Select.Option>
+                                <Select.Option value="female">{t("main.Female")}</Select.Option>
                             </Select>
                         </Form.Item>
                         <Form.Item
                             name="isManager"
-                            label="IS MANAGER"
+                            label={t("main.IsManager")}
                             style={{ width: "100%" }}
                             labelCol={{ span: 8 }}
                             rules={[
                                 {
                                     required: true,
-                                    message: "MANAGER",
+                                    message: t("main.IsManager"),
                                 },
                             ]}
                         >
@@ -483,11 +487,11 @@ const CreateEmployee = () => {
                                 onChange={(e) => setNewIsManager(e.target.value)}
                                 style={{marginBottom: "0px"}}
                             >
-                                <Radio value={true}>{"TRUE"}</Radio>
-                                <Radio value={false}>{"FALSE"}</Radio>
+                                <Radio value={true}>{t("main.True")}</Radio>
+                                <Radio value={false}>{t("main.False")}</Radio>
                             </Radio.Group>
                         </Form.Item>
-                        <Form.Item name="managerId" label="MANAGER">
+                        <Form.Item name="managerId" label={t("main.Manager")}>
                             <Select
                                 value={newManager.id}
                                 onChange={(value, option) =>
@@ -503,7 +507,7 @@ const CreateEmployee = () => {
                         </Form.Item>
                         <Form.Item
                             name="description"
-                            label="DESCRIPTION"
+                            label={t("main.Description")}
                             style={{ width: "100%" }}
                         >
                             <Input.TextArea
@@ -518,13 +522,13 @@ const CreateEmployee = () => {
                 <Row gutter={15} justify={"center"}>
                     <Col md={24} lg={8}>
                         <Form.Item
-                            label="LANG FRAME"
+                            label={t("main.LangFrame")}
                             style={{ padding: 0, margin: 0 }}
                         >
                             <Select
                                 value={newLangFrame}
                                 onChange={(value) => setNewLangFrame(value)}
-                                placeholder={"LANGUAGE"}
+                                placeholder={t("main.Language")}
                             >
                                 {[
                                     "HTML",
@@ -549,12 +553,12 @@ const CreateEmployee = () => {
                         </Form.Item>
 
                         <Form.Item
-                            label="EXPERIENCE"
+                            label={t("main.Experience")}
                             style={{ marginBottom: "8px" }}
                             rules={[
                                 {
                                     required: true,
-                                    message: "EXPERIENCE",
+                                    message:t("main.Experience"),
                                 },
                             ]}
                         >
@@ -562,7 +566,7 @@ const CreateEmployee = () => {
                                 value={newLangExperience}
                                 onChange={(value) => setNewLangExperience(value)}
                                 style={{ width: "100%" }}
-                                placeholder={"EXPERIENCE"}
+                                placeholder={t("main.Experience")}
                                 min={1}
                             />
                         </Form.Item>
@@ -590,7 +594,7 @@ const CreateEmployee = () => {
                                 columns={[
                                     ...langFrames,
                                     {
-                                        title: "ACTION",
+                                        title: t("main.Action"),
                                         width: 50,
                                         render: (record) => (
                                             <CloseCircleOutlined
@@ -611,13 +615,13 @@ const CreateEmployee = () => {
                 <Row gutter={15} justify={"center"}>
                     <Col md={24} lg={8}>
                         <Form.Item
-                            label="TECHNOLOGY"
+                            label= {t("main.Technology")}
                             style={{ padding: 0, margin: 0 }}
                         >
                             <Select
                                 value={newTech}
                                 onChange={(value) => setNewTech(value)}
-                                placeholder={"TECHNOLOGY"}
+                                placeholder={ t("main.Technology")}
                             >
                                 {[
                                     "Docker",
@@ -639,12 +643,12 @@ const CreateEmployee = () => {
                         </Form.Item>
 
                         <Form.Item
-                            label=".EXPERIENCE"
+                            label={t("main.Experience")}
                             style={{ marginBottom: "8px" }}
                             rules={[
                                 {
                                     required: true,
-                                    message: "EXPERIENCE",
+                                    message: t("main.Experience"),
                                 },
                             ]}
                         >
@@ -652,7 +656,7 @@ const CreateEmployee = () => {
                                 value={newTechExperience}
                                 onChange={(value) => setNewTechExperience(value)}
                                 style={{ width: "100%" }}
-                                placeholder={"EXPERIENCE"}
+                                placeholder={t("main.Experience")}
                                 min={1}
                             />
                         </Form.Item>
@@ -680,7 +684,7 @@ const CreateEmployee = () => {
                                 columns={[
                                     ...techs,
                                     {
-                                        title: "ACTION",
+                                        title: t("main.Action"),
                                         width: 50,
                                         render: (record) => (
                                             <CloseCircleOutlined
@@ -701,15 +705,15 @@ const CreateEmployee = () => {
                 <Row gutter={15} justify={"center"}>
                     <Col md={24} lg={8}>
                         <Form.Item
-                            label="SOFT SKILL"
+                            label={t("main.Soft skill")}
                             style={{ padding: 0, margin: 0 }}
                         >
                             <Select
                                 value={newSkill}
                                 onChange={(value) => setNewSkill(value)}
-                                placeholder={"SKILL"}
+                                placeholder={t("main.Skill")}
                             >
-                                {["Management", "Planning", "Team Work"].map((skill) => (
+                                {[t("main.Management"), t("main.Planning"), t("main.Team Work")].map((skill) => (
                                     <Select.Option key={skill} value={skill}>
                                         {skill}
                                     </Select.Option>
@@ -718,12 +722,12 @@ const CreateEmployee = () => {
                         </Form.Item>
 
                         <Form.Item
-                            label="EXPERIENCE"
+                            label={t("main.Experience")}
                             style={{ marginBottom: "8px" }}
                             rules={[
                                 {
                                     required: true,
-                                    message: "EXPERIENCE",
+                                    message: t("main.Experience"),
                                 },
                             ]}
                         >
@@ -731,7 +735,7 @@ const CreateEmployee = () => {
                                 value={newExperience}
                                 onChange={(value) => setNewExperience(value)}
                                 style={{ width: "100%" }}
-                                placeholder="EXPERIENCE"
+                                placeholder={t("main.Experience")}
                                 min={1}
                             />
                         </Form.Item>
@@ -759,7 +763,7 @@ const CreateEmployee = () => {
                                 columns={[
                                     ...skills,
                                     {
-                                        title: "ACTION",
+                                        title: t("main.Action"),
                                         width: 50,
                                         style: { whiteSpace: "nowrap" },
                                         render: (record) => (
@@ -786,7 +790,7 @@ const CreateEmployee = () => {
                                 }}
 
                             >
-                                Back
+                                {t("main.Back")}
                             </Button>
                             <Button
                                 style={{
@@ -797,7 +801,7 @@ const CreateEmployee = () => {
                                 type="primary"
                                 onClick={handleAdd}
                             >
-                                Save
+                                {t("main.Save")}
                             </Button>
                 </Row>
             </Form>

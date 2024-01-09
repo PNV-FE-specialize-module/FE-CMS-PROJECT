@@ -1,35 +1,40 @@
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
 import {
     addEmployeeApi,
     deleteEmployeeApi,
     getDetailEmployee, getManager, getTotalEmployee,
     updateEmployeeApi
 } from "../api/EmployeeApi.js";
+import { useTranslation } from 'react-i18next';
+
 import {useNavigate} from "react-router";
 import Swal from "sweetalert2";
 
 export const useGetDetailEmployee = (id) => {
+    const { t, i18n } = useTranslation();
     return useQuery({
-        queryKey: ["EMPLOYEE", id],
+        queryKey: [t("main.Employee"), id],
         queryFn: async () => {
             try {
                 const { data } = await getDetailEmployee(id);
                 return data;
             } catch (error) {
-                console.error("Error:", error);
+                console.error(t("main.Error:"), error);
                 throw error;
             }
         }
     });
 };
 export const useCreateEmployee = () => {
+    const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const mutation = useMutation(
         (newEmployee) => addEmployeeApi(newEmployee),
         {
             onSuccess: () => {
-                queryClient.invalidateQueries(["EMPLOYEE"]);
+                queryClient.invalidateQueries([t("main.Employee")]);
                 navigate("/listemployee")
 
             },
@@ -41,6 +46,7 @@ export const useCreateEmployee = () => {
 };
 
 export const useUpdateEmployee = (id) => {
+    const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
 
     const mutation = useMutation(
@@ -56,6 +62,7 @@ export const useUpdateEmployee = (id) => {
 };
 
 export const useDeleteEmployee = () => {
+    const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
 
     const deleteEmployee = async (employeeId) => await deleteEmployeeApi(employeeId)
@@ -84,14 +91,17 @@ export const useDeleteEmployee = () => {
         },
     });
 };
-export const useGetManager = () =>
-    useQuery(["EMPLOYEE"], async () => {
+export const useGetManager = () => {
+    const { t, i18n } = useTranslation();
+
+    return useQuery([t("main.Employee")], async () => {
         const { data } = await getManager();
         return data;
     });
+};
 
 export const useGetEmployeeTotal = (params) =>
-    useQuery(["EMPLOYEE_TOTAL", params.period], async () => {
+    useQuery([t("main.Employee Total"), params.period], async () => {
         const { data } = await getTotalEmployee(params);
         return data;
     });
