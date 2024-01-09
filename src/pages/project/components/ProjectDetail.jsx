@@ -11,6 +11,7 @@ import { PositionEnum, StatusProjectEnum, checkProjectStatus } from '../../../co
 import { useGetAllEmployee, useGetManager } from '../../../hooks/useEmployee';
 import dayjs from 'dayjs';
 import { useAssignEmployee } from '../../../hooks/useAssign';
+import { useTranslation} from 'react-i18next';
 
 
 const { TextArea } = Input;
@@ -22,6 +23,8 @@ export const ProjectDetail = () => {
 
   const { id } = useParams();
   const { data: project, isLoading, isError, error } = useGetDetaiProject(id);
+  const { t, i18n } = useTranslation();
+
 
   const { data: managers } = useGetManager();
 
@@ -41,11 +44,11 @@ export const ProjectDetail = () => {
 
 
   if (isLoading) {
-    return <Spin spinning={isLoading} tip="Loading..."></Spin>;
+    return <Spin spinning={isLoading} tip={t('main.Loading...')}></Spin>;
   }
 
   if (isError) {
-    return <div>Error loading project data: {error.message}</div>;
+    return <div>{t('main.Error loading project data:')} {error.message}</div>;
   }
 
   const {
@@ -215,16 +218,16 @@ export const ProjectDetail = () => {
 
   return (
     <Card>
-      <Spin spinning={isLoading} tip="Loading...">
+      <Spin spinning={isLoading} tip={t('main.Loading...')}>
         <Row gutter={32} align="middle" justify="center">
           <Col md={24} lg={16}>
             <Form layout="vertical" >
               <Typography.Title level={3} style={{ lineHeight: "30px" }}>
-                Project Infomation
+                {t('main.Project Infomation')}
               </Typography.Title>
               <Row gutter={16}>
                 <Col span={12}>
-                  <Form.Item label="Project Name" name="nameProject" initialValue={name}>
+                  <Form.Item label={t("main.Project Name")} name="nameProject" initialValue={name}>
                     {
                       editMode ? (<Input
                         style={{ maxWidth: "300px" }}
@@ -240,7 +243,7 @@ export const ProjectDetail = () => {
                       )}
                   </Form.Item>
 
-                  <Form.Item label="Status">
+                  <Form.Item label={t('main.Status')}>
                     {editMode ? (
                       <Select
                         value={editedProject.status}
@@ -262,7 +265,7 @@ export const ProjectDetail = () => {
                 </Col>
 
                 <Col span={12}>
-                  <Form.Item label="Manager Name" name="managername" initialValue={managerProject.name}>
+                  <Form.Item label={t("main.Manager Name")} name="managername" initialValue={managerProject.name}>
                     {editMode ? (
                       <Select
                         style={{ width: "300px" }}
@@ -293,7 +296,7 @@ export const ProjectDetail = () => {
                 </Col>
 
                 <Col span={24}>
-                  <Form.Item label="Team Member">
+                  <Form.Item label={t("main.Team Member")}>
                     {
                       editMode ? (
                         <Row gutter={24}>
@@ -319,7 +322,7 @@ export const ProjectDetail = () => {
                               </Select>
                             </Form.Item>
 
-                            <Form.Item label="Role">
+                            <Form.Item label={t("main.Role")}>
                               <Select
                                 style={{ maxWidth: "300px" }}
                                 onChange={(value) => handleInputChange({ target: { name: "roles", value } })}
@@ -411,7 +414,7 @@ export const ProjectDetail = () => {
                 </Col>
 
                 <Col span={12}>
-                  <Form.Item label="Start Date">
+                  <Form.Item label={t("main.Start Date")}>
                     {editMode ? (
                       <DatePicker
                         value={editedProject.startDate ? dayjs(editedProject.startDate) : null}
@@ -429,7 +432,7 @@ export const ProjectDetail = () => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="End Date">
+                  <Form.Item label={t("main.End Date")}>
                     {editMode ? (
                       <DatePicker
                         value={editedProject.endDate ? dayjs(editedProject.endDate) : null}
@@ -446,22 +449,9 @@ export const ProjectDetail = () => {
                     )}
                   </Form.Item>
                 </Col>
+              
                 <Col span={24}>
-                  <Form.Item label="Specification" name="specification" initialValue={specification}>
-                    {
-                      editMode ? (<Input
-                        style={{ maxWidth: "90%" }}
-                        value={editedProject.specification}
-                        name='specification'
-                        onChange={handleInputChange}
-                      />) : (
-                        <Input
-                          style={{ maxWidth: "90%" }} disabled />
-                      )}
-                  </Form.Item>
-                </Col>
-                <Col span={24}>
-                  <Form.Item label="Description" name="description" initialValue={description}>
+                  <Form.Item label={t("main.Description")} name="description" initialValue={description}>
                     {
                       editMode ? (
                         <TextArea
@@ -481,7 +471,7 @@ export const ProjectDetail = () => {
                 </Col>
 
                 <Col span={12}>
-                  <Form.Item label="Language/Framework">
+                  <Form.Item label={t("main.Language/Framework")}>
                     {editMode ? (
                       langFrame.map((item, index) => (
                         <div key={index} style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
@@ -526,7 +516,7 @@ export const ProjectDetail = () => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Technology">
+                  <Form.Item label={t("main.Technology")}>
                     {
                       editMode ? (
                         technology.map((item, index) => (
@@ -582,16 +572,16 @@ export const ProjectDetail = () => {
               <Col>
                 {editMode ? (
                   <Button type="primary" onClick={handleSaveClick} >
-                    Save
+                    {t("main.Save")}
                   </Button>
                 ) : (
                   <Button type="default" onClick={handleEditClick}>
-                    Edit
+                    {t("main.Edit")}
                   </Button>
                 )}
               </Col>
               <Col>
-                <Button type="primary">Delete</Button>
+                <Button type="primary">{t("main.Delete")}</Button>
               </Col>
             </Row>
           </Col>

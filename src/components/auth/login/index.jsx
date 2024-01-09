@@ -4,10 +4,15 @@ import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
+import { useTranslation} from 'react-i18next';
+
+
 
 const Login = () => {
   const [error, setError] = useState("");
   const { setIsLogin } = useAuth();
+  const { t, i18n } = useTranslation();
+
   const navigate= useNavigate()
 
   const onFinish = (values) => {
@@ -25,13 +30,13 @@ const Login = () => {
         navigate('/');
       })
       .catch((error) => {
-        console.error("Error logging in:", error.response.data.message);
+        console.error(t("main.Error logging in:"), error.response.data.message);
         setError(error.response.data.message);
       });
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+    console.error("Failed:", errorInfo);
   };
 
   return (
@@ -76,21 +81,21 @@ const Login = () => {
           autoComplete="off"
         >
           <Form.Item
-            label="Email"
+            label={t("main.Email")}
             name={"email"}
             rules={[
-              { required: true, message: "Email is required" },
-              { type: "email", message: "Email is invalid" },
+              { required: true, message: t("main.Email is required") },
+              { type: "email", message: t("main.Email is invalid") },
             ]}
             style={{ fontWeight: "500" }}
           >
-            <Input placeholder="Enter your email" style={{height:35}} />
+            <Input placeholder={t("main.Enter your email")} style={{height:35}} />
           </Form.Item>
           <Form.Item
             type="password"
-            label="Password"
+            label={t("main.Password")}
             name="password"
-            rules={[{ required: true, message: "Password is required" }]}
+            rules={[{ required: true, message: t("main.Password is required") }]}
             style={{ fontWeight: "500" }}
           >
             <Input.Password style={{height:35, minWidth: '100%'}}/>
@@ -98,11 +103,11 @@ const Login = () => {
           <Flex justify="space-between">
             <Form.Item name="remember" valuePropName="checked">
               <Checkbox style={{ fontWeight: "400" }}>
-                Keep me signed in
+               {t("main. Keep me signed in")}
               </Checkbox>
             </Form.Item>
             <FormItem>
-            <Link style={{ fontStyle: "italic", color: "#5D5FEF" }} to='/resetPwd'>Forgot Password?</Link>
+            <Link style={{ fontStyle: "italic", color: "#5D5FEF" }} to='/resetPwd'>{t("main.Forgot Password?")}</Link>
               {/* <a style={{ fontStyle: "italic", color: "#5D5FEF" }} >
                 Forgot Password?
               </a> */}
@@ -128,7 +133,7 @@ const Login = () => {
                 color: "#FFF",
               }}
             >
-              Login
+              {t("main.Login")}
             </Button>
           </Form.Item>
         </Form>
