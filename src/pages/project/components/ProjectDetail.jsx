@@ -4,28 +4,40 @@ import 'sweetalert2/dist/sweetalert2.css';
 import { useParams } from 'react-router-dom';
 import moment from 'moment';
 
-import { UserOutlined, PlusOutlined } from '@ant-design/icons';
+import { UserOutlined, PlusOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { useGetDetaiProject, useUpdateProject } from '../../../hooks/useProject';
 import { Row, Col, Button, Form, Input, Typography, Card, Spin, Select, Avatar, DatePicker, Table } from 'antd';
-import { StatusProjectEnum, checkProjectStatus } from '../../../components/enum/enum';
-import { useGetManager } from '../../../hooks/useEmployee';
+import { PositionEnum, StatusProjectEnum, checkProjectStatus } from '../../../components/enum/enum';
+import { useGetAllEmployee, useGetManager } from '../../../hooks/useEmployee';
 import dayjs from 'dayjs';
+import { useAssignEmployee } from '../../../hooks/useAssign';
 
 
 const { TextArea } = Input;
 const { Option } = Select;
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 
 export const ProjectDetail = () => {
+
   const { id } = useParams();
   const { data: project, isLoading, isError, error } = useGetDetaiProject(id);
   const { data: managers } = useGetManager();
+  const {data: ListEmployee } = useGetAllEmployee()
+
   const updateProject = useUpdateProject(id);
-
-
+  
+  
   const [editMode, setEditMode] = useState(false);
   const [editedProject, setEditedProject] = useState({});
+
+  const {mutate: assignEmployee} = useAssignEmployee();
+  const [addAssignEmployee, setAddssignEmployee] = useState({});
+
+
+console.log("Employee List:", ListEmployee)
+
+
 
   if (isLoading) {
     return <Spin spinning={isLoading} tip="Loading..."></Spin>;
@@ -49,7 +61,7 @@ export const ProjectDetail = () => {
   } = editMode ? editedProject : project?.project;
 
 
-
+  // console.log("Update: ",editedProject.roles)
 
   const handleEditClick = () => {
     setEditMode(!editMode);
@@ -139,7 +151,6 @@ export const ProjectDetail = () => {
   };
 
 
-  console.log("Update date", editedProject);
 
   const handleSaveClick = async () => {
     try {
@@ -166,19 +177,42 @@ export const ProjectDetail = () => {
   };
 
   const teamMember = [
-  
     {
       title: "NAME",
       dataIndex: "name",
       key: "name",
+      render: (text) => <a>{text}</a>,
     },
     {
       title: "ROLE",
-      dataIndex: "role",
-      key: "role"
+      dataIndex: "roles",
+      key: "roles",
     },
 
   ];
+
+
+  const handleAddAssignEmployee = async () => {
+    try {
+      // Validate if both employeeId and selectedRole are present before making the mutation
+      if (editedProject.employeeId) {
+        await assignEmployee([
+          {
+            employeeId: editedProject.employeeId,
+            projectId: editedProject.id, // Replace with the actual project ID
+            roles: editedProject.roles,
+            joinDate: new Date(),
+          },
+        ]);
+
+        // Do any additional logic or state updates after a successful assignment
+      }
+    } catch (error) {
+      console.error('Error assigning employee:', error);
+    }
+  };
+
+
 
   return (
     <Card>
@@ -248,11 +282,6 @@ export const ProjectDetail = () => {
                         ))}
                       </Select>
                     ) : (
-                      // <Input
-                      //   style={{ maxWidth: "300px" }}
-                      //   value={managerProject.name}
-                      //   disabled
-                      // />
                       <div>
                         <Avatar
                           src={managerProject.avatar ? <img src={managerProject.avatar} alt="avatar" size="large" /> : <UserOutlined />}
@@ -265,60 +294,84 @@ export const ProjectDetail = () => {
                 </Col>
 
                 <Col span={24}>
-                  <Form.Item label="Team Member" initialValue={employee_project}>
+                  <Form.Item label="Team Member" initialValue={ListEmployee}>
                     {
                       editMode ? (
                         <Row gutter={24}>
                           <Col span={12}>
                             <Form.Item>
                               <Select
-                                value={editedProject.employee_project}
-                                onChange={(value) => handleInputChange({ target: { name: "employee", value } })}
-                                placeholder="Team Member"
+                                value={editedProject.employee_project.id}
+                                onChange={(value) => handleInputChange({ target: { name: "employeeId", value } })}
                                 style={{ maxWidth: "300px" }}
                               >
-                                {employee_project.map((member, index) => (
+                                {ListEmployee.map((member, index) => (
                                   <Option key={index} value={member.id}>
                                     <Avatar
-                                      src={member.employee.avatar ?
-                                        <img src={member.employee.avatar} alt="avatar" sizes="small" /> : <UserOutlined />
+                                      src={member.avatar ?
+                                        <img src={member.avatar} alt="avatar" sizes="small" /> : <UserOutlined />
                                       }
                                     />
-                                    {member.employee.name}
+                                    <Text style={{ marginLeft: 10, textTransform: "capitalize" }}>
+                                      {member.name.toLowerCase()}
+                                    </Text>
                                   </Option>
                                 ))}
                               </Select>
                             </Form.Item>
+
                             <Form.Item label="Role">
                               <Select
-                                value={editedProject.status}
                                 style={{ maxWidth: "300px" }}
-                                onChange={(value) => handleInputChange({ target: { name: "status", value } })}
+                                onChange={(value) => handleInputChange({ target: { name: "roles", value } })}
+                                placeholder="Select roles"
                               >
-                                <Option value={StatusProjectEnum.PENDING}>Pending</Option>
-                                <Option value={StatusProjectEnum.DONE}>Done</Option>
-                                <Option value={StatusProjectEnum.ON_PROGRESS}>On Progress</Option>
-                                <Option value={StatusProjectEnum.CLOSED}>Closed</Option>
+                                <Option value={PositionEnum.FE}>FRONT-END</Option>
+                                <Option value={PositionEnum.BE}>BACK-END</Option>
+                                <Option value={PositionEnum.FULLSTACK}>FULL STACK</Option>
+                                <Option value={PositionEnum.DEVOPS}>DEVOPS</Option>
+                                <Option value={PositionEnum.BA}>BUSSINESS ANNALIST</Option>
+                                <Option value={PositionEnum.QA}>QA</Option>
+                                <Option value={PositionEnum.UX_UI}>UX-UI</Option>
                               </Select>
                             </Form.Item>
                             <Button
                               type="primary"
                               icon={<PlusOutlined />}
+                              onClick={handleAddAssignEmployee}
                             >
                             </Button>
                           </Col>
-
                           <Col span={12}>
                             <Table
                               className="skills-table"
                               rowKey="name"
+
+                              dataSource={employee_project.map((member) => ({
+                                key: member.id,
+                                roles: member.roles.join(", "),
+                                ...member.employee,
+                              }))}
+
                               style={{
                                 width: "300px",
                                 maxHeight: "200px",
                                 overflow: "auto",
                               }}
-                              columns={[  
+                              columns={[
                                 ...teamMember,
+                                {
+                                  title: "ACTION",
+                                  width: 50,
+                                  render: (record) => (
+                                    <CloseCircleOutlined
+                                      type="link"
+                                      onClick={() => {
+                                        removeTech(record.key);
+                                      }}
+                                    />
+                                  ),
+                                },
                               ]}
                               pagination={false}
                             />
@@ -327,24 +380,15 @@ export const ProjectDetail = () => {
 
                         </Row>
                       ) : (
-                        // <Select
-                        //   placeholder="Team Member"
-                        //   style={{ maxWidth: "300px" }}
-                        // >
-                        //   {employee_project.map((member, index) => (
-                        //     <Option key={index} value={member.id} disabled>
-                        //       <Avatar
-                        //         src={member.employee.avatar ?
-                        //           <img src={member.employee.avatar} alt="avatar" sizes="small" /> : <UserOutlined />
-                        //         }
-                        //       />
-                        //       {member.employee.name}
-                        //     </Option>
-                        //   ))}
-                        // </Select>
                         <Table
                           className="skills-table"
-                          rowKey="name"
+                          rowKey="id"
+                          dataSource={employee_project.map((member) => ({
+                            key: member.id,
+                            roles: member.roles.join(", "),
+                            ...member.employee,
+                          }))}
+
                           style={{
                             width: "90%",
                             maxHeight: "200px",
@@ -352,12 +396,14 @@ export const ProjectDetail = () => {
                           }}
                           columns={[
                             {
-                                title: "AVARTA",
-                                dataIndex: "avarta",
-                                key: "avatar",
-                              },
+                              title: "AVARTA",
+                              dataIndex: "avatar",
+                              key: "avatar",
+                              render: (avatar) => <img src={avatar} alt="Avatar" style={{ width: 30, borderRadius: "50%" }} />,
+                            },
                             ...teamMember,
                           ]}
+
                           pagination={false}
                         />
                       )
@@ -394,7 +440,7 @@ export const ProjectDetail = () => {
                       />
                     ) : (
                       <Input
-                        value={dayjs(editedProject.endDate).format("YYYY-MM-DD")}
+                        value={dayjs(endDate).format("YYYY-MM-DD")}
                         style={{ maxWidth: "300px" }}
                         disabled
                       />

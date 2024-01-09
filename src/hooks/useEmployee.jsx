@@ -1,11 +1,30 @@
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     addEmployeeApi,
     deleteEmployeeApi,
+    getAllEmployee,
     getDetailEmployee, getManager, getTotalEmployee,
     updateEmployeeApi
 } from "../api/EmployeeApi.js";
-import {useNavigate} from "react-router";
+import { useNavigate } from "react-router";
+
+
+
+export const useGetAllEmployee = () => {
+    return useQuery({
+        queryKey: ["EMPLOYEE"],
+        queryFn: async () => {
+            try {
+                const { data } = await getAllEmployee();
+                return data;
+            } catch (error) {
+                console.error("Error:", error);
+                throw error;
+            }
+        },
+    });
+};
+
 
 export const useGetDetailEmployee = (id) => {
     return useQuery({
@@ -21,6 +40,7 @@ export const useGetDetailEmployee = (id) => {
         }
     });
 };
+
 export const useCreateEmployee = () => {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
@@ -66,6 +86,7 @@ export const useDeleteEmployee = () => {
         },
     });
 };
+
 export const useGetManager = () =>
     useQuery(["EMPLOYEE"], async () => {
         const { data } = await getManager();
