@@ -6,6 +6,7 @@ import {
     updateEmployeeApi
 } from "../api/EmployeeApi.js";
 import {useNavigate} from "react-router";
+import Swal from "sweetalert2";
 
 export const useGetDetailEmployee = (id) => {
     return useQuery({
@@ -57,12 +58,29 @@ export const useUpdateEmployee = (id) => {
 export const useDeleteEmployee = () => {
     const queryClient = useQueryClient();
 
-    const deleteEmployee = async (employeeId) => {
-        await deleteEmployeeApi(employeeId);
-    };
+    const deleteEmployee = async (employeeId) => await deleteEmployeeApi(employeeId)
+
     return useMutation(deleteEmployee, {
-        onSuccess: () => {
-            queryClient.invalidateQueries("employee");
+        onSuccess: (data) => {
+            const check = data.data.message=='Employee deletion successful'
+            if(check){
+                Swal.fire({
+                    title: 'Success',
+                    text: data.data.message,
+                    icon: 'success',
+                    timer: 1000,
+                    showConfirmButton: false
+                })
+            }
+            else{
+                Swal.fire({
+                    title: 'Error',
+                    text: data.data.message,
+                    icon: 'error',
+                    timer: 2000,
+                    showConfirmButton: false
+                }) 
+            }
         },
     });
 };
