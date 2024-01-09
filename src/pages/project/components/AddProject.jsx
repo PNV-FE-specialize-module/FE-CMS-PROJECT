@@ -11,7 +11,7 @@ import { useTranslation} from 'react-i18next';
 const { TextArea } = Input;
 const { Option } = Select;
 
-export const AddProject = ({isModalVisible,setIsModalVisible}) => {
+export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
   const [form] = Form.useForm();
   const [selectedManagers, setSelectedManagers] = useState([]);
   const [managerOptions, setManagerOptions] = useState([]);
@@ -21,15 +21,17 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
   useEffect(() => {
     const fetchManagers = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/employee/managers');
+        const response = await axios.get(
+          "http://localhost:3000/employee/managers"
+        );
         const data = response.data;
-        const managerData = data.map(manager => ({
+        const managerData = data.map((manager) => ({
           id: manager.id,
           name: manager.name,
         }));
         setManagerOptions(managerData);
       } catch (error) {
-        console.error(t("main.Error fetching managers:"), error);
+        console.error("Error fetching managers:", error);
       }
     };
 
@@ -39,15 +41,15 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/employee');
+        const response = await axios.get("http://localhost:3000/employee");
         const data = response.data.data;
-        const employeeData = data.map(employee => ({
+        const employeeData = data.map((employee) => ({
           id: employee.id,
           name: employee.name,
         }));
         setManagerOptions(employeeData);
       } catch (error) {
-        console.error(t("main.Error fetching managers:"), error);
+        console.error("Error fetching employees:", error);
       }
     };
 
@@ -63,7 +65,7 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
         onFinish(values);
       })
       .catch((info) => {
-        console.log(t("main.Validate Failed:"), info);
+        console.error("Validate Failed:", info);
       });
   };
 
@@ -89,7 +91,7 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
         title: t('main.Error'),
         text: t('main.Failed to update employee. Please try again.'),
       });
-    } 
+    }
   };
   return (
     <>
@@ -111,7 +113,7 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
           form={form}
           labelCol={{
             xs: { span: 6 },
-            sm: { span: 6},
+            sm: { span: 6 },
           }}
           wrapperCol={{
             xs: { span: 24 },
@@ -139,7 +141,7 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
                   placeholder={t("main.Choose manager")}
                   value={selectedManagers}
                   onChange={setSelectedManagers}
-                  style={{ width: '100%' }}
+                  style={{ width: "100%" }}
                 >
                   {managerOptions.map((managerOption) => (
                     <Option key={managerOption.id} value={managerOption.id}>
@@ -148,7 +150,7 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
                   ))}
                 </Select>
               </Form.Item>
-              
+
               <Form.Item
                 label={t("main.Start Date")}
                 name="startDate"
@@ -163,15 +165,27 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
               >
                 <DatePicker />
               </Form.Item>
-             
             </Col>
             <Col xs={24} sm={12}>
               <Form.Item
                 label={t("main.LangFrame")}
                 name="langFrame"
-                rules={[{ required: true, message: t('main.Please enter Language/Framework!') }]}
-              >
-                <Select mode="multiple" placeholder={t("main.Choose Languages and Framework")}>
+                rules={[
+                  {
+                    required: true,
+                    message: t('main.Please enter Language/Framework!'),
+                  },
+                ]}
+                wrapperCol={{ span: 14 }}
+                style={{ height: 'fit-content', display: 'flex', flexDirection: 'column' }}
+                >
+                <Select
+                  mode="multiple"
+                  placeholder={t("main.Choose Languages and Framework")}
+                  autoSize={{ minRows: 2, maxRows: 6 }}
+                  style={{ height: 'auto', maxHeight: '100px' }}
+
+                >
                   <Option value="reactjs">ReactJs</Option>
                   <Option value="htmlcss">HTML/CSS</Option>
                   <Option value="nodejs">NodeJs</Option>
@@ -184,9 +198,15 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
               <Form.Item
                 label={t("main.Technology")}
                 name="technology"
-                rules={[{ required: true, message: t('main.Please enter Technology!') }]}
+                rules={[
+                  { required: true, message: t('main.Please enter Technology!') },
+                ]}
+                wrapperCol={{ span: 14 }}
+                style={{ height: 'fit-content', display: 'flex', flexDirection: 'column' }}
               >
-                <Select mode="multiple" placeholder={t("main.Choose Technologies")}>
+                <Select mode="multiple" placeholder={t("main.Choose Technologies")}
+                autoSize={{ minRows: 2, maxRows: 6 }}
+                style={{ height: 'auto', maxHeight: '100px' }}>
                   <Option value="git">Git</Option>
                   <Option value="github">GitLab</Option>
                   <Option value="gitlab">GitHub</Option>
@@ -202,13 +222,11 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
               >
                 <TextArea rows={4} placeholder={t("main.Description of project")} />
               </Form.Item>
-             
             </Col>
           </Row>
-          <Row gutter={[2,2]}>
-            <Col span={24}>
-            </Col>
-            </Row>
+          <Row gutter={[2, 2]}>
+            <Col span={24}></Col>
+          </Row>
         </Form>
       </Modal>
     </>

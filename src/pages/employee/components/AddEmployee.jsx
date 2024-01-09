@@ -431,7 +431,6 @@ const CreateEmployee = () => {
                                 placeholder={t("main.Select Date of birth")}
                                 onChange={(date) => {
                                     setNewDob(date.format(t("main.DD/MM/YYYY")));
-                                    console.log(date);
                                 }}
                                 format={t("main.DD/MM/YYYY")}
                                 disabledDate={(current) => {

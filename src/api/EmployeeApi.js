@@ -14,9 +14,7 @@ export const addEmployeeApi = async (params) => {
 export const updateEmployeeApi =  async (employId, params ={}) => {
     return await baseAxios.patch(`${ENDPOINT}/${employId}`, {...params})
 }
-export const deleteEmployeeApi =  async (employId) => {
-    return await baseAxios.delete(`${ENDPOINT}/${employId}`)
-}
+export const deleteEmployeeApi =  async (employId) => await baseAxios.delete(`${ENDPOINT}/${employId}`)
 
 export const getManager = async () => {
     return await baseAxios.get(`${ENDPOINT}/managers`);

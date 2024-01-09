@@ -6,9 +6,10 @@ import {
     getDetailEmployee, getManager, getTotalEmployee,
     updateEmployeeApi
 } from "../api/EmployeeApi.js";
-import { useNavigate } from "react-router";
 import { useTranslation } from 'react-i18next';
 
+import {useNavigate} from "react-router";
+import Swal from "sweetalert2";
 
 export const useGetDetailEmployee = (id) => {
     const { t, i18n } = useTranslation();
@@ -64,12 +65,29 @@ export const useDeleteEmployee = () => {
     const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
 
-    const deleteEmployee = async (employeeId) => {
-        await deleteEmployeeApi(employeeId);
-    };
+    const deleteEmployee = async (employeeId) => await deleteEmployeeApi(employeeId)
+
     return useMutation(deleteEmployee, {
-        onSuccess: () => {
-            queryClient.invalidateQueries("employee");
+        onSuccess: (data) => {
+            const check = data.data.message=='Employee deletion successful'
+            if(check){
+                Swal.fire({
+                    title: 'Success',
+                    text: data.data.message,
+                    icon: 'success',
+                    timer: 1000,
+                    showConfirmButton: false
+                })
+            }
+            else{
+                Swal.fire({
+                    title: 'Error',
+                    text: data.data.message,
+                    icon: 'error',
+                    timer: 2000,
+                    showConfirmButton: false
+                }) 
+            }
         },
     });
 };

@@ -36,7 +36,7 @@ const Login = () => {
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log(t("main.Failed:"), errorInfo);
+    console.error("Failed:", errorInfo);
   };
 
   return (

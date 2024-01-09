@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { getDetailProject, getprojects } from "../api/Project";
-import {getTotalEmployee} from "../api/EmployeeApi.js";
 import { useTranslation} from 'react-i18next';
 
+// import {getTotalEmployee} from "../api/EmployeeApi.js";
 
 export const useGetProject = () => {
     const { t, i18n } = useTranslation();
