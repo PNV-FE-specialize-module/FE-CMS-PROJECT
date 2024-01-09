@@ -4,6 +4,11 @@ import baseAxios from "./baseAxios.js";
 const ENDPOINT="employee";
 
 
+
+export const getAllEmployee = async () => {
+    return await baseAxios.get(`${ENDPOINT}`);
+}
+
 export const getDetailEmployee = async (id, params = {}) => {
     return await baseAxios.get(`${ENDPOINT}/${id}`, params);
 };
@@ -19,6 +24,7 @@ export const deleteEmployeeApi =  async (employId) => await baseAxios.delete(`${
 export const getManager = async () => {
     return await baseAxios.get(`${ENDPOINT}/managers`);
 }
+
 export const getTotalEmployee = async () =>{
     return await baseAxios.get(`${ENDPOINT}/total`)
 }

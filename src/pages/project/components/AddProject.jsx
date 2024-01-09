@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; 
+import React, { useState, useEffect } from 'react';
 import "../../../style/AddProject.css"
 import { Button, DatePicker, Form, Input, Row, Col, Modal, Select } from 'antd';
 import { postAddProject } from '../../../api/ProjectApi';

@@ -1,15 +1,31 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
 import {
     addEmployeeApi,
     deleteEmployeeApi,
+    getAllEmployee,
     getDetailEmployee, getManager, getTotalEmployee,
     updateEmployeeApi
 } from "../api/EmployeeApi.js";
+import { useNavigate } from "react-router";
 import { useTranslation } from 'react-i18next';
 
-import {useNavigate} from "react-router";
-import Swal from "sweetalert2";
+
+export const useGetAllEmployee = () => {
+    return useQuery({
+        queryKey: ["EMPLOYEE"],
+        queryFn: async () => {
+            try {
+                const { data } = await getAllEmployee();
+                return data;
+            } catch (error) {
+                console.error("Error:", error);
+                throw error;
+            }
+        },
+    });
+};
+
+
 
 export const useGetDetailEmployee = (id) => {
     const { t, i18n } = useTranslation();
@@ -26,6 +42,7 @@ export const useGetDetailEmployee = (id) => {
         }
     });
 };
+
 export const useCreateEmployee = () => {
     const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
@@ -53,7 +70,7 @@ export const useUpdateEmployee = (id) => {
         (params) => updateEmployeeApi(id, params),
         {
             onSuccess: () => {
-                queryClient.invalidateQueries('employee');
+                queryClient.invalidateQueries('EMPLOYEE');
             },
         }
     );

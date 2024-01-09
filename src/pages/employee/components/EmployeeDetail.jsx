@@ -169,6 +169,8 @@ const EmployeeDetail = () => {
       [name]: value,
     }));
   };
+
+  
   const handleDateOfBirthChange = (date, dateString) => {
     setEditedEmployee((prevState) => ({
       ...prevState,
@@ -681,6 +683,7 @@ const EmployeeDetail = () => {
                             </div>
                         ))
                     )}
+
                     {editMode && (
                         <Button
                             type="primary"

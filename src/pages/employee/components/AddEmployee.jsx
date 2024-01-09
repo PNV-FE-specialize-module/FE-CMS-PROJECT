@@ -166,6 +166,7 @@ const CreateEmployee = () => {
         setNewTech("");
         setNewTechExperience("");
     };
+    
     const removeTech = (key) => {
         const updatedTechs = newTechs.filter((tech) => tech.key !== key);
         setNewTechs(updatedTechs);
