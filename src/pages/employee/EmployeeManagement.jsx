@@ -138,7 +138,6 @@ const ShowEmployees = () => {
         axios.get('http://localhost:3000/employee')
             .then(response => {
                 setEmployees(response.data.data);
-                console.log(8289, response.data.data);
             })
             .catch(error => {
                 console.error(t('main.Error fetching employee data:'), error);

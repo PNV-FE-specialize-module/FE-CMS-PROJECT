@@ -9,7 +9,7 @@ import { Row, Col, Button, Form, Input, Typography, Card, Spin, Select, Avatar, 
 import { PositionEnum, StatusProjectEnum, checkProjectStatus } from '../../../components/enum/enum';
 import { useGetAllEmployee, useGetManager } from '../../../hooks/useEmployee';
 import dayjs from 'dayjs';
-import { useAssignEmployee } from '../../../hooks/useAssign';
+import { useAssignEmployee, useUnassignEmployee } from '../../../hooks/useAssign';
 import { useTranslation} from 'react-i18next';
 import { useNavigate } from "react-router-dom";
 
@@ -38,6 +38,7 @@ export const ProjectDetail = () => {
   const [editedProject, setEditedProject] = useState({});
 
   const {mutate: assignEmployee} = useAssignEmployee();
+  const {mutate: unAssignEmployee} = useUnassignEmployee();
 
 
 
@@ -54,7 +55,6 @@ export const ProjectDetail = () => {
   const {
     name,
     description,
-    specification,
     langFrame,
     technology,
     status,
@@ -65,8 +65,7 @@ export const ProjectDetail = () => {
   } = editMode ? editedProject : project?.project;
 
 
-  // console.log("Update: ",editedProject.roles)
-
+console.log(editedProject,9090);
   const handleEditClick = () => {
     setEditMode(!editMode);
     if (!editMode) {
@@ -98,7 +97,6 @@ export const ProjectDetail = () => {
 
 
   const handleAddLangFrame = () => {
-    console.log(editedProject)
     setEditedProject((prevState) => ({
       ...prevState,
       langFrame: [
@@ -127,7 +125,6 @@ export const ProjectDetail = () => {
   };
 
   const handleAddTech = () => {
-    console.log(editedProject)
     setEditedProject((prevState) => ({
       ...prevState,
       technology: [
@@ -135,13 +132,29 @@ export const ProjectDetail = () => {
       ],
     }));
   };
-
-
   const handleRemoveTech = (indexToRemove) => {
     setEditedProject((prevState) => ({
       ...prevState,
       technology: prevState.technology.filter((_, index) => index !== indexToRemove),
     }));
+  };
+
+  // const handleAddMember = () => {
+  //   // console.log(prevState.employee_project);
+  //   setEditedProject((prevState) => ({
+  //     ...prevState,
+  //     employee_project: [
+  //       ...prevState.employee_project, ''
+  //     ],
+  //   }));
+  // };
+
+  const handleRemoveMember = (indexToRemove) => {
+    console.log('remove',editedProject.employee_project);
+    // setEditedProject((prevState) => ({
+    //   ...prevState,
+    //   employee_project: prevState.employee_project.filter((_,index) => index!==indexToRemove)
+    // }));
   };
 
   const handleTechInputChange = (e, index) => {
@@ -184,9 +197,6 @@ export const ProjectDetail = () => {
   const handleSaveClick = async () => {
     try {
       const result = await updateProject.mutateAsync(editedProject);
-
-      console.log('Mutation result:', result);
-      console.log('Employee updated successfully!');
       setEditMode(false)
       Swal.fire({
         icon: 'success',
@@ -219,21 +229,32 @@ export const ProjectDetail = () => {
     },
 
   ];
+  const handleUnAssignEmployee = (employeeId) => {
+    try {
+        unAssignEmployee(
+          {
+            employeeIds: [employeeId],
+            projectId: editedProject.id, 
+          },
+        );
+    } catch (error) {
+      console.error('Error assigning employee:', error);
+    }
+  };
 
-
-  const handleAddAssignEmployee = async () => {
+  const handleAssignEmployee = () => {
     try {
       if (editedProject.employeeId && editedProject.roles) {
-        await assignEmployee([
+        assignEmployee([
           {
             employeeId: editedProject.employeeId,
             projectId: editedProject.id, 
-            roles: editedProject.roles,
+            roles: [editedProject.roles],
             joinDate: new Date(),
           },
         ]);
-
       }
+
     } catch (error) {
       console.error('Error assigning employee:', error);
     }
@@ -352,6 +373,8 @@ export const ProjectDetail = () => {
                                 style={{ maxWidth: "300px" }}
                                 onChange={(value) => handleInputChange({ target: { name: "roles", value } })}
                                 placeholder="Select roles"
+                                value={editedProject.employee_project.roles}
+
                               >
                                 <Option value={PositionEnum.FE}>FRONT-END</Option>
                                 <Option value={PositionEnum.BE}>BACK-END</Option>
@@ -365,7 +388,7 @@ export const ProjectDetail = () => {
                             <Button
                               type="primary"
                               icon={<PlusOutlined />}
-                              onClick={handleAddAssignEmployee}
+                              onClick={handleAssignEmployee}
                             >
                             </Button>
                           </Col>
@@ -373,10 +396,10 @@ export const ProjectDetail = () => {
                             <Table
                               className="skills-table"
                               rowKey="name"
-
-                              dataSource={employee_project.map((member) => ({
+                              dataSource={project.project.employee_project.map((member) => ({
                                 key: member.id,
-                                roles: member.roles.join(", "),
+                                // roles: member.roles.join(", "),
+                                roles: member.roles,
                                 ...member.employee,
                               }))}
 
@@ -393,9 +416,7 @@ export const ProjectDetail = () => {
                                   render: (record) => (
                                     <CloseCircleOutlined
                                       type="link"
-                                      onClick={() => {
-                                        removeTech(record.key);
-                                      }}
+                                      onClick={()=>handleUnAssignEmployee(record.id)}
                                     />
                                   ),
                                 },
@@ -506,9 +527,7 @@ export const ProjectDetail = () => {
                             style={{ width: '120px', marginRight: '8px' }}
                             placeholder="Language/Framework"
                           />
-                          <Button type="danger" onClick={() => handleRemoveLangFrame(index)}>
-                            Remove
-                          </Button>
+                          <CloseCircleOutlined type="danger" onClick={() => handleRemoveLangFrame(index)}/>
                         </div>
                       ))
                     ) : (
@@ -534,9 +553,12 @@ export const ProjectDetail = () => {
                     )}
 
                     {editMode && (
-                      <Button type="primary" onClick={handleAddLangFrame}>
-                        Add Language/Framework
-                      </Button>
+                      <Button
+                      type="primary"
+                      icon={<PlusOutlined />}
+                      onClick={handleAddLangFrame}
+                    >
+                    </Button>
                     )}
                   </Form.Item>
                 </Col>
@@ -552,9 +574,7 @@ export const ProjectDetail = () => {
                               style={{ width: '120px', marginRight: '8px' }}
                               placeholder="Language/Framework"
                             />
-                            <Button type="danger" onClick={() => handleRemoveTech(index)}>
-                              Remove
-                            </Button>
+                            <CloseCircleOutlined type="danger" onClick={() => handleRemoveTech(index)}/>
                           </div>
                         ))
                       ) : (
@@ -585,9 +605,12 @@ export const ProjectDetail = () => {
                     }
 
                     {editMode && (
-                      <Button type="primary" onClick={handleAddTech}>
-                        Add Technology
-                      </Button>
+                      <Button
+                      type="primary"
+                      icon={<PlusOutlined />}
+                      onClick={handleAddTech}
+                    >
+                    </Button>
                     )}
                   </Form.Item>
                 </Col>

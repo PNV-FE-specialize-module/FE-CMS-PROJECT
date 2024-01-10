@@ -68,7 +68,7 @@ export const useUpdateEmployee = (id) => {
         (params) => updateEmployeeApi(id, params),
         {
             onSuccess: () => {
-                queryClient.invalidateQueries('EMPLOYEE');
+                queryClient.invalidateQueries(['EMPLOYEE']);
             },
         }
     );

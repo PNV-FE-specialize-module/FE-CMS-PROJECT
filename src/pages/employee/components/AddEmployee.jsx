@@ -16,7 +16,6 @@ import { useTranslation} from 'react-i18next';
 
 const CreateEmployee = () => {
     const [formCreate] = useForm();
-    const [newCode, setNewCode] = useState("")
     const [newName, setNewName] = useState("");
     const [newPhone, setNewPhone] = useState("");
     const [newAddress, setNewAddress] = useState("");
@@ -210,7 +209,7 @@ const CreateEmployee = () => {
                 showConfirmButton: false,
                 timer: 1500, // Optional: You can customize the time the success message stays visible
             });
-
+            navigate('/listemployee')
         } catch (error) {
             message.error(t("main.Error Employee"));
         }

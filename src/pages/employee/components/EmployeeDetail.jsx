@@ -492,7 +492,7 @@ const EmployeeDetail = () => {
 
                     ) : (
                         <Input
-                            value={moment(dateOfBirth).format(t("main.DD-MM-YYYY"))}
+                            value={moment(dateOfBirth).format("DD-MM-YYYY")}
                             style={{ maxWidth: "300px" }}
                             disabled
                         />

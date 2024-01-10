@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react';
 import { Table, Spin, Alert, Space, Tag, Button, Col, Select, Progress, Typography, Avatar, Tooltip } from 'antd';
-import { EyeOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-import { checkProjectStatus, getStatusColor } from '../../components/enum/enum';
-import { useGetProject } from '../../hooks/useProject';
+import {  PlusOutlined } from "@ant-design/icons";
+import React, { useState } from 'react';
 import { useGetData, useProjectStatusUpdate } from '../../hooks/useProject';
 import AddProject from './components/AddProject';
 import { useTranslation } from 'react-i18next';
@@ -216,10 +214,10 @@ const ListProject = () => {
       render: (text,record) => <Link to={`/project/${record.id}`}style={{ color: 'black' }}> {new Date(text).toLocaleDateString('en-US')}</Link> 
     },
   ];
-  const [selectedStatus, setSelectedStatus] = useState("");
-  const handleStatusClick = (status) => {
-    setSelectedStatus(status);
-  };
+  // const [selectedStatus, setSelectedStatus] = useState("");
+  // const handleStatusClick = (status) => {
+  //   setSelectedStatus(status);
+  // };
   return (
     <div>
       <Spin spinning={isLoading} tip={t('main.Loading...')}>
@@ -236,15 +234,7 @@ const ListProject = () => {
                       {t('main.Add Project')}
                     </Button>
                     <AddProject isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} data={projects.data}/>
-                  <Table columns={columns} 
-                //   onRow={(record, rowIndex) => {
-                //     console.log(record);
-                //     return {
-                //         onClick: (event) => {
-                //             navigate(`/project/${record.id}`);
-                //         },
-                //     };
-                // }}
+                  <Table columns={columns}
                   dataSource={projects.data}
                   rowKey={(record) => record.id} />
                 </>
