@@ -131,7 +131,7 @@ const ShowEmployees = () => {
   const [employees, setEmployees] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3000/employee')
+    axios.get('https://nineams-diyv.onrender.com/employee')
       .then(response => {
         setEmployees(response.data.data);
       })

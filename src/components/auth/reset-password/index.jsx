@@ -15,7 +15,7 @@ export const ResetPwd = () => {
 
   const onFinish = (email) => {
     axios
-      .post("http://localhost:3000/user/reset", JSON.stringify(email), {
+      .post("https://nineams-diyv.onrender.com/user/reset", JSON.stringify(email), {
         headers: {
           "Content-Type": "application/json",
         },

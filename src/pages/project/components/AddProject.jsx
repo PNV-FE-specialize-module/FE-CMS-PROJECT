@@ -22,7 +22,7 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
     const fetchManagers = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/employee/managers"
+          "https://nineams-diyv.onrender.com/employee/managers"
         );
         const data = response.data;
         const managerData = data.map((manager) => ({
@@ -41,7 +41,7 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/employee');
+        const response = await axios.get('https://nineams-diyv.onrender.com/employee');
         const data = response.data.data;
         const employeeData = data.map(employee => ({
           id: employee.id,
