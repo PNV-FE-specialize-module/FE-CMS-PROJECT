@@ -403,7 +403,7 @@ export const ProjectDetail = () => {
                       <Col span={12}>
                         <Form.Item>
                           <Select
-                            value={editedProject.employee_project.id}
+                            // value={editedProject.employee_project.id}
                             onChange={(value) =>
                               handleInputChange({
                                 target: { name: "employeeId", value },
@@ -448,7 +448,7 @@ export const ProjectDetail = () => {
                               })
                             }
                             placeholder="Select roles"
-                            value={editedProject.employee_project.roles}
+                            // value={editedProject.employee_project.roles}
                           >
                             <Option value={PositionEnum.FE}>FRONT-END</Option>
                             <Option value={PositionEnum.BE}>BACK-END</Option>
