@@ -391,7 +391,6 @@ const ShowEmployees = () => {
         name: employee.name,
         langFrame: employee.langFrame,
         tech: employee.tech,
-        manager: employee.isManager ? 'True' : 'False',
         position: employee.position,
         status: employee.status,
         manager: employee.manager,

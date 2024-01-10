@@ -1,9 +1,13 @@
 import React, {useRef, useState} from 'react';
-import { useNavigate, useParams } from "react-router-dom";
-import { useGetDetailEmployee, useUpdateEmployee, useGetManager, useDeleteEmployee } from "../../../hooks/useEmployee.jsx";
+import { useParams } from "react-router-dom";
+import {
+  useGetDetailEmployee,
+  useUpdateEmployee,
+  useGetManager,
+  useDeleteEmployee
+} from "../../../hooks/useEmployee.jsx";
 import {Row, Col, Button, Form, Input, Typography, Card, Select, message, Space, Timeline, DatePicker} from 'antd';
 import moment from "moment";
-
 import 'sweetalert2/dist/sweetalert2.css';
 import { useTranslation} from 'react-i18next';
 
@@ -11,6 +15,7 @@ import { useTranslation} from 'react-i18next';
 import { Cloudinary } from "@cloudinary/url-gen";
 import axios from "axios";
 import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
+import {useNavigate} from "react-router";
 import Swal from 'sweetalert2';
 
 const { TextArea } = Input;
@@ -170,7 +175,7 @@ const EmployeeDetail = () => {
     }));
   };
 
-  
+
   const handleDateOfBirthChange = (date, dateString) => {
     setEditedEmployee((prevState) => ({
       ...prevState,

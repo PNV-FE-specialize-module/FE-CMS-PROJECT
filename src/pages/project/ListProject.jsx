@@ -7,14 +7,16 @@ import { useGetData, useProjectStatusUpdate } from '../../hooks/useProject';
 import AddProject from './components/AddProject';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 
 const ListProject = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [status, setStatus] = useState("");
   const { t, i18n } = useTranslation();
-  const { Option } = Select;
-  const navigate = useNavigate();
-
+  const navigate = useNavigate()
+  const showModal = () => {
+    setIsModalVisible(true);
+  };
   const paginateOptions = {
     status: status,
   };
@@ -33,16 +35,6 @@ const ListProject = () => {
       console.error("Error updating project status:", error);
     }
   };
-  // const filterProjectsByStatus = (status) => {
-  //   if (!projects || !projects.data) {
-  //     return [];
-  //   }
-  //   if (status === "") {
-  //     return projects.data;
-  //   }
-  //   return projects.data.filter((project) => project.status === status);
-  // };
-
   const Circleprogress = ({ project }) => {
     if (project.status === 'pending') {
       return (
@@ -96,13 +88,14 @@ const ListProject = () => {
       title: t('main.Name'),
       dataIndex: 'name',
       key: 'name',
-      render: (text) => <span style={{ fontWeight: 'bold',fontSize:'16px' }}>{text}</span>,
+      render: (text,record) => <Link to={`/project/${record.id}`}><span style={{ fontWeight: 'bold',fontSize:'16px',color: 'black' }}>{text}</span></Link>,
     },    
     {
       title: t('main.Manager Project'),
       dataIndex: 'managerProject',
       key: 'managerProject',
-      render: (managerProject) => (
+      render: (managerProject,record) => (
+        <Link to={`/project/${record.id}`}style={{ color: 'black' }}>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <img
             src={managerProject.avatar}
@@ -111,6 +104,7 @@ const ListProject = () => {
           />
           {managerProject.name}
         </div>
+        </Link>
       ),
     },
     {
@@ -118,6 +112,7 @@ const ListProject = () => {
       key: 'technology',
       dataIndex: 'technology',
       render: (text, record) => (
+        <Link to={`/project/${record.id}`}>
         <>
           {record.technology.map((tag) => {
             let color = tag.length > 5 ? 'geekblue' : 'green';
@@ -131,13 +126,15 @@ const ListProject = () => {
             );
           })}
         </>
+        </Link>
       ),
     },
     {
       title: t('main.Members'),
       key: 'members',
       dataIndex: 'employee_project',
-      render: (employeeProject) => (
+      render: (employeeProject, record) => (
+        <Link to={`/project/${record.id}`}>
         <Col span={4}>
           <div className="project-employee-avatar">
             <Avatar.Group maxCount={2} size={40}>
@@ -154,13 +151,15 @@ const ListProject = () => {
             </Avatar.Group>
           </div>
         </Col>
+        </Link>
       ),
     },
     {
       title: t('main.Process'),
       dataIndex: 'process',
       key: 'process',
-      render: (text, project) => (
+      render: (text, project,record) => (
+        <Link to={`/project/${record.id}`}style={{ color: 'black' }}>
         <Col span={4}>
           <div
             className="circle-progress"
@@ -173,6 +172,7 @@ const ListProject = () => {
             <Circleprogress project={project} />
           </div>
         </Col>
+        </Link>
       ),
       with: 100,
     },
@@ -207,13 +207,13 @@ const ListProject = () => {
       title: t('main.Start Date'),
       dataIndex: 'startDate',
       key: 'startDate',
-      render: (text) => new Date(text).toLocaleDateString('en-US'),
+      render: (text,record) => <Link to={`/project/${record.id}`}style={{ color: 'black' }}> {new Date(text).toLocaleDateString('en-US')}</Link> 
     },
     {
       title: t('main.End Date'),
       dataIndex: 'endDate',
       key: 'endDate',
-      render: (text) => new Date(text).toLocaleDateString('en-US'),
+      render: (text,record) => <Link to={`/project/${record.id}`}style={{ color: 'black' }}> {new Date(text).toLocaleDateString('en-US')}</Link> 
     },
   ];
   const [selectedStatus, setSelectedStatus] = useState("");
@@ -225,44 +225,32 @@ const ListProject = () => {
       <Spin spinning={isLoading} tip={t('main.Loading...')}>
         {isError && <Alert message={error.message} type="error" />}
         {projects && projects.data ? (
-          Array.isArray(projects.data) && projects.data.length > 0 ? (
-            <>
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                style={{ float: 'right', margin: '10px' }}
-                onClick={() => setIsModalVisible(true)}
-              >
-                {t('main.Add Project')}
-              </Button>
-              <div className="status">
-                <Button type="secondary" onClick={() => handleStatusClick("")}
-                 style={{ backgroundColor: selectedStatus === "" ? '#5D5FEF' : '', color: selectedStatus === "" ? '#FFF' : '' }}>
-                  {t('main.All Status')}
-                </Button>
-                <Button type="secondary" onClick={() => handleStatusClick("pending")}
-                 style={{ backgroundColor: selectedStatus === "pending" ? '#5D5FEF' : '', color: selectedStatus === "pending" ? '#FFF' : '' }}>
-                  {t('main.Pending')}
-                </Button>
-                <Button type="secondary" onClick={() => handleStatusClick("on_progress")}
-                 style={{ backgroundColor: selectedStatus === "on_progress" ? '#5D5FEF' : '', color: selectedStatus === "on_progress" ? '#FFF' : '' }}>
-                 {t('main.On Progress')}
-                </Button>
-                <Button type="secondary" onClick={() => handleStatusClick("done")}
-                 style={{ backgroundColor: selectedStatus === "done" ? '#5D5FEF' : '', color: selectedStatus === "done" ? '#FFF' : '' }}>
-                  {t('main.Done')}
-                </Button>
-              </div>
-              <AddProject isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} data={projects.data} />
-              <Table
-                columns={columns}
-                dataSource={projects.data.filter((project) => !selectedStatus || project.status === selectedStatus)}
-                rowKey={(record) => record.id}
-              />
-            </>
-          ) : (
-            <p>{t('main.No data to display')}</p>
-          )
+            Array.isArray(projects.data)  ? (
+                <>
+                    <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        style={{ float: 'right', margin: '10px' }}
+                        onClick={showModal}
+                    >
+                      {t('main.Add Project')}
+                    </Button>
+                    <AddProject isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} data={projects.data}/>
+                  <Table columns={columns} 
+                //   onRow={(record, rowIndex) => {
+                //     console.log(record);
+                //     return {
+                //         onClick: (event) => {
+                //             navigate(`/project/${record.id}`);
+                //         },
+                //     };
+                // }}
+                  dataSource={projects.data}
+                  rowKey={(record) => record.id} />
+                </>
+            ) : (
+                <p>{t('main.No data to display')}</p>
+            )
         ) : (
           <p>{t('main.Loading...')}</p>
         )}
