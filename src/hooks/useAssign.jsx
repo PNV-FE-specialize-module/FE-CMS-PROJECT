@@ -10,7 +10,7 @@ export const useUnassignEmployee = () => {
         {
             onSuccess: async () => {
                 queryClient.invalidateQueries(["EMPLOYEE_PROJECT"]);
-                await queryClient.refetchQueries(['Project_Detail']);
+                await queryClient.refetchQueries(['PROJECT_DETAIL']);
 
             },
 
@@ -27,7 +27,7 @@ export const useAssignEmployee = () => {
         {
             onSuccess: async () => {
                 queryClient.invalidateQueries(["EMPLOYEE_PROJECT"]);
-                await queryClient.refetchQueries(['Project_Detail']);
+                await queryClient.refetchQueries(['PROJECT_DETAIL']);
         },
         }
     );

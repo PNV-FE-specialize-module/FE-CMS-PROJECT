@@ -29,15 +29,14 @@ export const useGetAllEmployee = () => {
 
 
 export const useGetDetailEmployee = (id) => {
-    const { t, i18n } = useTranslation();
     return useQuery({
-        queryKey: ['Employee', id],
+        queryKey: ["EMPLOYEE", id],
         queryFn: async () => {
             try {
                 const { data } = await getDetailEmployee(id);
                 return data;
             } catch (error) {
-                console.error(t("main.Error:"), error);
+                console.error("Error:", error);
                 throw error;
             }
         }
@@ -51,7 +50,7 @@ export const useCreateEmployee = () => {
         (newEmployee) => addEmployeeApi(newEmployee),
         {
             onSuccess: () => {
-                queryClient.invalidateQueries(['Employee']);
+                queryClient.invalidateQueries(["EMPLOYEE"]);
                 navigate("/listemployee")
 
             },
@@ -78,6 +77,8 @@ export const useUpdateEmployee = (id) => {
 };
 
 export const useDeleteEmployee = () => {
+    const queryClient = useQueryClient();
+
     const navigate = useNavigate()
     const deleteEmployee = async (employeeId) => await deleteEmployeeApi(employeeId)
 
@@ -108,14 +109,14 @@ export const useDeleteEmployee = () => {
 };
 export const useGetManager = () => {
 
-    return useQuery(['Project'], async () => {
+    return useQuery(["EMPLOYEE"], async () => {
         const { data } = await getManager();
         return data;
     });
 };
 
 export const useGetEmployeeTotal = (params) =>
-    useQuery(["Project Total", params.period], async () => {
+    useQuery(["EMPLOYEE_TOTAL", params.period], async () => {
         const { data } = await getTotalEmployee(params);
         return data;
     });

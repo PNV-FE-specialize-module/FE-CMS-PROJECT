@@ -353,7 +353,7 @@ console.log(editedProject,9090);
                                 onChange={(value) => handleInputChange({ target: { name: "employeeId", value } })}
                                 style={{ maxWidth: "300px" }}
                               >
-                                {listEmployee.data.map((member, index) => (
+                                {listEmployee.data?.map((member, index) => (
                                   <Option key={index} value={member.id}>
                                     <Avatar
                                       src={member.avatar ?
