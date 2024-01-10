@@ -33,7 +33,7 @@ function App() {
             path={route.path}
             element={
               <PrivateRoute>
-                <LayoutDashboard pageTitle={t(route.title)}>
+                <LayoutDashboard pageTitle={route.title}>
                   {route.element}
                 </LayoutDashboard>
               </PrivateRoute>
