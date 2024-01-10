@@ -11,7 +11,7 @@ import { useTranslation} from 'react-i18next';
 const { TextArea } = Input;
 const { Option } = Select;
 
-export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
+export const AddProject = ({isModalVisible,setIsModalVisible}) => {
   const [form] = Form.useForm();
   const [selectedManagers, setSelectedManagers] = useState([]);
   const [managerOptions, setManagerOptions] = useState([]);
@@ -41,9 +41,9 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/employee");
+        const response = await axios.get('http://localhost:3000/employee');
         const data = response.data.data;
-        const employeeData = data.map((employee) => ({
+        const employeeData = data.map(employee => ({
           id: employee.id,
           name: employee.name,
         }));
@@ -84,7 +84,7 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
       });
     } catch (error) {
       console.error(t('main.Error updating employee:'), error);
-    
+
       // Show error alert
       Swal.fire({
         icon: 'error',
@@ -112,8 +112,8 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
         <Form
           form={form}
           labelCol={{
-            xs: { span: 6 },
-            sm: { span: 6 },
+            xs: { span: 8 },
+            sm: { span: 8 },
           }}
           wrapperCol={{
             xs: { span: 24 },
@@ -224,6 +224,7 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
               </Form.Item>
             </Col>
           </Row>
+        {/* Assign member here */}
           <Row gutter={[2, 2]}>
             <Col span={24}></Col>
           </Row>

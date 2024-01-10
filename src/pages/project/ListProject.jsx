@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import {Table, Spin, Alert, Space, Tag, Button} from 'antd';
+import React, { useState } from 'react';
+import {Table, Spin, Alert, Tag, Button} from 'antd';
 import { PlusOutlined } from "@ant-design/icons";
 import { checkProjectStatus, getStatusColor } from '../../components/enum/enum';
 import { useGetProject } from '../../hooks/useProject';
@@ -15,7 +15,7 @@ const ListProject = () => {
   const showModal = () => {
     setIsModalVisible(true);
   };
-  
+
 
   const columns = [
     {
@@ -83,7 +83,7 @@ const ListProject = () => {
       <Spin spinning={isLoading} tip={t('main.Loading...')}>
         {isError && <Alert message={error.message} type="error" />}
         {projects && projects.data ? (
-            Array.isArray(projects.data) && projects.data.length > 0 ? (
+            Array.isArray(projects.data)  ? (
                 <>
                     <Button
                         type="primary"
@@ -96,13 +96,12 @@ const ListProject = () => {
                     <AddProject isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} data={projects.data}/>
                   <Table columns={columns} 
                   onRow={(record, rowIndex) => {
-                    console.log(record);
                     return {
                         onClick: (event) => {
                             navigate(`/project/${record.id}`);
                         },
                     };
-                }} 
+                }}
                   dataSource={projects.data}
                   rowKey={(record) => record.id} />
                 </>

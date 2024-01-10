@@ -1,3 +1,5 @@
+import {getTotalEmployee} from "../api/EmployeeApi.js";
+import {getTotalProject} from "../api/ProjectApi.js";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import { getDetailProject, getprojects, updateProjectApi } from "../api/Project";
 import { useTranslation} from 'react-i18next';
@@ -8,9 +10,8 @@ import Swal from "sweetalert2";
 // import {getTotalEmployee} from "../api/EmployeeApi.js";
 
 export const useGetProject = () => {
-    const { t, i18n } = useTranslation();
     return useQuery({
-        queryKey: [t("main.Project")],
+        queryKey: ['PROJECT'],
         queryFn: async () => {
             try {
                 const { data } = await getprojects();
@@ -24,15 +25,14 @@ export const useGetProject = () => {
 };
 
 export const useGetDetaiProject = (id) => {
-    const { t, i18n } = useTranslation();
     return useQuery({
-        queryKey: [t("main.Project"), id],
+        queryKey: ['PROJECT_DETAIL', id],
         queryFn: async () => {
             try {
                 const { data } = await getDetailProject(id);
                 return data;
             } catch (error) {
-                console.error(t("main.Error:"), error);
+                console.error("Error:", error);
                 throw error;
             }
         }
@@ -46,21 +46,27 @@ export const useUpdateProject = (id) => {
         (params) => updateProjectApi(id, params),
         {
             onSuccess: () => {
-                queryClient.invalidateQueries('project');
+                queryClient.invalidateQueries('PROJECT');
             },
         }
     );
 
     return mutation;
 };
+export const useGetProjectTotal = (params) =>
+    useQuery(["PROJECT_TOTAL", params.period], async () => {
+        const { data } = await getTotalProject(params);
+        return data;
+    });
+
+
 
 export const useDeleteProject = () => {
     const navigate = useNavigate()
     const deleteProject= async (employeeId) => await deleteProjectApi(employeeId)
     return useMutation(deleteProject, {
         onSuccess: (data) => {
-            console.log(data);
-            const check = data.data.message==t('main.Employee deletion successful')
+            const check = data.data.message=='Employee deletion successful'
 
             if(check){
                 Swal.fire({
@@ -79,7 +85,7 @@ export const useDeleteProject = () => {
                     icon: 'error',
                     timer: 2000,
                     showConfirmButton: false
-                }) 
+                })
             }
         },
     });

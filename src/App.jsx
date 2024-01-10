@@ -20,7 +20,7 @@ function PrivateRoute({ children }) {
 }
 
 function App() {
-  const { t, i18n } = useTranslation(); 
+  const { t, i18n } = useTranslation();
 
   return (
     <Router>
@@ -33,7 +33,7 @@ function App() {
             path={route.path}
             element={
               <PrivateRoute>
-                <LayoutDashboard pageTitle={t(route.title)}>
+                <LayoutDashboard pageTitle={route.title}>
                   {route.element}
                 </LayoutDashboard>
               </PrivateRoute>

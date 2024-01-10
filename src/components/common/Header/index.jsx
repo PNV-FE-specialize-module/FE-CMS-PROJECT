@@ -26,7 +26,7 @@ export default function HeaderContent({ pageTitle }) {
       className="site-layout-background"
       style={{ padding: '0 2em', background: "#ffffff", fontSize: "20px", fontWeight:'500', color:'#5D5FEF' }}
     >
-      {pageTitle}
+      {t(pageTitle)}
       <Input
         placeholder={t("main.Search here...")}
         prefix={<SearchOutlined className="site-form-item-icon" />}
