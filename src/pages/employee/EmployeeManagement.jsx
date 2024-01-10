@@ -368,7 +368,6 @@ const ShowEmployees = () => {
         manager: employee.isManager ? 'True' : 'False',
         position: employee.position,
         status: employee.status,
-        manager: employee.manager,
         employee_project: employee.employee_project
     }));
     return (

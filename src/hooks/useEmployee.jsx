@@ -28,15 +28,19 @@ export const useGetAllEmployee = () => {
 
 
 
+
+
+
 export const useGetDetailEmployee = (id) => {
+    const { t, i18n } = useTranslation();
     return useQuery({
-        queryKey: ["EMPLOYEE", id],
+        queryKey: [t("main.Employee"), id],
         queryFn: async () => {
             try {
                 const { data } = await getDetailEmployee(id);
                 return data;
             } catch (error) {
-                console.error("Error:", error);
+                console.error(t("main.Error:"), error);
                 throw error;
             }
         }
@@ -44,13 +48,14 @@ export const useGetDetailEmployee = (id) => {
 };
 
 export const useCreateEmployee = () => {
+    const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const mutation = useMutation(
         (newEmployee) => addEmployeeApi(newEmployee),
         {
             onSuccess: () => {
-                queryClient.invalidateQueries(["EMPLOYEE"]);
+                queryClient.invalidateQueries([t("main.Employee")]);
                 navigate("/listemployee")
 
             },
@@ -62,6 +67,7 @@ export const useCreateEmployee = () => {
 };
 
 export const useUpdateEmployee = (id) => {
+    const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
 
     const mutation = useMutation(
@@ -77,6 +83,7 @@ export const useUpdateEmployee = (id) => {
 };
 
 export const useDeleteEmployee = () => {
+    const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
 
     const navigate = useNavigate()
@@ -93,7 +100,6 @@ export const useDeleteEmployee = () => {
                     timer: 1000,
                     showConfirmButton: false
                 })
-                navigate('/listemployee')
             }
             else{
                 Swal.fire({
