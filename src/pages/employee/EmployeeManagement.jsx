@@ -203,7 +203,7 @@ const ShowEmployees = () => {
                   <span style={{ color: '#1d39c4', background: '#f0f5ff', border: '1px solid #adc6ff', padding: '5px', borderRadius:'3px'}}>
                     {tech.name} 
                   </span>
-                  <p style={{color:'gray'}}>{tech.exp} year</p>
+                  <p style={{color:'gray'}}>{tech.exp} {t("main.year")}</p>
                   </Flex>
                   {(index + 1) % 2 === 0 && <br style={{ lineHeight: '30px' }} />}
                 </React.Fragment>

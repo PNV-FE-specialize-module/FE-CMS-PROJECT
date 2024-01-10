@@ -102,7 +102,8 @@
     "Mutation result:":"Kết quả đột biến:",
     "Error":"Lỗi",
     "Employee Avatar":"Ảnh đại diện nhân viên",
-    "Name:":"Tên:","Role:":"Vai trò:","Role":"Vai trò",
+    "Name:":"Tên:","Role:":"Vai trò:",
+    "Role":"Vai trò",
     "Employee Code":"Mã nhân viên",
     "Skill Name":"Tên kỹ năng",
     "Language/Framework":"Ngôn ngữ/Khung",
@@ -113,11 +114,15 @@
     "Email is required":"Email thì cần thiết",
     "Email is invalid":"Email không hợp lệ",
     "Enter your email":"Nhập email của bạn",
-    "We sent a new password to your email. Please check.":"Chúng tôi đã gửi mật khẩu mới tới email của bạn. Hãy kiểm tra.","OK":"Oke",
+    "We sent a new password to your email. Please check.":"Chúng tôi đã gửi mật khẩu mới tới email của bạn. Hãy kiểm tra.",
+    "OK":"Oke",
     "Send Mail":"Gửi về Email",
     "Search here...":"Tìm kiếm ở đây",
-    "Vietnamese":"Tiếng Việt","English":"Tiếng Anh","Created by The Nineam":"Được tạo bởi The Nineam",
-    "Are you sure you want to log out?":"Bạn có chắc là muốn đăng xuất không?","Employee Total":"Tổng số nhân viên","404 Not Found":"404 không tìm thấy",
+    "Vietnamese":"Tiếng Việt","English":"Tiếng Anh",
+    "Created by The Nineam":"Được tạo bởi The Nineam",
+    "Are you sure you want to log out?":"Bạn có chắc là muốn đăng xuất không?",
+    "Employee Total":"Tổng số nhân viên",
+    "404 Not Found":"404 không tìm thấy",
     "Search":"Tìm kiếm",
      "Reset":"Cài lại",
      "Edit Project":"Chỉnh sửa dự án",
@@ -130,7 +135,8 @@
     "Forgot Password?":"Quên mật khẩu ư?",
     "Keep me signed in":"Giữ đăng nhập",
     " Login":"Đăng nhập",
-    "Employee Information":"Thông tin nhân viên"
+    "Employee Information":"Thông tin nhân viên",
+    "Employee deletion successful":"Xóa nhân viên thành công","year":"năm"
 
 
 

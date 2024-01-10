@@ -16,7 +16,7 @@ export const useGetProject = () => {
                 const { data } = await getprojects();
                 return data;
             } catch (error) {
-                console.error("Error:", error);
+                console.error(t("main.Error:"), error);
                 throw error;
             }
         }
@@ -60,11 +60,11 @@ export const useDeleteProject = () => {
     return useMutation(deleteProject, {
         onSuccess: (data) => {
             console.log(data);
-            const check = data.data.message=='Employee deletion successful'
+            const check = data.data.message==t('main.Employee deletion successful')
 
             if(check){
                 Swal.fire({
-                    title: 'Success',
+                    title: t('main.Success'),
                     text: data.message,
                     icon: 'success',
                     timer: 1000,
@@ -74,7 +74,7 @@ export const useDeleteProject = () => {
             }
             else{
                 Swal.fire({
-                    title: 'Error',
+                    title: t('main.Error'),
                     text: data.data.message,
                     icon: 'error',
                     timer: 2000,

@@ -12,14 +12,16 @@ import Swal from "sweetalert2";
 
 
 export const useGetAllEmployee = () => {
+    const { t, i18n } = useTranslation();
+
     return useQuery({
-        queryKey: ["EMPLOYEE"],
+        queryKey: [t("main.Employee")],
         queryFn: async () => {
             try {
                 const { data } = await getAllEmployee();
                 return data;
             } catch (error) {
-                console.error("Error:", error);
+                console.error(t("main.Error:"), error);
                 throw error;
             }
         },
@@ -63,13 +65,14 @@ export const useCreateEmployee = () => {
 };
 
 export const useUpdateEmployee = (id) => {
+    const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
 
     const mutation = useMutation(
         (params) => updateEmployeeApi(id, params),
         {
             onSuccess: () => {
-                queryClient.invalidateQueries('EMPLOYEE');
+                queryClient.invalidateQueries(t('main.Epmloyee'));
             },
         }
     );
@@ -83,7 +86,7 @@ export const useDeleteEmployee = () => {
 
     return useMutation(deleteEmployee, {
         onSuccess: (data) => {
-            const check = data.data.message=='Employee deletion successful'
+            const check = data.data.message==t('main.Employee deletion successful')
             if(check){
                 Swal.fire({
                     title: 'Success',
