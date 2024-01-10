@@ -6,7 +6,7 @@ body{
   margin: 0px;
 }
 .custom-table {
-    border: 1px solid #ccc;
+  /* border: 1px solid #ccc; */
     border-radius: 8px;
 }
 .custom-table th{
@@ -14,14 +14,14 @@ body{
 }
 .custom-table td {
     border-collapse: collapse;
-    /* border: 1px solid #ccc; */
     padding: 8px;
     text-align: left;
 }
-.ant-table-cell.name {
-    font-weight: bold;
+.custom-table .langFrame td {
+  display: flex;
+  flex-direction: row;
 }
-.ant-table-cell .name {
+.ant-table-cell.name {
     font-weight: bold;
 }
 .ant-table-wrapper .ant-table-thead >tr>th{
@@ -39,12 +39,14 @@ body{
 
 }
 .custom-table .status-active {
-    background-color: #83d5b7;
-    color: #077e59;
+  color: #389e0d;
+  background: #f6ffed;
+  border:1px solid #b7eb8f;
 }
 .custom-table .status-inactive {
-    background-color: #f06c6c;
-    color: #9b0b0b;
+  color: #cf1322;
+  background: #fff1f0;
+  border: 1px solid #ffa39e;
 }
 .text-edit{
     color: green;
@@ -52,7 +54,8 @@ body{
 .text-del{
     color: red;
   }
-  .anticon-search{
+
+  .ant-table-wrapper .ant-table-filter-trigger .anticon-search{
     color: #fff;
   }
   .ant-table-wrapper .ant-table-column-sorter{
@@ -61,6 +64,17 @@ body{
   .anticon-filter{
     color: #fff;
   }
+  .status-wrapper.true {
+    color: #389e0d;
+    background: #f6ffed;
+    border:1px solid #b7eb8f;
+}
+
+.status-wrapper.false {
+  color: #cf1322;
+  background: #fff1f0;
+  border: 1px solid #ffa39e;
+}
   /* Responsive cho màn hình tablet */
 @media only screen and (min-width: 768px) and (max-width: 1024px) {
   .custom-table {

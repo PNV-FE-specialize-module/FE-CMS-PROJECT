@@ -1,12 +1,12 @@
 import React, {useRef, useState} from 'react';
-import { useParams } from "react-router-dom";
-import { useGetDetailEmployee, useUpdateEmployee, useGetManager } from "../../../hooks/useEmployee.jsx";
+import { useNavigate, useParams } from "react-router-dom";
+import { useGetDetailEmployee, useUpdateEmployee, useGetManager, useDeleteEmployee } from "../../../hooks/useEmployee.jsx";
 import {Row, Col, Button, Form, Input, Typography, Card, Select, message, Space, Timeline, DatePicker} from 'antd';
 import moment from "moment";
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.css';
-import { Widget } from 'react-cloudinary-upload-widget';
-// import { Image, Transformation, Widget } from 'cloudinary-react';
+import { useTranslation} from 'react-i18next';
+
 
 import { Cloudinary } from "@cloudinary/url-gen";
 import axios from "axios";
@@ -19,6 +19,7 @@ const EmployeeDetail = () => {
   const { id } = useParams();
   const { data: employee, isLoading, isError } = useGetDetailEmployee(id);
   const updateEmployeeMutation = useUpdateEmployee(id);
+  const { mutate: deleteEmployee } = useDeleteEmployee();
   const [editMode, setEditMode] = useState(false);
   const [editedEmployee, setEditedEmployee] = useState({});
 
@@ -28,28 +29,49 @@ const EmployeeDetail = () => {
   const cld = new Cloudinary({ cloud: { cloudName: "da9hiv52w" } });
   const fileInputRef = useRef();
   const { data: managers } = useGetManager();
+  const { t, i18n } = useTranslation();
+  const navigate= useNavigate()
 
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>{t("main.Loading...")}</div>;
   }
 
   if (isError) {
-    return <div>404 Not Found</div>;
+    return <div>{t("main.404 Not Found")}</div>;
   }
-  // const handleImageUpload = (result) => {
-  //   // 'result' contains information about the uploaded image
-  //   const { event, info } = result;
-  //   const imageUrl = info.secure_url; // The URL of the uploaded image
-  //   setEditedEmployee((prev) => ({
-  //     ...prev,
-  //     avatar: imageUrl,
-  //   }));
-  // };
+ 
   const disabledDate = (current) => {
-    return current && current > moment().endOf('day');
+    return current && current > moment().endOf(t('main.day'));
   };
 
+  const handleDeleteConfirm = async () => {
+    try {
+        const result = await Swal.fire({
+            title: 'Confirmation',
+            text: 'Are you sure you want to delete this employee?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Delete',
+            cancelButtonText: 'Cancel'
+        });
+
+        if (result.isConfirmed) {
+          deleteEmployee(id);
+          navigate('/listemployee')
+        }
+    } catch (error) {
+        Swal.fire({
+            title: 'Error',
+            text: 'Failed to delete employee.',
+            icon: 'error',
+            timer: 1000,
+            showConfirmButton: false
+        });
+    }
+};
 
   const handleEditClick = () => {
     setEditMode(!editMode);
@@ -147,6 +169,8 @@ const EmployeeDetail = () => {
       [name]: value,
     }));
   };
+
+  
   const handleDateOfBirthChange = (date, dateString) => {
     setEditedEmployee((prevState) => ({
       ...prevState,
@@ -172,7 +196,7 @@ const EmployeeDetail = () => {
             avatar: res.data.secure_url, // Update the avatar property
           }));
 
-          message.success("Avatar uploaded successfully, Click change to apply ");
+          message.success(t("main.Avatar uploaded successfully, Click change to apply"));
         } finally {
           setLoadingAvatar(false);
         }
@@ -219,23 +243,20 @@ const EmployeeDetail = () => {
   const handleSaveClick = async () => {
     try {
       const result = await updateEmployeeMutation.mutateAsync(editedEmployee);
-
-      console.log('Mutation result:', result);
-      console.log('Employee updated successfully!');
       setEditMode(false)
       Swal.fire({
         icon: 'success',
-        title: 'Success',
-        text: 'Employee updated successfully!',
+        title: t('main.Success'),
+        text: t('main.Employee updated successfully!'),
       });
     } catch (error) {
-      console.error('Error updating employee:', error);
+      console.error(t('main.Error updating employee:'), error);
 
       // Show error alert
       Swal.fire({
         icon: 'error',
-        title: 'Error',
-        text: 'Failed to update employee. Please try again.',
+        title: t('main.Error'),
+        text: t('main.Failed to update employee. Please try again.'),
       });
     }
   };
@@ -259,7 +280,7 @@ const EmployeeDetail = () => {
                             : (editMode ? editedEmployee.avatar : employee.employee.avatar))
                     }
 
-                    alt="Employee Avatar"
+                    alt={t("main.Employee Avatar")}
                 />
                 {loadingAvatar && (
                     <div
@@ -305,7 +326,7 @@ const EmployeeDetail = () => {
             </Row>
             <Row gutter={16} justify="center">
               <Col span={24}>
-                <Form.Item label="Description">
+                <Form.Item label={t("main.Description")}>
                   {editMode ? (
                       <TextArea
                           rows={4}
@@ -324,15 +345,15 @@ const EmployeeDetail = () => {
 
             <Row gutter={16} justify="center">
               <Col span={24}>
-                <Form.Item label="Projects">
+                <Form.Item label={t("main.Projects")}>
                   <Timeline mode="left">l
                     {employee?.employee?.employee_project?.map((project, index) => (
-                        <Timeline.Item key={index} label={`${moment(project?.project?.startDate).format('DD-MM-YYYY')} - ${moment(project?.project?.endDate).format('DD-MM-YYYY')}`}>
+                        <Timeline.Item key={index} label={`${moment(project?.project?.startDate).format(t('main.DD-MM-YYYY'))} - ${moment(project?.project?.endDate).format(t('main.DD-MM-YYYY'))}`}>
                           <div>
-                            <strong>Name:</strong> {project?.project?.name}
+                            <strong>{t("main.Name:")}</strong> {project?.project?.name}
                           </div>
                           <div>
-                            <strong>Role:</strong> {project?.roles?.join(', ')}
+                            <strong>{t("main.Role:")}</strong> {project?.roles?.join(', ')}
                           </div>
                         </Timeline.Item>
                     ))}
@@ -345,11 +366,11 @@ const EmployeeDetail = () => {
           <Col md={24} lg={16}>
             <Form layout="vertical">
               <Typography.Title level={3} style={{ lineHeight: "30px" }}>
-                Employee Information
+                {t("main.Employee Information")}
               </Typography.Title>
               <Row gutter={16}>
                 <Col span={12}>
-                  <Form.Item label="Employee Code">
+                  <Form.Item label={t("main.Employee Code")}>
                     <Input
                         name="code"
                         value={editMode ? editedEmployee.code : code}
@@ -359,7 +380,7 @@ const EmployeeDetail = () => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Manager Name">
+                  <Form.Item label={t("main.Manager Name")}>
 
                     {editMode ? (
                         <Select>
@@ -379,7 +400,7 @@ const EmployeeDetail = () => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Name">
+                  <Form.Item label={t("main.Name")}>
                     {editMode ? (
                         <Input
                             name="name"
@@ -398,7 +419,7 @@ const EmployeeDetail = () => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Email">
+                  <Form.Item label={t("main.Email")}>
                     {editMode ? (
                         <Input
                             name="email"
@@ -417,7 +438,7 @@ const EmployeeDetail = () => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Phone Number">
+                  <Form.Item label={t("main.Phone")}>
                     {editMode ? (
                         <Input
                             name="phone"
@@ -436,7 +457,7 @@ const EmployeeDetail = () => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Identity Card">
+                  <Form.Item label={t("main.Identity")}>
                     {editMode ? (
                         <Input
                             name="identityCard"
@@ -455,7 +476,7 @@ const EmployeeDetail = () => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Date of birth">
+                  <Form.Item label={t("main.Date of birth")}>
                     {editMode ? (
                         <DatePicker
                             value={moment(editedEmployee.dateOfBirth)}
@@ -466,7 +487,7 @@ const EmployeeDetail = () => {
 
                     ) : (
                         <Input
-                            value={moment(dateOfBirth).format("DD-MM-YYYY")}
+                            value={moment(dateOfBirth).format(t("main.DD-MM-YYYY"))}
                             style={{ maxWidth: "300px" }}
                             disabled
                         />
@@ -474,19 +495,19 @@ const EmployeeDetail = () => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Gender">
+                  <Form.Item label={t("main.Gender")}>
                     {editMode ? (
                         <Select
                             value={editedEmployee.gender}
                             style={{ maxWidth: "300px" }}
                             onChange={(value) => handleInputChange({ target: { name: "gender", value } })}
                         >
-                          <Option value="male">Male</Option>
-                          <Option value="female">Female</Option>
+                          <Option value="male">{t("main.Male")}</Option>
+                          <Option value="female">{t("main.Female")}</Option>
                         </Select>
                     ) : (
                         <Input
-                            value={{ male: "Male", female: "Female" }[gender] || ""}
+                            value={{ male: t("main.Male"), female: t("main.Female") }[gender] || ""}
                             style={{ maxWidth: "300px" }}
                             disabled
                         />
@@ -494,7 +515,7 @@ const EmployeeDetail = () => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Position">
+                  <Form.Item label={t("main.Position")}>
                     {editMode ? (
                         <Select
                             value={editedEmployee.position}
@@ -527,19 +548,19 @@ const EmployeeDetail = () => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Status">
+                  <Form.Item label={t("main.Status")}>
                     {editMode ? (
                         <Select
                             value={editedEmployee.status}
                             style={{ maxWidth: "300px" }}
                             onChange={(value) => handleInputChange({ target: { name: "status", value } })}
                         >
-                          <Option value="active">Active</Option>
-                          <Option value="inactive">Inactive</Option>
+                          <Option value="active">{t("main.Active")}</Option>
+                          <Option value="inactive">{t("main.Inactive")}</Option>
                         </Select>
                     ) : (
                         <Input
-                            value={{ active: "Active", inactive: "Inactive" }[status] || ""}
+                            value={{ active: t("main.Active"), inactive: t("main.Inactive") }[status] || ""}
                             style={{ maxWidth: "300px" }}
                             disabled
                         />
@@ -547,7 +568,7 @@ const EmployeeDetail = () => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Address">
+                  <Form.Item label={t("main.Address")}>
                     {editMode ? (
                         <Input
                             rows={4}
@@ -567,7 +588,7 @@ const EmployeeDetail = () => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Skills">
+                  <Form.Item label={t("main.Soft skill")}>
                     {editMode ? (
                         skills.map((skill, index) => (
                             <div key={index} style={{ marginBottom: '8px' }}>
@@ -575,13 +596,13 @@ const EmployeeDetail = () => {
                                   value={editedEmployee?.skills[index].name}
                                   onChange={(e) => handleSkillInputChange(e, index, 'name')}
                                   style={{ width: '120px', marginRight: '8px' }}
-                                  placeholder="Skill Name"
+                                  placeholder={t("main.Skill Name")}
                               />
                               <Input
                                   value={editedEmployee?.skills[index].exp}
                                   onChange={(e) => handleSkillInputChange(e, index, 'exp')}
                                   style={{ width: '80px', marginRight: '8px' }}
-                                  placeholder="Experience"
+                                  placeholder={t("main.Experience")}
                               />
                               <Button
                                   type="danger"
@@ -597,13 +618,13 @@ const EmployeeDetail = () => {
                               <Input
                                   value={skill.name}
                                   style={{ width: '120px', marginRight: '8px' }}
-                                  placeholder="Skill Name"
+                                  placeholder={t("main.Skill Name")}
                                   disabled
                               />
                               <Input
                                   value={skill.exp}
                                   style={{ width: '80px', marginRight: '8px' }}
-                                  placeholder="Experience"
+                                  placeholder={t("main.Experience")}
                                   disabled
                               />
                             </div>
@@ -620,7 +641,7 @@ const EmployeeDetail = () => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Language/Framework">
+                  <Form.Item label={t("main.Language/Framework")}>
                     {editMode ? (
                         langFrame.map((item, index) => (
                             <div key={index} style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
@@ -628,13 +649,13 @@ const EmployeeDetail = () => {
                                   value={item.name}
                                   onChange={(e) => handleLangFrameInputChange(e, index, 'name')}
                                   style={{ width: '120px', marginRight: '8px' }}
-                                  placeholder="Language/Framework"
+                                  placeholder={t("main.Language/Framework")}
                               />
                               <Input
                                   value={item.exp}
                                   onChange={(e) => handleLangFrameInputChange(e, index, 'exp')}
                                   style={{ width: '80px', marginRight: '8px' }}
-                                  placeholder="Experience"
+                                  placeholder={t("main.Experience")}
                               />
                               <Button
                                   type="danger"
@@ -649,19 +670,20 @@ const EmployeeDetail = () => {
                               <Input
                                   value={item.name}
                                   style={{ width: '120px', marginRight: '8px' }}
-                                  placeholder="Language/Framework"
+                                  placeholder={t("main.Language/Framework")}
                                   disabled
                               />
                               <Input
                                   value={item.exp}
                                   // onChange={(e) => handleLangFrameInputChange(e, index, 'exp')}
                                   style={{ width: '80px', marginRight: '8px' }}
-                                  placeholder="Experience"
+                                  placeholder={t("main.Experience")}
                                   disabled
                               />
                             </div>
                         ))
                     )}
+
                     {editMode && (
                         <Button
                             type="primary"
@@ -673,7 +695,7 @@ const EmployeeDetail = () => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Tech">
+                  <Form.Item label={t("main.Technology")}>
                     {editMode ? (
                         // Display input fields for editing tech
                         tech.map((item, index) => (
@@ -682,13 +704,13 @@ const EmployeeDetail = () => {
                                   value={item.name}
                                   onChange={(e) => handleTechInputChange(e, index, 'name')}
                                   style={{ width: '120px', marginRight: '8px' }}
-                                  placeholder="Tech"
+                                  placeholder={t("main.Technology")}
                               />
                               <Input
                                   value={item.exp}
                                   onChange={(e) => handleTechInputChange(e, index, 'exp')}
                                   style={{ width: '80px', marginRight: '8px' }}
-                                  placeholder="Experience"
+                                  placeholder={t("main.Experience")}
                               />
                               <Button
                                   type="danger"
@@ -705,14 +727,14 @@ const EmployeeDetail = () => {
                                   value={item.name}
                                   // onChange={(e) => handleTechInputChange(e, index, 'name')}
                                   style={{ width: '120px', marginRight: '8px' }}
-                                  placeholder="Tech"
+                                  placeholder={t("main.Technology")}
                                   disabled
                               />
                               <Input
                                   value={item.exp}
                                   // onChange={(e) => handleTechInputChange(e, index, 'exp')}
                                   style={{ width: '80px', marginRight: '8px' }}
-                                  placeholder="Experience"
+                                  placeholder={t("main.Experience")}
                                   disabled
                               />
                             </div>
@@ -736,16 +758,16 @@ const EmployeeDetail = () => {
                 <Col>
                   {editMode ? (
                       <Button type="primary" onClick={handleSaveClick}>
-                        Save
+                        {t("main.Save")}
                       </Button>
                   ) : (
                       <Button type="default" onClick={handleEditClick}>
-                        Edit
+                        {t("main.Edit")}
                       </Button>
                   )}
                 </Col>
                 <Col>
-                  <Button type="primary">Delete</Button>
+                  <Button type="primary"  onClick={handleDeleteConfirm} >{t("main.Delete")}</Button>
                 </Col>
               </Row>
             </Form>

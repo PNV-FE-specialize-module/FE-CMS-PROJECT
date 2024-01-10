@@ -3,10 +3,14 @@ import Navigation from "../Navigation";
 import HeaderContent from "../Header";
 import { Layout, Breadcrumb, theme } from "antd";
 import "../../../style/layoutDashboard.css";
+import { useTranslation} from 'react-i18next';
+
 
 const { Content, Footer } = Layout;
 
 export const LayoutDashboard = ({ children, pageTitle }) => {
+  const { t, i18n } = useTranslation();
+
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -48,7 +52,7 @@ export const LayoutDashboard = ({ children, pageTitle }) => {
             textAlign: "center",
           }}
         >
-          Ant Design ©{new Date().getFullYear()} Created by Ant UED
+          THE NINEAM ©{new Date().getFullYear()} {t("main.Created by The Nineam")}
         </Footer>
       </Layout>
     </Layout>
