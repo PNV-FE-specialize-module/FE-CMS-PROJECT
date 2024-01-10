@@ -252,7 +252,7 @@ export const ProjectDetail = () => {
     try {
       unAssignEmployee({
         employeeIds: [employeeId],
-        projectId: editedProject.id,
+        projectId: project.project.id,
       });
     } catch (error) {
       console.error("Error assigning employee:", error);
@@ -265,7 +265,7 @@ export const ProjectDetail = () => {
         assignEmployee([
           {
             employeeId: editedProject.employeeId,
-            projectId: editedProject.id,
+            projectId: project.project.id,
             roles: [editedProject.roles],
             joinDate: new Date(),
           },
