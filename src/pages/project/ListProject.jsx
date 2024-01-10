@@ -14,6 +14,7 @@ import Search from 'antd/es/input/Search';
 import { values } from 'lodash';
 import "../../style/Project.css"
 import { Content } from 'antd/es/layout/layout';
+import { useNavigate } from 'react-router';
 
 
 const ListProject = () => {
@@ -30,6 +31,7 @@ const ListProject = () => {
   };
 
   const { data: projects, isLoading, isError, error } = useGetProject(paginateOptions);
+  const navigate = useNavigate()
 
 
   const showModal = () => {
@@ -96,18 +98,6 @@ const ListProject = () => {
       key: 'endDate',
       render: (text) => new Date(text).toLocaleDateString('en-US'),
 
-    },
-    {
-      title: t('main.Action'),
-      key: 'action',
-      render: (_, record) => (
-        <Space size="middle">
-          <Link to={`/project/${record.id}`}>
-            <EyeOutlined />
-          </Link>
-          <DeleteOutlined />
-        </Space>
-      ),
     },
   ];
 
@@ -179,10 +169,18 @@ const ListProject = () => {
           Array.isArray(projects.data) && projects.data.length > 0 ? (
             <>
               <AddProject isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} data={projects.data} />
-              <Table columns={columns}
-                dataSource={projects.data}
-                rowKey={(record) => record.id} />
-            </>
+              <Table columns={columns} 
+                  onRow={(record, rowIndex) => {
+                    console.log(record);
+                    return {
+                        onClick: (event) => {
+                            navigate(`/project/${record.id}`);
+                        },
+                    };
+                }}
+                  dataSource={projects.data}
+                  rowKey={(record) => record.id} />
+                </>
           ) : (
             <div className="no-data-message">
               <Typography.Title level={5}>

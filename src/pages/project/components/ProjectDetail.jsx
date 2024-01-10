@@ -2,17 +2,16 @@ import React, { useState } from 'react'
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.css';
 import { useParams } from 'react-router-dom';
-import moment from 'moment';
 
 import { UserOutlined, PlusOutlined, CloseCircleOutlined } from '@ant-design/icons';
-import { useGetDetaiProject, useUpdateProject } from '../../../hooks/useProject';
+import { useGetDetaiProject, useUpdateProject,useDeleteProject } from '../../../hooks/useProject';
 import { Row, Col, Button, Form, Input, Typography, Card, Spin, Select, Avatar, DatePicker, Table } from 'antd';
 import { PositionEnum, StatusProjectEnum, checkProjectStatus } from '../../../components/enum/enum';
 import { useGetAllEmployee, useGetManager } from '../../../hooks/useEmployee';
 import dayjs from 'dayjs';
 import { useAssignEmployee } from '../../../hooks/useAssign';
 import { useTranslation} from 'react-i18next';
-
+import { useNavigate } from "react-router-dom";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -24,14 +23,16 @@ export const ProjectDetail = () => {
   const { id } = useParams();
   const { data: project, isLoading, isError, error } = useGetDetaiProject(id);
   const { t, i18n } = useTranslation();
-
+  const navigate= useNavigate()
 
   const { data: managers } = useGetManager();
 
   const {data: listEmployee } = useGetAllEmployee()
  
+  console.log("Data employee:", listEmployee);
 
   const updateProject = useUpdateProject(id);
+  const { mutate: deleteProject} = useDeleteProject();
   
   
   const [editMode, setEditMode] = useState(false);
@@ -154,7 +155,32 @@ export const ProjectDetail = () => {
     }));
   };
 
-
+  const handleDeleteConfirm = async () => {
+    try {
+        const result = await Swal.fire({
+            title: 'Confirmation',
+            text: 'Are you sure you want to delete this project?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Delete',
+            cancelButtonText: 'Cancel'
+        });
+  
+        if (result.isConfirmed) {
+          deleteProject(id);
+        }
+    } catch (error) {
+        Swal.fire({
+            title: 'Error',
+            text: 'Failed to delete project.',
+            icon: 'error',
+            timer: 1000,
+            showConfirmButton: false
+        });
+    }
+  };
 
   const handleSaveClick = async () => {
     try {
@@ -307,7 +333,7 @@ export const ProjectDetail = () => {
                                 onChange={(value) => handleInputChange({ target: { name: "employeeId", value } })}
                                 style={{ maxWidth: "300px" }}
                               >
-                                {listEmployee.data.map((member, index) => (
+                                {listEmployee.data?.map((member, index) => (
                                   <Option key={index} value={member.id}>
                                     <Avatar
                                       src={member.avatar ?
@@ -581,7 +607,7 @@ export const ProjectDetail = () => {
                 )}
               </Col>
               <Col>
-                <Button type="primary">{t("main.Delete")}</Button>
+                <Button type="primary" onClick={handleDeleteConfirm}>{t("main.Delete")}</Button>
               </Col>
             </Row>
           </Col>

@@ -11,7 +11,7 @@ import { useTranslation} from 'react-i18next';
 const { TextArea } = Input;
 const { Option } = Select;
 
-export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
+export const AddProject = ({isModalVisible,setIsModalVisible}) => {
   const [form] = Form.useForm();
   const [selectedManagers, setSelectedManagers] = useState([]);
   const [managerOptions, setManagerOptions] = useState([]);
@@ -84,7 +84,6 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
       });
     } catch (error) {
       console.error(t('main.Error updating employee:'), error);
-    
       // Show error alert
       Swal.fire({
         icon: 'error',

@@ -8,11 +8,13 @@ import {
 } from "../api/EmployeeApi.js";
 import { useNavigate } from "react-router";
 import { useTranslation } from 'react-i18next';
+import Swal from "sweetalert2";
+
 
 
 export const useGetAllEmployee = () => {
     return useQuery({
-        queryKey: ["EMPLOYEE"],
+        queryKey: ["EMPLOYEE_PROJECT"],
         queryFn: async () => {
             try {
                 const { data } = await getAllEmployee();
@@ -24,7 +26,6 @@ export const useGetAllEmployee = () => {
         },
     });
 };
-
 
 
 export const useGetDetailEmployee = (id) => {
@@ -82,6 +83,7 @@ export const useDeleteEmployee = () => {
     const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
 
+    const navigate = useNavigate()
     const deleteEmployee = async (employeeId) => await deleteEmployeeApi(employeeId)
 
     return useMutation(deleteEmployee, {
@@ -95,6 +97,7 @@ export const useDeleteEmployee = () => {
                     timer: 1000,
                     showConfirmButton: false
                 })
+                navigate('/listemployee')
             }
             else{
                 Swal.fire({
@@ -109,16 +112,15 @@ export const useDeleteEmployee = () => {
     });
 };
 export const useGetManager = () => {
-    const { t, i18n } = useTranslation();
 
-    return useQuery([t("main.Employee")], async () => {
+    return useQuery(["EMPLOYEE"], async () => {
         const { data } = await getManager();
         return data;
     });
 };
 
 export const useGetEmployeeTotal = (params) =>
-    useQuery([t("main.Employee Total"), params.period], async () => {
+    useQuery(["Employee Total", params.period], async () => {
         const { data } = await getTotalEmployee(params);
         return data;
     });
