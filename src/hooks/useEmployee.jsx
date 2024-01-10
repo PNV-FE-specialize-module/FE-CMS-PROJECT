@@ -7,7 +7,6 @@ import {
     updateEmployeeApi
 } from "../api/EmployeeApi.js";
 import { useNavigate } from "react-router";
-import { useTranslation } from 'react-i18next';
 import Swal from "sweetalert2";
 
 
@@ -109,7 +108,7 @@ export const useDeleteEmployee = () => {
 };
 export const useGetManager = () => {
 
-    return useQuery(["EMPLOYEE"], async () => {
+    return useQuery(["MANAGER"], async () => {
         const { data } = await getManager();
         return data;
     });
