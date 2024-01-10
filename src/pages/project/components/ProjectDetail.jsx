@@ -1,23 +1,54 @@
-import React from 'react'
-import { Row, Col, Button, Form, Input, Typography, Card, Spin, Select  } from 'antd';
-import { useGetDetaiProject } from '../../../hooks/useProject';
+import React, { useState } from 'react'
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.css';
 import { useParams } from 'react-router-dom';
-import { checkProjectStatus } from '../../../components/enum/enum';
+
+import { UserOutlined, PlusOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { useGetDetaiProject, useUpdateProject,useDeleteProject } from '../../../hooks/useProject';
+import { Row, Col, Button, Form, Input, Typography, Card, Spin, Select, Avatar, DatePicker, Table } from 'antd';
+import { PositionEnum, StatusProjectEnum, checkProjectStatus } from '../../../components/enum/enum';
+import { useGetAllEmployee, useGetManager } from '../../../hooks/useEmployee';
+import dayjs from 'dayjs';
+import { useAssignEmployee } from '../../../hooks/useAssign';
+import { useTranslation} from 'react-i18next';
+import { useNavigate } from "react-router-dom";
 
 const { TextArea } = Input;
 const { Option } = Select;
+const { Title, Text } = Typography;
 
 
 export const ProjectDetail = () => {
+
   const { id } = useParams();
   const { data: project, isLoading, isError, error } = useGetDetaiProject(id);
+  const { t, i18n } = useTranslation();
+  const navigate= useNavigate()
+
+  const { data: managers } = useGetManager();
+
+  const {data: listEmployee } = useGetAllEmployee()
+ 
+
+  const updateProject = useUpdateProject(id);
+  const { mutate: deleteProject} = useDeleteProject();
+  
+  
+  const [editMode, setEditMode] = useState(false);
+  const [editedProject, setEditedProject] = useState({});
+
+  const {mutate: assignEmployee} = useAssignEmployee();
+
+
+
+
 
   if (isLoading) {
-    return <Spin spinning={isLoading} tip="Loading..."></Spin>;
+    return <Spin spinning={isLoading} tip={t('main.Loading...')}></Spin>;
   }
 
   if (isError) {
-    return <div>Error loading project data: {error.message}</div>;
+    return <div>{t('main.Error loading project data:')} {error.message}</div>;
   }
 
   const {
@@ -31,134 +62,557 @@ export const ProjectDetail = () => {
     endDate,
     managerProject,
     employee_project
-  } = project?.project || {};
+  } = editMode ? editedProject : project?.project;
+
+
+  // console.log("Update: ",editedProject.roles)
+
+  const handleEditClick = () => {
+    setEditMode(!editMode);
+    if (!editMode) {
+      setEditedProject({ ...project?.project });
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedProject((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleStartDateChange = (date, dateString) => {
+    setEditedProject((prevState) => ({
+      ...prevState,
+      startDate: dateString,
+    }));
+  };
+
+  const handleEndDateChange = (date, dateString) => {
+    setEditedProject((prevState) => ({
+      ...prevState,
+      endDate: dateString,
+    }));
+  };
+
+
+  const handleAddLangFrame = () => {
+    console.log(editedProject)
+    setEditedProject((prevState) => ({
+      ...prevState,
+      langFrame: [
+        ...prevState.langFrame, ''
+      ],
+    }));
+  };
+
+
+
+  const handleRemoveLangFrame = (indexToRemove) => {
+    setEditedProject((prevState) => ({
+      ...prevState,
+      langFrame: prevState.langFrame.filter((_, index) => index !== indexToRemove),
+    }));
+  };
+
+  const handleLangFrameInputChange = (e, index) => {
+    const { value } = e.target;
+    setEditedProject((prevState) => ({
+      ...prevState,
+      langFrame: prevState.langFrame.map((item, i) =>
+        i === index ? value : item
+      ),
+    }));
+  };
+
+  const handleAddTech = () => {
+    console.log(editedProject)
+    setEditedProject((prevState) => ({
+      ...prevState,
+      technology: [
+        ...prevState.technology, ''
+      ],
+    }));
+  };
+
+
+  const handleRemoveTech = (indexToRemove) => {
+    setEditedProject((prevState) => ({
+      ...prevState,
+      technology: prevState.technology.filter((_, index) => index !== indexToRemove),
+    }));
+  };
+
+  const handleTechInputChange = (e, index) => {
+    const { value } = e.target;
+    setEditedProject((prevState) => ({
+      ...prevState,
+      technology: prevState.technology.map((item, i) =>
+        i === index ? value : item
+      ),
+    }));
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+        const result = await Swal.fire({
+            title: 'Confirmation',
+            text: 'Are you sure you want to delete this project?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Delete',
+            cancelButtonText: 'Cancel'
+        });
+  
+        if (result.isConfirmed) {
+          deleteProject(id);
+        }
+    } catch (error) {
+        Swal.fire({
+            title: 'Error',
+            text: 'Failed to delete project.',
+            icon: 'error',
+            timer: 1000,
+            showConfirmButton: false
+        });
+    }
+  };
+
+  const handleSaveClick = async () => {
+    try {
+      const result = await updateProject.mutateAsync(editedProject);
+
+      console.log('Mutation result:', result);
+      console.log('Employee updated successfully!');
+      setEditMode(false)
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Project updated successfully!',
+      });
+    } catch (error) {
+      console.error('Error updating project:', error);
+
+      // Show error alert
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to update project. Please try again.',
+      });
+    }
+  };
+
+  const teamMember = [
+    {
+      title: "NAME",
+      dataIndex: "name",
+      key: "name",
+      render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "ROLE",
+      dataIndex: "roles",
+      key: "roles",
+    },
+
+  ];
+
+
+  const handleAddAssignEmployee = async () => {
+    try {
+      if (editedProject.employeeId && editedProject.roles) {
+        await assignEmployee([
+          {
+            employeeId: editedProject.employeeId,
+            projectId: editedProject.id, 
+            roles: editedProject.roles,
+            joinDate: new Date(),
+          },
+        ]);
+
+      }
+    } catch (error) {
+      console.error('Error assigning employee:', error);
+    }
+  };
+
+
 
   return (
     <Card>
-      <Spin spinning={isLoading} tip="Loading...">
+      <Spin spinning={isLoading} tip={t('main.Loading...')}>
         <Row gutter={32} align="middle" justify="center">
           <Col md={24} lg={16}>
             <Form layout="vertical" >
               <Typography.Title level={3} style={{ lineHeight: "30px" }}>
-                Project Infomation
+                {t('main.Project Infomation')}
               </Typography.Title>
               <Row gutter={16}>
                 <Col span={12}>
-                  <Form.Item label="Project Name" name="name" initialValue={name}>
-                    <Input
-                      style={{ maxWidth: "300px" }}
-                    />
+                  <Form.Item label={t("main.Project Name")} name="nameProject" initialValue={name}>
+                    {
+                      editMode ? (<Input
+                        style={{ maxWidth: "300px" }}
+                        value={editedProject.name}
+                        name='name'
+                        onChange={handleInputChange}
+                      />) : (
+                        <Input
+                          style={{ maxWidth: "300px" }}
+                          value={name}
+                          disabled
+                        />
+                      )}
                   </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item label="Manager Name" name="managername" initialValue={managerProject.name}>
-                    <Input
-                      style={{ maxWidth: "300px" }}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item label="Specification" name="specification" initialValue={specification}>
-                    <Input
-                      style={{ maxWidth: "300px" }} />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item label="Status" name="status" initialValue={checkProjectStatus(status)}>
-                    <Input
-                      style={{ maxWidth: "300px" }} />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item label="Start Date" name="startDate" initialValue={new Date(startDate).toLocaleDateString('en-US')}>
-                    <Input
-                      style={{ maxWidth: "300px" }}
-                    />
+
+                  <Form.Item label={t('main.Status')}>
+                    {editMode ? (
+                      <Select
+                        value={editedProject.status}
+                        style={{ maxWidth: "300px" }}
+                        onChange={(value) => handleInputChange({ target: { name: "status", value } })}
+                      >
+                        <Option value={StatusProjectEnum.PENDING}>Pending</Option>
+                        <Option value={StatusProjectEnum.DONE}>Done</Option>
+                        <Option value={StatusProjectEnum.ON_PROGRESS}>On Progress</Option>
+                        <Option value={StatusProjectEnum.CLOSED}>Closed</Option>
+                      </Select>
+                    ) : (
+                      <Input
+                        value={checkProjectStatus(status)}
+                        style={{ maxWidth: "300px" }} disabled />
+                    )
+                    }
                   </Form.Item>
                 </Col>
 
                 <Col span={12}>
-                  <Form.Item label="End Date" name="endDate" initialValue={new Date(endDate).toLocaleDateString('en-US')}>
-                    <Input
-                      style={{ maxWidth: "300px" }}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item label="Team Member"  initialValue={employee_project}>
-                    <Select
-                      style={{ width: "300px" }}
-                      placeholder="Team Member"
-                    >
-                      {employee_project.map((member, index) => (
-                        <Option key={index} value={member.id}>
-                          {member.employee.name}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item label="LangFrame" initialValue={langFrame}>
-                  <Select
-                      style={{ width: "300px" }}
-                      placeholder="LangFrame"
-                    >
-                      {langFrame.map((item, index) => (
-                        <Option key={index} value={item.id}>
-                          {item}
-                        </Option>
-                      ))}
-                    </Select>
+                  <Form.Item label={t("main.Manager Name")} name="managername" initialValue={managerProject.name}>
+                    {editMode ? (
+                      <Select
+                        style={{ width: "300px" }}
+                        placeholder="Select Manager"
+                        defaultValue={managerProject.managerId}
+                        onChange={(value) => handleInputChange({ target: { name: 'managerId', value } })}
+                      >
+                        {managers.map(manager => (
+                          <Select.Option key={manager.id} value={manager.id}>
+                            <Avatar
+                              src={manager.avatar ? <img src={manager.avatar} alt="avatar" sizes="small" /> : <UserOutlined />}
+                              style={{ marginRight: 10 }}
+                            />
+                            {manager.name}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    ) : (
+                      <div>
+                        <Avatar
+                          src={managerProject.avatar ? <img src={managerProject.avatar} alt="avatar" size="large" /> : <UserOutlined />}
+                          style={{ marginRight: 10, height: 110, width: 110 }}
+                        />
+                        <Title level={4}>{managerProject.name}</Title>
+                      </div>
+                    )}
                   </Form.Item>
                 </Col>
 
-                <Col span={12}>
-                  <Form.Item label="Description" name="description" initialValue={description}>
-                    <TextArea
-                      rows={4} style={{width:'300px' }}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item label="Technology">
-                    <div style={{
-                      display: "flex",
-                      flexWrap: 'wrap'
-                    }}>
-                      {technology.map((item, index) => (
-                        <div
-                          key={index}
+                <Col span={24}>
+                  <Form.Item label={t("main.Team Member")}>
+                    {
+                      editMode ? (
+                        <Row gutter={24}>
+                          <Col span={12}>
+                            <Form.Item>
+                              <Select
+                                value={editedProject.employee_project.id}
+                                onChange={(value) => handleInputChange({ target: { name: "employeeId", value } })}
+                                style={{ maxWidth: "300px" }}
+                              >
+                                {listEmployee.data.map((member, index) => (
+                                  <Option key={index} value={member.id}>
+                                    <Avatar
+                                      src={member.avatar ?
+                                        <img src={member.avatar} alt="avatar" sizes="small" /> : <UserOutlined />
+                                      }
+                                    />
+                                    <Text style={{ marginLeft: 10, textTransform: "capitalize" }}>
+                                      {member.name.toLowerCase()}
+                                    </Text>
+                                  </Option>
+                                ))}
+                              </Select>
+                            </Form.Item>
+
+                            <Form.Item label={t("main.Role")}>
+                              <Select
+                                style={{ maxWidth: "300px" }}
+                                onChange={(value) => handleInputChange({ target: { name: "roles", value } })}
+                                placeholder="Select roles"
+                              >
+                                <Option value={PositionEnum.FE}>FRONT-END</Option>
+                                <Option value={PositionEnum.BE}>BACK-END</Option>
+                                <Option value={PositionEnum.FULLSTACK}>FULL STACK</Option>
+                                <Option value={PositionEnum.DEVOPS}>DEVOPS</Option>
+                                <Option value={PositionEnum.BA}>BUSSINESS ANNALIST</Option>
+                                <Option value={PositionEnum.QA}>QA</Option>
+                                <Option value={PositionEnum.UX_UI}>UX-UI</Option>
+                              </Select>
+                            </Form.Item>
+                            <Button
+                              type="primary"
+                              icon={<PlusOutlined />}
+                              onClick={handleAddAssignEmployee}
+                            >
+                            </Button>
+                          </Col>
+                          <Col span={12}>
+                            <Table
+                              className="skills-table"
+                              rowKey="name"
+
+                              dataSource={employee_project.map((member) => ({
+                                key: member.id,
+                                roles: member.roles.join(", "),
+                                ...member.employee,
+                              }))}
+
+                              style={{
+                                width: "300px",
+                                maxHeight: "200px",
+                                overflow: "auto",
+                              }}
+                              columns={[
+                                ...teamMember,
+                                {
+                                  title: "ACTION",
+                                  width: 50,
+                                  render: (record) => (
+                                    <CloseCircleOutlined
+                                      type="link"
+                                      onClick={() => {
+                                        removeTech(record.key);
+                                      }}
+                                    />
+                                  ),
+                                },
+                              ]}
+                              pagination={false}
+                            />
+
+                          </Col>
+
+                        </Row>
+                      ) : (
+                        <Table
+                          className="skills-table"
+                          rowKey="id"
+                          dataSource={employee_project.map((member) => ({
+                            key: member.id,
+                            roles: member.roles.join(", "),
+                            ...member.employee,
+                          }))}
+
                           style={{
-                            backgroundColor: "green",
-                            color: "whitesmoke",
-                            borderRadius: "4px",
-                            padding: "4px 8px",
-                            margin: "4px",
-                            maxWidth: "fit-content",
-                            opacity: 0.5
+                            width: "90%",
+                            maxHeight: "200px",
+                            overflow: "auto",
                           }}
-                        >
-                          <span style={{ marginRight: '8px' }}>{item}</span>
+                          columns={[
+                            {
+                              title: "AVARTA",
+                              dataIndex: "avatar",
+                              key: "avatar",
+                              render: (avatar) => <img src={avatar} alt="Avatar" style={{ width: 30, borderRadius: "50%" }} />,
+                            },
+                            ...teamMember,
+                          ]}
+
+                          pagination={false}
+                        />
+                      )
+                    }
+                  </Form.Item>
+                </Col>
+
+                <Col span={12}>
+                  <Form.Item label={t("main.Start Date")}>
+                    {editMode ? (
+                      <DatePicker
+                        value={editedProject.startDate ? dayjs(editedProject.startDate) : null}
+                        onChange={handleStartDateChange}
+                        format="YYYY-MM-DD"
+                        name='startDate'
+                      />
+                    ) : (
+                      <Input
+                        value={dayjs(startDate).format("YYYY-MM-DD")}
+                        style={{ maxWidth: "300px" }}
+                        disabled
+                      />
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label={t("main.End Date")}>
+                    {editMode ? (
+                      <DatePicker
+                        value={editedProject.endDate ? dayjs(editedProject.endDate) : null}
+                        onChange={handleEndDateChange}
+                        format="YYYY-MM-DD"
+                        name='endDate'
+                      />
+                    ) : (
+                      <Input
+                        value={dayjs(endDate).format("YYYY-MM-DD")}
+                        style={{ maxWidth: "300px" }}
+                        disabled
+                      />
+                    )}
+                  </Form.Item>
+                </Col>
+              
+                <Col span={24}>
+                  <Form.Item label={t("main.Description")} name="description" initialValue={description}>
+                    {
+                      editMode ? (
+                        <TextArea
+                          value={editedProject.description}
+                          rows={4} style={{ width: '90%' }}
+                          onChange={handleInputChange}
+                          name='description'
+                        />
+                      ) : (
+                        <TextArea
+                          rows={4} style={{ width: '90%' }}
+                          disabled
+                        />
+                      )
+                    }
+                  </Form.Item>
+                </Col>
+
+                <Col span={12}>
+                  <Form.Item label={t("main.Language/Framework")}>
+                    {editMode ? (
+                      langFrame.map((item, index) => (
+                        <div key={index} style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
+                          <Input
+                            value={item}
+                            onChange={(e) => handleLangFrameInputChange(e, index)}
+                            style={{ width: '120px', marginRight: '8px' }}
+                            placeholder="Language/Framework"
+                          />
+                          <Button type="danger" onClick={() => handleRemoveLangFrame(index)}>
+                            Remove
+                          </Button>
                         </div>
-                      ))}
-                    </div>
+                      ))
+                    ) : (
+                      <div style={{ width: "300px", display: "flex", flexWrap: 'wrap' }}>
+                        {langFrame.map((item, index) => (
+                          <Button
+                            key={index}
+                            style={{
+                              backgroundColor: "green",
+                              color: "whitesmoke",
+                              borderRadius: "4px",
+                              padding: "4px 8px",
+                              margin: "4px",
+                              maxWidth: "fit-content",
+                              opacity: 0.5,
+                            }}
+                            disabled
+                          >
+                            {item}
+                          </Button>
+                        ))}
+                      </div>
+                    )}
+
+                    {editMode && (
+                      <Button type="primary" onClick={handleAddLangFrame}>
+                        Add Language/Framework
+                      </Button>
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label={t("main.Technology")}>
+                    {
+                      editMode ? (
+                        technology.map((item, index) => (
+                          <div key={index} style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
+                            <Input
+                              value={item}
+                              onChange={(e) => handleTechInputChange(e, index)}
+                              style={{ width: '120px', marginRight: '8px' }}
+                              placeholder="Language/Framework"
+                            />
+                            <Button type="danger" onClick={() => handleRemoveTech(index)}>
+                              Remove
+                            </Button>
+                          </div>
+                        ))
+                      ) : (
+                        <div style={{
+                          display: "flex",
+                          flexWrap: 'wrap',
+                        }}>
+                          {technology.map((item, index) => (
+                            <Button
+                              key={index}
+                              style={{
+                                backgroundColor: "green",
+                                color: "whitesmoke",
+                                borderRadius: "4px",
+                                padding: "4px 8px",
+                                margin: "4px",
+                                maxWidth: "fit-content",
+                                opacity: 0.5,
+
+                              }}
+                              disabled
+                            >
+                              <span>{item}</span>
+                            </Button>
+                          ))}
+                        </div>
+                      )
+                    }
+
+                    {editMode && (
+                      <Button type="primary" onClick={handleAddTech}>
+                        Add Technology
+                      </Button>
+                    )}
                   </Form.Item>
                 </Col>
               </Row>
             </Form>
-            <Row gutter={10} justify="center">
+            <Row gutter={8} justify="center">
               <Col>
-                <Button type="default">Edit</Button>
+                {editMode ? (
+                  <Button type="primary" onClick={handleSaveClick} >
+                    {t("main.Save")}
+                  </Button>
+                ) : (
+                  <Button type="default" onClick={handleEditClick}>
+                    {t("main.Edit")}
+                  </Button>
+                )}
               </Col>
               <Col>
-                <Button type="primary">Delete</Button>
+                <Button type="primary" onClick={handleDeleteConfirm}>{t("main.Delete")}</Button>
               </Col>
             </Row>
           </Col>
         </Row>
       </Spin>
-    </Card>
+    </Card >
 
   )
 }

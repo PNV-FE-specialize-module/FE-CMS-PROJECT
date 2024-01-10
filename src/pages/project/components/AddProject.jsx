@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
-import "../../../style/AddProject.css";
-import { Button, DatePicker, Form, Input, Row, Col, Modal, Select } from "antd";
-import { postAddProject } from "../../../api/ProjectApi";
-import axios from "axios";
-import Swal from "sweetalert2";
-import "sweetalert2/dist/sweetalert2.css";
+import React, { useState, useEffect } from 'react';
+import "../../../style/AddProject.css"
+import { Button, DatePicker, Form, Input, Row, Col, Modal, Select } from 'antd';
+import { postAddProject } from '../../../api/ProjectApi';
+import axios from 'axios';
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.css';
+import { useTranslation} from 'react-i18next';
+
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -13,6 +15,8 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
   const [form] = Form.useForm();
   const [selectedManagers, setSelectedManagers] = useState([]);
   const [managerOptions, setManagerOptions] = useState([]);
+  const { t, i18n } = useTranslation();
+
 
   useEffect(() => {
     const fetchManagers = async () => {
@@ -74,35 +78,35 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
     try {
       const { data } = await postAddProject(values);
       Swal.fire({
-        icon: "success",
-        title: "Success",
-        text: "Employee updated successfully!",
+        icon: 'success',
+        title: t('main.Success'),
+        text: t('main.Employee updated successfully!'),
       });
     } catch (error) {
-      console.error("Error updating employee:", error);
-
+      console.error(t('main.Error updating employee:'), error);
+    
       // Show error alert
       Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Failed to update employee. Please try again.",
+        icon: 'error',
+        title: t('main.Error'),
+        text: t('main.Failed to update employee. Please try again.'),
       });
     }
   };
   return (
     <>
       <Modal
-        title="Add Project"
+        title={t("main.Add Project")}
         open={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
         footer={[
           <Button key="back" onClick={handleCancel}>
-            Cancel
+            {t("main.Cancle")}
           </Button>,
           <Button key="submit" type="primary" onClick={handleOk}>
-            Add
-          </Button>,
+            {t("main.Add")}
+          </Button>
         ]}
       >
         <Form
@@ -121,22 +125,20 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
           <Row gutter={[16, 16]}>
             <Col xs={24} sm={12}>
               <Form.Item
-                placeholder="Enter project name"
-                label="Project name"
+                placeholder={t("main.Enter project name")}
+                label={t("main.Project Name")}
                 name="name"
-                rules={[{ required: true, message: "Please enter Name!" }]}
+                rules={[{ required: true, message: t('main.Please enter project name!') }]}
               >
-                <Input placeholder="Enter project name" />
+                <Input placeholder={t("main.Enter project name")} />
               </Form.Item>
               <Form.Item
-                label="Manager"
+                label={t("main.Manager Name")}
                 name="managerId"
-                rules={[
-                  { required: true, message: "Please select a Manager!" },
-                ]}
+                rules={[{ required: true, message: t('main.Please select a Manager!') }]}
               >
                 <Select
-                  placeholder="Choose manager"
+                  placeholder={t("main.Choose manager")}
                   value={selectedManagers}
                   onChange={setSelectedManagers}
                   style={{ width: "100%" }}
@@ -150,30 +152,28 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
               </Form.Item>
 
               <Form.Item
-                label="Start Date"
+                label={t("main.Start Date")}
                 name="startDate"
-                rules={[
-                  { required: true, message: "Please select Start Date!" },
-                ]}
+                rules={[{ required: true, message: t('main.Please select Start Date!') }]}
               >
                 <DatePicker />
               </Form.Item>
               <Form.Item
-                label="End Date"
+                label={t("main.End Date")}
                 name="endDate"
-                rules={[{ required: true, message: "Please select End Date!" }]}
+                rules={[{ required: true, message: t( 'main.Please select End Date!') }]}
               >
                 <DatePicker />
               </Form.Item>
             </Col>
             <Col xs={24} sm={12}>
               <Form.Item
-                label="LangFrame"
+                label={t("main.LangFrame")}
                 name="langFrame"
                 rules={[
                   {
                     required: true,
-                    message: "Please enter Language/Framework!",
+                    message: t('main.Please enter Language/Framework!'),
                   },
                 ]}
                 wrapperCol={{ span: 14 }}
@@ -181,7 +181,7 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
                 >
                 <Select
                   mode="multiple"
-                  placeholder="Choose Languages and Framework"
+                  placeholder={t("main.Choose Languages and Framework")}
                   autoSize={{ minRows: 2, maxRows: 6 }}
                   style={{ height: 'auto', maxHeight: '100px' }}
 
@@ -196,15 +196,15 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
                 </Select>
               </Form.Item>
               <Form.Item
-                label="Technology"
+                label={t("main.Technology")}
                 name="technology"
                 rules={[
-                  { required: true, message: "Please enter Technology!" },
+                  { required: true, message: t('main.Please enter Technology!') },
                 ]}
                 wrapperCol={{ span: 14 }}
                 style={{ height: 'fit-content', display: 'flex', flexDirection: 'column' }}
               >
-                <Select mode="multiple" placeholder="Choose Technologies"
+                <Select mode="multiple" placeholder={t("main.Choose Technologies")}
                 autoSize={{ minRows: 2, maxRows: 6 }}
                 style={{ height: 'auto', maxHeight: '100px' }}>
                   <Option value="git">Git</Option>
@@ -216,13 +216,11 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
                 </Select>
               </Form.Item>
               <Form.Item
-                label="Description"
+                label={t("main.Description")}
                 name="description"
-                rules={[
-                  { required: true, message: "Please enter description" },
-                ]}
+                rules={[{ required: true, message: t('main.Please enter description') }]}
               >
-                <TextArea rows={4} placeholder="Description of project" />
+                <TextArea rows={4} placeholder={t("main.Description of project")} />
               </Form.Item>
             </Col>
           </Row>

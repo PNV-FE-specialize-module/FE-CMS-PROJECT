@@ -1,21 +1,96 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Spin, Alert, Space, Tag, Button, Col, Typography, Avatar, Tooltip } from 'antd';
+import { Table, Spin, Alert, Space, Tag, Button, Col, Select, Progress, Typography, Avatar, Tooltip } from 'antd';
 import { EyeOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { checkProjectStatus, getStatusColor } from '../../components/enum/enum';
 import { useGetProject } from '../../hooks/useProject';
-import { Link } from 'react-router-dom';
+import { useGetData, useProjectStatusUpdate } from '../../hooks/useProject';
 import AddProject from './components/AddProject';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 
 const ListProject = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const { data: projects, isLoading, isError, error } = useGetProject();
+  const [status, setStatus] = useState("");
   const { t, i18n } = useTranslation();
+  const { Option } = Select;
+  const navigate = useNavigate();
 
-  const showModal = () => {
-    setIsModalVisible(true);
+  const paginateOptions = {
+    status: status,
   };
+  const { data: projects, isLoading, isError, error } = useGetData(paginateOptions);
 
+  const projectStatusUpdateMutation = useProjectStatusUpdate();
+
+  const handleStatusChange = async (projectId, newStatus) => {
+    try {
+      console.log(newStatus); 
+      await projectStatusUpdateMutation.mutateAsync({
+        projectId,
+        status: newStatus,
+      });
+    } catch (error) {
+      console.error("Error updating project status:", error);
+    }
+  };
+  // const filterProjectsByStatus = (status) => {
+  //   if (!projects || !projects.data) {
+  //     return [];
+  //   }
+  //   if (status === "") {
+  //     return projects.data;
+  //   }
+  //   return projects.data.filter((project) => project.status === status);
+  // };
+
+  const Circleprogress = ({ project }) => {
+    if (project.status === 'pending') {
+      return (
+        <Progress
+          type="circle"
+          percent={0}
+          width={50}
+          format={() => `0%`}
+        />
+      );
+    }
+
+    if (project.status === 'done') {
+      return (
+        <Progress
+          type="circle"
+          percent={100}
+          width={50}
+          format={() => '100%'}
+        />
+      );
+    }
+    if (project.status === 'on_progress') {
+      const startDate = new Date(project.startDate).getTime();
+      const endDate = new Date(project.endDate).getTime();
+      const currentTime = new Date().getTime();
+
+      const totalDuration = endDate - startDate;
+      const elapsedTime = currentTime - startDate;
+      const process = Math.min((elapsedTime / totalDuration) * 100);
+      return (
+        <Progress
+          type="circle"
+          percent={process}
+          width={50}
+          format={() => `${process.toFixed(2)}%`}
+        />
+      );
+    }
+    return (
+      <Progress
+        type="circle"
+        percent={project.process || 0}
+        width={50}
+        format={() => `${project.process}%`}
+      />
+    );
+  };
   const columns = [
     {
       title: t('main.Name'),
@@ -24,7 +99,7 @@ const ListProject = () => {
       render: (text) => <span style={{ fontWeight: 'bold',fontSize:'16px' }}>{text}</span>,
     },    
     {
-      title: 'Manager Project',
+      title: t('main.Manager Project'),
       dataIndex: 'managerProject',
       key: 'managerProject',
       render: (managerProject) => (
@@ -39,7 +114,7 @@ const ListProject = () => {
       ),
     },
     {
-      title: 'Technology',
+      title: t('main.Technology'),
       key: 'technology',
       dataIndex: 'technology',
       render: (text, record) => (
@@ -59,7 +134,7 @@ const ListProject = () => {
       ),
     },
     {
-      title: 'Members',
+      title: t('main.Members'),
       key: 'members',
       dataIndex: 'employee_project',
       render: (employeeProject) => (
@@ -82,61 +157,117 @@ const ListProject = () => {
       ),
     },
     {
-      title: ('Proccess'),
-      dataIndex: 'proccess',
-      key: 'proccess',
-      render: (text) => <span style={{ fontWeight: 'bold',fontSize:'16px' }}>{text}</span>,
-    }, 
+      title: t('main.Process'),
+      dataIndex: 'process',
+      key: 'process',
+      render: (text, project) => (
+        <Col span={4}>
+          <div
+            className="circle-progress"
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Circleprogress project={project} />
+          </div>
+        </Col>
+      ),
+      with: 100,
+    },
     {
-      title: 'Status',
+      title: t('main.Status'),
       dataIndex: 'status',
       key: 'status',
-      render: (text, record) => {
-        const color = getStatusColor(record.status);
-        return <Tag color={color}>{checkProjectStatus(record.status)}</Tag>;
-      },
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      render: (_, record) => (
-        <Space size="middle">
-          <Link to={`/project/${record.id}`}>
-            <EyeOutlined />
-          </Link>
-          <DeleteOutlined />
-        </Space>
+      render: (text, project) => (
+        <Col span={3}>
+          <Space wrap>
+            <Select
+              defaultValue={project.status}
+              style={{
+                width: 100,
+              }}
+              onChange={(newStatus) => {
+                handleStatusChange(project.id, newStatus);
+              }}
+            >
+              <Option value="pending">{t('main.Pending')}</Option>
+              <Option value="on_progress">{t('main.On Progress')}</Option>
+              <Option value="done">{t('main.Done')}</Option>
+              <Option value="closed" disabled>
+              {t('main.Closed')}
+              </Option>
+            </Select>
+          </Space>
+        </Col>
       ),
     },
+    {
+      title: t('main.Start Date'),
+      dataIndex: 'startDate',
+      key: 'startDate',
+      render: (text) => new Date(text).toLocaleDateString('en-US'),
+    },
+    {
+      title: t('main.End Date'),
+      dataIndex: 'endDate',
+      key: 'endDate',
+      render: (text) => new Date(text).toLocaleDateString('en-US'),
+    },
   ];
-
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const handleStatusClick = (status) => {
+    setSelectedStatus(status);
+  };
   return (
-    <Spin spinning={isLoading} tip="Loading...">
-      {isError && <Alert message={error.message} type="error" />}
-      {projects && projects.data ? (
-        Array.isArray(projects.data) && projects.data.length > 0 ? (
-          <>
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              style={{ float: 'right', margin: '10px' }}
-              onClick={showModal}
-            >
-              Add Project
-            </Button>
-            <AddProject isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} data={projects.data} />
-            <Table columns={columns}
-              dataSource={projects.data}
-              rowKey={(record) => record.id} />
-          </>
+    <div>
+      <Spin spinning={isLoading} tip={t('main.Loading...')}>
+        {isError && <Alert message={error.message} type="error" />}
+        {projects && projects.data ? (
+          Array.isArray(projects.data) && projects.data.length > 0 ? (
+            <>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                style={{ float: 'right', margin: '10px' }}
+                onClick={() => setIsModalVisible(true)}
+              >
+                {t('main.Add Project')}
+              </Button>
+              <div className="status">
+                <Button type="secondary" onClick={() => handleStatusClick("")}
+                 style={{ backgroundColor: selectedStatus === "" ? '#5D5FEF' : '', color: selectedStatus === "" ? '#FFF' : '' }}>
+                  {t('main.All Status')}
+                </Button>
+                <Button type="secondary" onClick={() => handleStatusClick("pending")}
+                 style={{ backgroundColor: selectedStatus === "pending" ? '#5D5FEF' : '', color: selectedStatus === "pending" ? '#FFF' : '' }}>
+                  {t('main.Pending')}
+                </Button>
+                <Button type="secondary" onClick={() => handleStatusClick("on_progress")}
+                 style={{ backgroundColor: selectedStatus === "on_progress" ? '#5D5FEF' : '', color: selectedStatus === "on_progress" ? '#FFF' : '' }}>
+                 {t('main.On Progress')}
+                </Button>
+                <Button type="secondary" onClick={() => handleStatusClick("done")}
+                 style={{ backgroundColor: selectedStatus === "done" ? '#5D5FEF' : '', color: selectedStatus === "done" ? '#FFF' : '' }}>
+                  {t('main.Done')}
+                </Button>
+              </div>
+              <AddProject isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} data={projects.data} />
+              <Table
+                columns={columns}
+                dataSource={projects.data.filter((project) => !selectedStatus || project.status === selectedStatus)}
+                rowKey={(record) => record.id}
+              />
+            </>
+          ) : (
+            <p>{t('main.No data to display')}</p>
+          )
         ) : (
-          <p>No data to display</p>
-        )
-      ) : (
-        <p>Loading...</p>
-      )}
-    </Spin>
+          <p>{t('main.Loading...')}</p>
+        )}
+      </Spin>
+    </div>
   );
 };
-
 export default ListProject;

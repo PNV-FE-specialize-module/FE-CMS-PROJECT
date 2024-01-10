@@ -1,27 +1,49 @@
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     addEmployeeApi,
     deleteEmployeeApi,
+    getAllEmployee,
     getDetailEmployee, getManager, getTotalEmployee,
     updateEmployeeApi
 } from "../api/EmployeeApi.js";
-import {useNavigate} from "react-router";
+import { useNavigate } from "react-router";
+import { useTranslation } from 'react-i18next';
 import Swal from "sweetalert2";
 
-export const useGetDetailEmployee = (id) => {
+
+export const useGetAllEmployee = () => {
     return useQuery({
-        queryKey: ["EMPLOYEE", id],
+        queryKey: ["EMPLOYEE"],
         queryFn: async () => {
             try {
-                const { data } = await getDetailEmployee(id);
+                const { data } = await getAllEmployee();
                 return data;
             } catch (error) {
                 console.error("Error:", error);
                 throw error;
             }
+        },
+    });
+};
+
+
+
+export const useGetDetailEmployee = (id) => {
+    const { t, i18n } = useTranslation();
+    return useQuery({
+        queryKey: [t("main.Employee"), id],
+        queryFn: async () => {
+            try {
+                const { data } = await getDetailEmployee(id);
+                return data;
+            } catch (error) {
+                console.error(t("main.Error:"), error);
+                throw error;
+            }
         }
     });
 };
+
 export const useCreateEmployee = () => {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
@@ -29,7 +51,7 @@ export const useCreateEmployee = () => {
         (newEmployee) => addEmployeeApi(newEmployee),
         {
             onSuccess: () => {
-                queryClient.invalidateQueries(["EMPLOYEE"]);
+                queryClient.invalidateQueries([t("main.Employee")]);
                 navigate("/listemployee")
 
             },
@@ -47,7 +69,7 @@ export const useUpdateEmployee = (id) => {
         (params) => updateEmployeeApi(id, params),
         {
             onSuccess: () => {
-                queryClient.invalidateQueries('employee');
+                queryClient.invalidateQueries('EMPLOYEE');
             },
         }
     );
@@ -56,8 +78,7 @@ export const useUpdateEmployee = (id) => {
 };
 
 export const useDeleteEmployee = () => {
-    const queryClient = useQueryClient();
-
+    const navigate = useNavigate()
     const deleteEmployee = async (employeeId) => await deleteEmployeeApi(employeeId)
 
     return useMutation(deleteEmployee, {
@@ -71,6 +92,7 @@ export const useDeleteEmployee = () => {
                     timer: 1000,
                     showConfirmButton: false
                 })
+                navigate('/listemployee')
             }
             else{
                 Swal.fire({
@@ -84,14 +106,17 @@ export const useDeleteEmployee = () => {
         },
     });
 };
-export const useGetManager = () =>
-    useQuery(["EMPLOYEE"], async () => {
+export const useGetManager = () => {
+    const { t, i18n } = useTranslation();
+
+    return useQuery([t("main.Employee")], async () => {
         const { data } = await getManager();
         return data;
     });
+};
 
 export const useGetEmployeeTotal = (params) =>
-    useQuery(["EMPLOYEE_TOTAL", params.period], async () => {
+    useQuery([t("main.Employee Total"), params.period], async () => {
         const { data } = await getTotalEmployee(params);
         return data;
     });
