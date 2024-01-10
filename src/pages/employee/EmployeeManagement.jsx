@@ -8,6 +8,7 @@ import {Link} from "react-router-dom";
 import {useNavigate} from "react-router";
 import { useTranslation} from 'react-i18next';
 
+const BASE_URL = import.meta.env.VITE_BASE_URL_API;
 
 
 const ShowEmployees = () => {
@@ -135,7 +136,7 @@ const ShowEmployees = () => {
     const [employees, setEmployees] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:3000/employee')
+        axios.get(`${BASE_URL}/employee`)
             .then(response => {
                 setEmployees(response.data.data);
             })
