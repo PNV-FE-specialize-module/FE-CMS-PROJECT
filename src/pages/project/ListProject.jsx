@@ -15,7 +15,7 @@ const ListProject = () => {
   const showModal = () => {
     setIsModalVisible(true);
   };
-  
+
 
   const columns = [
     {
@@ -83,7 +83,7 @@ const ListProject = () => {
       <Spin spinning={isLoading} tip={t('main.Loading...')}>
         {isError && <Alert message={error.message} type="error" />}
         {projects && projects.data ? (
-            Array.isArray(projects.data) && projects.data.length > 0 ? (
+            Array.isArray(projects.data)  ? (
                 <>
                     <Button
                         type="primary"
@@ -102,7 +102,7 @@ const ListProject = () => {
                             navigate(`/project/${record.id}`);
                         },
                     };
-                }} 
+                }}
                   dataSource={projects.data}
                   rowKey={(record) => record.id} />
                 </>
