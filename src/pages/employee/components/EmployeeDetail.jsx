@@ -8,7 +8,6 @@ import {
 } from "../../../hooks/useEmployee.jsx";
 import {Row, Col, Button, Form, Input, Typography, Card, Select, message, Space, Timeline, DatePicker} from 'antd';
 import moment from "moment";
-import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.css';
 import { useTranslation} from 'react-i18next';
 
@@ -17,6 +16,7 @@ import { Cloudinary } from "@cloudinary/url-gen";
 import axios from "axios";
 import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
 import {useNavigate} from "react-router";
+import Swal from 'sweetalert2';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -46,7 +46,7 @@ const EmployeeDetail = () => {
   if (isError) {
     return <div>{t("main.404 Not Found")}</div>;
   }
-
+ 
   const disabledDate = (current) => {
     return current && current > moment().endOf(t('main.day'));
   };
@@ -66,7 +66,6 @@ const EmployeeDetail = () => {
 
         if (result.isConfirmed) {
           deleteEmployee(id);
-          navigate('/listemployee')
         }
     } catch (error) {
         Swal.fire({
@@ -214,7 +213,8 @@ const EmployeeDetail = () => {
       formData.append("upload_preset", "ay2jrgsp");
 
       try {
-        const res = await axios.post("https://api.cloudinary.com/v1_1/da9hiv52w/image/upload",
+        const res = await axios.post(
+            "https://api.cloudinary.com/v1_1/da9hiv52w/image/upload",
             formData,
         );
 
@@ -607,7 +607,7 @@ const EmployeeDetail = () => {
                                   value={editedEmployee?.skills[index].exp}
                                   onChange={(e) => handleSkillInputChange(e, index, 'exp')}
                                   style={{ width: '80px', marginRight: '8px' }}
-                                  placeholder="Experience"
+                                  placeholder={t("main.Experience")}
                               />
                               <Button
                                   type="danger"
