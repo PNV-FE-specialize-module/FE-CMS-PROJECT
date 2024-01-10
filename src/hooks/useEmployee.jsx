@@ -31,7 +31,7 @@ export const useGetAllEmployee = () => {
 export const useGetDetailEmployee = (id) => {
     const { t, i18n } = useTranslation();
     return useQuery({
-        queryKey: [t("main.Employee"), id],
+        queryKey: ['Employee', id],
         queryFn: async () => {
             try {
                 const { data } = await getDetailEmployee(id);
@@ -51,7 +51,7 @@ export const useCreateEmployee = () => {
         (newEmployee) => addEmployeeApi(newEmployee),
         {
             onSuccess: () => {
-                queryClient.invalidateQueries([t("main.Employee")]);
+                queryClient.invalidateQueries(['Employee']);
                 navigate("/listemployee")
 
             },
@@ -69,7 +69,7 @@ export const useUpdateEmployee = (id) => {
         (params) => updateEmployeeApi(id, params),
         {
             onSuccess: () => {
-                queryClient.invalidateQueries('EMPLOYEE');
+                queryClient.invalidateQueries(['EMPLOYEE']);
             },
         }
     );
@@ -107,16 +107,15 @@ export const useDeleteEmployee = () => {
     });
 };
 export const useGetManager = () => {
-    const { t, i18n } = useTranslation();
 
-    return useQuery([t("main.Employee")], async () => {
+    return useQuery(['Project'], async () => {
         const { data } = await getManager();
         return data;
     });
 };
 
 export const useGetEmployeeTotal = (params) =>
-    useQuery([t("main.Employee Total"), params.period], async () => {
+    useQuery(["Project Total", params.period], async () => {
         const { data } = await getTotalEmployee(params);
         return data;
     });

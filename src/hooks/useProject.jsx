@@ -10,7 +10,7 @@ import Swal from "sweetalert2";
 export const useGetProject = () => {
     const { t, i18n } = useTranslation();
     return useQuery({
-        queryKey: [t("main.Project")],
+        queryKey: ['Project'],
         queryFn: async () => {
             try {
                 const { data } = await getprojects();
@@ -26,7 +26,7 @@ export const useGetProject = () => {
 export const useGetDetaiProject = (id) => {
     const { t, i18n } = useTranslation();
     return useQuery({
-        queryKey: [t("main.Project"), id],
+        queryKey: ['Project_Detail', id],
         queryFn: async () => {
             try {
                 const { data } = await getDetailProject(id);
@@ -59,7 +59,6 @@ export const useDeleteProject = () => {
     const deleteProject= async (employeeId) => await deleteProjectApi(employeeId)
     return useMutation(deleteProject, {
         onSuccess: (data) => {
-            console.log(data);
             const check = data.data.message=='Employee deletion successful'
 
             if(check){

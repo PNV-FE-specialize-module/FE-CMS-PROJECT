@@ -112,8 +112,8 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
         <Form
           form={form}
           labelCol={{
-            xs: { span: 6 },
-            sm: { span: 6 },
+            xs: { span: 8 },
+            sm: { span: 8 },
           }}
           wrapperCol={{
             xs: { span: 24 },
@@ -224,6 +224,7 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
               </Form.Item>
             </Col>
           </Row>
+        {/* Assign member here */}
           <Row gutter={[2, 2]}>
             <Col span={24}></Col>
           </Row>
