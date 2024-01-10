@@ -98,8 +98,6 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
       <Modal
         title={t("main.Add Project")}
         open={isModalVisible}
-        title="Add Project"
-        open={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
         footer={[
