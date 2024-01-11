@@ -100,7 +100,7 @@ const Login = () => {
             rules={[{ required: true, message:" Password is required" }]}
             style={{ fontWeight: "500" }}
           >
-            <Input.Password style={{height:35, minWidth: '100%'}}/>
+            <Input.Password placeholder="Enter your password" style={{height:35, minWidth: '100%'}}/>
           </Form.Item>
           <Flex justify="space-between">
             <Form.Item name="remember" valuePropName="checked">

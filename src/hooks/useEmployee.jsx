@@ -115,16 +115,17 @@ export const useDeleteEmployee = () => {
     const deleteEmployee = async (employeeId) => await deleteEmployeeApi(employeeId)
 
     return useMutation(deleteEmployee, {
-        onSuccess: (data) => {
+        onSuccess: async (data) => {
             const check = data.data.message=='Employee deletion successful'
             if(check){
-                Swal.fire({
+                await Swal.fire({
                     title: 'Success',
                     text: data.data.message,
                     icon: 'success',
                     timer: 1000,
                     showConfirmButton: false
-                })
+                });
+                navigate('/listemployee')
             }
             else{
                 Swal.fire({

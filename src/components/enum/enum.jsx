@@ -2,7 +2,7 @@ export const StatusProjectEnum = {
     PENDING: 'pending',
     DONE: 'done',
     ON_PROGRESS: 'on_progress',
-    CLOSED: 'closed',
+    // CLOSED: 'closed',
   };
 
 export const  PositionEnum = {

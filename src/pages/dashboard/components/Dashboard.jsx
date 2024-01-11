@@ -39,8 +39,6 @@ const Dashboard = () => {
       : [];
 
   const dates = Object.keys(projectCountJoin || {});
-  console.log(employeeTotal,'s')
-  console.log(projectTotal,'q')
 
 
   const formattedDates = dates.map((date) => {
@@ -80,7 +78,7 @@ const Dashboard = () => {
       },
       xaxis: {
         type: "datetime",
-        categories: formattedDates,
+        categories: dates,
       },
       tooltip: {
         x: {
@@ -314,3 +312,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+

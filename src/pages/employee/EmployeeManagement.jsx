@@ -392,11 +392,7 @@ const ShowEmployees = () => {
         return positionMap[position] || 'N/A';
       };
 
-    // const handleTableChange = (pagination) => {
-    //     setPagination(pagination);
-    // };
-
-
+    
     const employeesWithStatus = listEmployee?.data.map(employee => ({
         key: employee.id,
         avatar: employee.avatar,
@@ -405,7 +401,8 @@ const ShowEmployees = () => {
         tech: employee.tech,
         position: employee.position,
         status: employee.status,
-        employee_project: employee.employee_project
+        employee_project: employee.employee_project,
+        manager: employee.manager || null
     }));
     return (
         <>

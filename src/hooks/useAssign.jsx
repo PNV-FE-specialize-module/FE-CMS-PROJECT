@@ -1,5 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import { postAssignApi, unAssignAPI } from "../api/AssignApi";
+import { postAssignApi, unAssignAPI, updateAssign } from "../api/AssignApi";
 
 export const useUnassignEmployee = () => {
     
@@ -29,6 +29,22 @@ export const useAssignEmployee = () => {
                 queryClient.invalidateQueries(["EMPLOYEE_PROJECT"]);
                 await queryClient.refetchQueries(['PROJECT_DETAIL']);
         },
+        }
+    );
+
+    return mutation;
+};
+
+export const useUpdateAssign = () => {
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation(
+        (params) => updateAssign(params.id, params.body),
+        {
+            onSuccess: async () => {
+                queryClient.invalidateQueries(['EMPLOYEE_PROJECT']);
+                await queryClient.refetchQueries(['PROJECT_DETAIL']);
+            },
         }
     );
 

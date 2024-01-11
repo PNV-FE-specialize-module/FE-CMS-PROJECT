@@ -18,9 +18,15 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
   const { data: managers } = useGetManager();
   const { mutate: addProject } = useAddProject();
 
-  const disabledDate = (current) => {
+  const disabledStartDate = (current) => {
     const today = moment();
     return current && current.isBefore(today.startOf('day'));
+  };
+  
+  const disabledEndDate = (current) => {
+    const today = moment();
+    const startDateValue = form.getFieldValue('startDate'); 
+    return current && (current.isBefore(today.startOf('day')) || current.isBefore(startDateValue));
   };
   const handleOk = () => {
     form
@@ -116,14 +122,14 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
                 name="startDate"
                 rules={[{ required: true, message: t('main.Please select Start Date!') }]}
               >
-               <DatePicker disabledDate={disabledDate} />
+               <DatePicker disabledDate={disabledStartDate} />
               </Form.Item>
               <Form.Item
                 label={t("main.End Date")}
                 name="endDate"
                 rules={[{ required: true, message: t( 'main.Please select End Date!') }]}
               >
-                <DatePicker disabledDate={disabledDate} />
+                <DatePicker disabledDate={disabledEndDate } />
               </Form.Item>
             </Col>
             <Col xs={24} sm={12}>
