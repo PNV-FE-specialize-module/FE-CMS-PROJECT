@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Layout, Menu, Modal, Typography } from "antd";
 import menuItem from "../Menu";
@@ -28,22 +28,30 @@ function Navigation() {
     localStorage.removeItem("user");
     setIsLogin(false);
   };
-
+  useEffect(() => {
+    const handleWindowResize = () => {
+      const isLargeScreen = window.innerWidth > 1024;
+      setCollapsed(!isLargeScreen);
+    };
+    window.addEventListener('resize', handleWindowResize);
+    handleWindowResize();
+    return () => {
+      window.removeEventListener('resize', handleWindowResize);
+    };
+  }, []);
   return (
     <Sider
       style={{ background: "#ffffff" }}
-      collapsible
-      collapsed={collapsed}
-      onCollapse={(value) => setCollapsed(value)}
+      collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}
     >
       <div className="demo-logo-vertical">
         <img
           src={userImage}
           alt="User"
           style={{
-            width: "auto", // Đặt kích thước tùy ý
-            height: "50px", // Đặt kích thước tùy ý
-            borderRadius: "50%", // Để bo góc và tạo hình tròn nếu muốn
+            width: "auto",
+            height: "50px", 
+            borderRadius: "50%", 
           }}
         />
 

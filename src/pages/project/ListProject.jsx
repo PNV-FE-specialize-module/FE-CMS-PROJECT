@@ -3,6 +3,7 @@ import {  PlusOutlined } from "@ant-design/icons";
 import React, { useState } from 'react';
 import { useGetData, useProjectStatusUpdate } from '../../hooks/useProject';
 import AddProject from './components/AddProject';
+import "../../style/ListProject.css"
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -111,25 +112,26 @@ const ListProject = () => {
       dataIndex: 'technology',
       render: (text, record) => (
         <Link to={`/project/${record.id}`}>
-        <>
-          {record.technology.map((tag) => {
-            let color = tag.length > 5 ? 'geekblue' : 'green';
-            if (tag === 'loser') {
-              color = 'volcano';
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
+          <>
+            {record.technology.map((tag) => {
+              let color = tag.length > 5 ? 'geekblue' : 'green';
+              if (tag === 'loser') {
+                color = 'volcano';
+              }
+              return (
+                <Tag color={color} key={tag}>
+                  {tag.toUpperCase()}
+                </Tag>
+              );
+            })}
+          </>
         </Link>
       ),
     },
     {
       title: t('main.Members'),
       key: 'members',
+      className:"colunm-member",
       dataIndex: 'employee_project',
       render: (employeeProject, record) => (
         <Link to={`/project/${record.id}`}>
@@ -158,7 +160,7 @@ const ListProject = () => {
       key: 'process',
       render: (text, project,record) => (
         <Link to={`/project/${record.id}`}style={{ color: 'black' }}>
-        <Col span={4}>
+        <Col span={20}>
           <div
             className="circle-progress"
             style={{
@@ -172,11 +174,11 @@ const ListProject = () => {
         </Col>
         </Link>
       ),
-      with: 100,
     },
     {
       title: t('main.Status'),
       dataIndex: 'status',
+      className:"colunm-status",
       key: 'status',
       render: (text, project) => (
         <Col span={3}>
@@ -214,10 +216,6 @@ const ListProject = () => {
       render: (text,record) => <Link to={`/project/${record.id}`}style={{ color: 'black' }}> {new Date(text).toLocaleDateString('en-US')}</Link> 
     },
   ];
-  // const [selectedStatus, setSelectedStatus] = useState("");
-  // const handleStatusClick = (status) => {
-  //   setSelectedStatus(status);
-  // };
   return (
     <div>
       <Spin spinning={isLoading} tip={t('main.Loading...')}>
@@ -234,7 +232,9 @@ const ListProject = () => {
                       {t('main.Add Project')}
                     </Button>
                     <AddProject isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} data={projects.data}/>
-                  <Table columns={columns}
+                  <Table
+                  className="custom-table"
+                  columns={columns}
                   dataSource={projects.data}
                   rowKey={(record) => record.id} />
                 </>

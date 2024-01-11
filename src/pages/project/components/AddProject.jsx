@@ -3,6 +3,7 @@ import "../../../style/AddProject.css"
 import { Button, DatePicker, Form, Input, Row, Col, Modal, Select } from 'antd';
 import { postAddProject } from '../../../api/ProjectApi';
 import axios from 'axios';
+import moment from 'moment';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.css';
 import { useTranslation} from 'react-i18next';
@@ -17,7 +18,11 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
   const [managerOptions, setManagerOptions] = useState([]);
   const { t, i18n } = useTranslation();
 
+  const disabledDate = (current) => {
+    const today = moment();
 
+    return current && current.isBefore(today.startOf('day'));
+  };
   useEffect(() => {
     const fetchManagers = async () => {
       try {
@@ -156,14 +161,14 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
                 name="startDate"
                 rules={[{ required: true, message: t('main.Please select Start Date!') }]}
               >
-                <DatePicker />
+               <DatePicker disabledDate={disabledDate} />
               </Form.Item>
               <Form.Item
                 label={t("main.End Date")}
                 name="endDate"
                 rules={[{ required: true, message: t( 'main.Please select End Date!') }]}
               >
-                <DatePicker />
+                <DatePicker disabledDate={disabledDate} />
               </Form.Item>
             </Col>
             <Col xs={24} sm={12}>
