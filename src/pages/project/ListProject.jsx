@@ -49,7 +49,6 @@ const ListProject = () => {
 
   const handleStatusChange = async (projectId, newStatus) => {
     try {
-      console.log(newStatus); 
       await projectStatusUpdateMutation.mutateAsync({
         projectId,
         status: newStatus,
@@ -88,9 +87,6 @@ const ListProject = () => {
       const totalDuration = endDate - startDate;
       const elapsedTime = currentTime - startDate;
       const process = Math.min((elapsedTime / totalDuration) * 100);
-      console.log(startDate, endDate, currentTime)
-      console.log( totalDuration,'aa')
-      console.log( elapsedTime,'aaaaa')
 
       return (
         <Progress
