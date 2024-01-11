@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {Space, Table, Avatar, Input, Button, Flex} from 'antd';
-import {PlusOutlined, SearchOutlined} from '@ant-design/icons';
+import { Space, Table, Avatar, Input, Button, Flex } from 'antd';
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import axios from 'axios';
 import "../../style/EmployeeManagement.css";
-import {Link} from "react-router-dom";
-import {useNavigate} from "react-router";
-import { useTranslation} from 'react-i18next';
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router";
+import { useTranslation } from 'react-i18next';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL_API;
 
@@ -15,8 +15,14 @@ const ShowEmployees = () => {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const searchInput = useRef(null);
-    const navigate= useNavigate()
+    const navigate = useNavigate()
     const { t, i18n } = useTranslation();
+
+    //Searchy
+
+
+
+
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
@@ -34,7 +40,7 @@ const ShowEmployees = () => {
                     padding: 8,
                 }}
                 onKeyDown={(e) => e.stopPropagation()}
-                >
+            >
                 <Input
                     ref={searchInput}
                     placeholder={`Search ${dataIndex}`}
@@ -116,7 +122,7 @@ const ShowEmployees = () => {
                     searchWords={[searchText]}
                     autoEscape
                     textToHighlight={text ? text.toString() : ''}
-                    />
+                />
             ) : (
                 text
             ),
@@ -157,100 +163,106 @@ const ShowEmployees = () => {
     );
     const [showAllLangFrames, setShowAllLangFrames] = useState(false);
     const [showAllTechs, setShowAllTechs] = useState(false);
-  
+
     const handleLangFrameHover = () => {
-      setShowAllLangFrames(true);
+        setShowAllLangFrames(true);
     };
-  
+
     const handleTechHover = () => {
-      setShowAllTechs(true);
+        setShowAllTechs(true);
     };
     const renderLangFrames = (langFrames) => {
         const visibleLangFrames = showAllLangFrames ? langFrames : langFrames.slice(0, 2);
-      
-        return (
-          <>
-          <Flex wrap='wrap' gap={3} >
-            {visibleLangFrames.map((langFrame, index) => (
-              <React.Fragment key={index}>
-                <Flex  vertical wrap='wrap' align='center'>
-                <span style={{ color: '#1d39c4', background: '#f0f5ff', border: '1px solid #adc6ff', padding: '5px', borderRadius:'3px'}}>
-                  {langFrame.name} 
-                </span>
-                <p style={{color:'gray'}}>{langFrame.exp} year</p>
-                </Flex>
-                {(index + 1) % 2 === 0 && <br style={{ lineHeight: '30px' }} />}
-              </React.Fragment>
-            ))}
-            </Flex>
-            {!showAllLangFrames && langFrames.length > 2 && (
-               <span
-               style={{
-               display: 'flex', 
-               justifyContent: 'center', 
-               alignItems: 'center',
-               width: '20px',
-               height: '20px',
-               color: '#1d39c4',
-               cursor: 'pointer',
-               border: '1px solid #1d39c4',
-               borderRadius: '50%',
-               }}
-               onMouseOver={handleLangFrameHover}
-           >
-               +
-           </span>
-            )}
-          </>
-        );
-      };
-      
-      const renderTechs = (techs) => {
-        const visibleTechs = showAllTechs ? techs : techs.slice(0, 2);
+
         return (
             <>
-            <Flex wrap='wrap' gap={3} >
-              {visibleTechs.map((tech, index) => (
-                <React.Fragment key={index}>
-                  <Flex  vertical wrap='wrap' align='center'>
-                  <span style={{ color: '#1d39c4', background: '#f0f5ff', border: '1px solid #adc6ff', padding: '5px', borderRadius:'3px'}}>
-                    {tech.name} 
-                  </span>
-                  <p style={{color:'gray'}}>{tech.exp} year</p>
-                  </Flex>
-                  {(index + 1) % 2 === 0 && <br style={{ lineHeight: '30px' }} />}
-                </React.Fragment>
-              ))}
-              </Flex>
-              {!showAllTechs && techs.length > 2 && (
-                <span
-                    style={{
-                    display: 'inline-flex', 
-                    justifyContent: 'center', 
-                    alignItems: 'center',
-                    width: '18px',
-                    height: '18px',
-                    color: '#1d39c4',
-                    cursor: 'pointer',
-                    border: '1px solid #1d39c4',
-                    borderRadius: '50%',
-                    }}
-                    onMouseOver={handleTechHover}
-                >
-                    +
-                </span>
+                <Flex wrap='wrap' gap={3} >
+                    {visibleLangFrames.map((langFrame, index) => (
+                        <React.Fragment key={index}>
+                            <Flex vertical wrap='wrap' align='center'>
+                                <span style={{ color: '#1d39c4', background: '#f0f5ff', border: '1px solid #adc6ff', padding: '5px', borderRadius: '3px' }}>
+                                    {langFrame.name}
+                                </span>
+                                <p style={{ color: 'gray' }}>{langFrame.exp} year</p>
+                            </Flex>
+                            {(index + 1) % 2 === 0 && <br style={{ lineHeight: '30px' }} />}
+                        </React.Fragment>
+                    ))}
+                </Flex>
+                {!showAllLangFrames && langFrames.length > 2 && (
+                    <span
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            width: '20px',
+                            height: '20px',
+                            color: '#1d39c4',
+                            cursor: 'pointer',
+                            border: '1px solid #1d39c4',
+                            borderRadius: '50%',
+                        }}
+                        onMouseOver={handleLangFrameHover}
+                    >
+                        +
+                    </span>
                 )}
             </>
-          );
-        };
-      
+        );
+    };
+
+    const renderTechs = (techs) => {
+        const visibleTechs = showAllTechs ? techs : techs.slice(0, 2);
+
+
+
+
+
+
+        return (
+            <>
+                <Flex wrap='wrap' gap={3} >
+                    {visibleTechs.map((tech, index) => (
+                        <React.Fragment key={index}>
+                            <Flex vertical wrap='wrap' align='center'>
+                                <span style={{ color: '#1d39c4', background: '#f0f5ff', border: '1px solid #adc6ff', padding: '5px', borderRadius: '3px' }}>
+                                    {tech.name}
+                                </span>
+                                <p style={{ color: 'gray' }}>{tech.exp} year</p>
+                            </Flex>
+                            {(index + 1) % 2 === 0 && <br style={{ lineHeight: '30px' }} />}
+                        </React.Fragment>
+                    ))}
+                </Flex>
+                {!showAllTechs && techs.length > 2 && (
+                    <span
+                        style={{
+                            display: 'inline-flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            width: '18px',
+                            height: '18px',
+                            color: '#1d39c4',
+                            cursor: 'pointer',
+                            border: '1px solid #1d39c4',
+                            borderRadius: '50%',
+                        }}
+                        onMouseOver={handleTechHover}
+                    >
+                        +
+                    </span>
+                )}
+            </>
+        );
+    };
+
     const columns = [
         {
             title: t('main.Avatar'),
             dataIndex: 'avatar',
             key: 'avatar',
             render: (avatar) => <Avatar src={avatar} />,
-            width: 80, 
+            width: 80,
         },
         {
             title: t('main.Name'),
@@ -260,7 +272,7 @@ const ShowEmployees = () => {
             sorter: (a, b) => a.name.length - b.name.length,
             sortOrder: sortedInfo.columnKey === 'name' ? sortedInfo.order : null,
             ellipsis: true,
-            width: 120, 
+            width: 120,
         },
         {
             title: t('main.LangFrame'),
@@ -268,35 +280,35 @@ const ShowEmployees = () => {
             key: 'langFrame',
             render: renderLangFrames,
             width: 200,
-          },
-          {
+        },
+        {
             title: t('main.Technology'),
             dataIndex: 'tech',
             key: 'tech',
             render: renderTechs,
             width: 180,
-          },      
-          {
+        },
+        {
             title: t('main.Project'),
             dataIndex: 'employee_project',
             key: 'employee_project',
             render: (text, record) => {
-              const projects = record.employee_project?.map((item) => item.project?.name) || [];
-          
-              return (
-                <>
-                  {projects.map((project, index) => (
-                    <React.Fragment key={project}>
-                      <span>{project}</span>
-                      {index < projects.length - 1 && ', '}
-                    </React.Fragment>
-                  ))}
-                </>
-              );
+                const projects = record.employee_project?.map((item) => item.project?.name) || [];
+
+                return (
+                    <>
+                        {projects.map((project, index) => (
+                            <React.Fragment key={project}>
+                                <span>{project}</span>
+                                {index < projects.length - 1 && ', '}
+                            </React.Fragment>
+                        ))}
+                    </>
+                );
             },
             width: 220,
-          },
-          
+        },
+
         {
             title: t('main.Position'),
             dataIndex: 'position',
@@ -333,16 +345,16 @@ const ShowEmployees = () => {
                 <span>{getPositionTitle(position)}</span>
             ),
             width: 100,
-          },
+        },
         {
             title: t('main.Manager'),
             dataIndex: 'manager',
             key: 'manager',
             render: (manager) => (
-              <span>{manager ? manager.name : 'N/A'}</span>
+                <span>{manager ? manager.name : 'N/A'}</span>
             ),
             width: 120,
-          },         
+        },
         {
             title: t('main.Status'),
             dataIndex: 'status',
@@ -361,10 +373,10 @@ const ShowEmployees = () => {
             onFilter: (value, record) => record.status.includes(value),
             render: (status) => (
                 <span className={`status-wrapper status-${status.toLowerCase()}`}>
-          {status}
-        </span>
+                    {status}
+                </span>
             ),
-            with:150,
+            with: 150,
         },
     ];
     const getPositionTitle = (position) => {
@@ -376,9 +388,9 @@ const ShowEmployees = () => {
             ba: 'Business Analysis',
             qa: 'Quality Assurance'
         };
-    
+
         return positionMap[position] || 'N/A';
-      };
+    };
 
     // const handleTableChange = (pagination) => {
     //     setPagination(pagination);
@@ -426,7 +438,7 @@ const ShowEmployees = () => {
                         },
                     };
                 }}
-            
+
             />
         </>
     );
