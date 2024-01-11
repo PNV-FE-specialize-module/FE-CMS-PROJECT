@@ -14,15 +14,14 @@ body{
 }
 .custom-table td {
     border-collapse: collapse;
-    padding: 8px;
     text-align: left;
 }
 .custom-table .langFrame td {
   display: flex;
   flex-direction: row;
 }
-.ant-table-cell.name {
-    font-weight: bold;
+.ant-table-cell {
+  padding: 10px !important ;
 }
 .ant-table-wrapper .ant-table-thead >tr>th{
     background: #5D5FEF;
@@ -33,7 +32,7 @@ body{
 }
 .custom-table .status-wrapper {
     display: inline;
-    padding: 3px 8px;
+    padding: 3px 8px 5px 8px;
     border-radius: 2px;
     width: 20px;
 
@@ -75,6 +74,19 @@ body{
   background: #fff1f0;
   border: 1px solid #ffa39e;
 }
+.custom-avatar-column{
+  width: 80px;
+  padding: 10px !important;
+}
+.custom-name-column{
+  width: 120px;
+}
+.custom-lF-column,.custom-tech-column{
+  width: 200px;
+}
+.custom-project-column{
+  width: 250px;
+}
   /* Responsive cho màn hình tablet */
 @media only screen and (min-width: 768px) and (max-width: 1024px) {
   .custom-table {
@@ -84,6 +96,10 @@ body{
   .ant-table-content {
     width: 100%;
   }
+  td.ant-table-cell {
+    width: 100%;
+    padding: 0;
+  }
   .text-edit,
   .text-del {
     display: block;
@@ -93,26 +109,24 @@ body{
     display: block;
     text-align: center;
   }
+  .custom-avatar-column{
+    width: 50px;
+    padding: 0px !important;
+  }
+  .custom-name-column{
+    width: 60px;
+  }
+  .custom-lF-column,.custom-tech-column{
+    width: 100px;
+  }
+  .custom-project-column{
+    width: 100px;
+  }
+  .custom-table .status-wrapper {
+    padding: 3px 0px 5px 0px;
+    width: 20px;
+}
 }
 
-/* Responsive cho màn hình điện thoại (nếu cần) */
-@media only screen and (max-width: 767px) {
-  .custom-table {
-    overflow-x: auto;
-    width: 100%;
-  }
-  .ant-table-content {
-    width: 100%;
-  }
-  .text-edit,
-  .text-del {
-    display: block;
-    text-align: center;
-  }
-  .status-wrapper {
-    display: block;
-    text-align: center;
-  }
-}
 
   

@@ -407,7 +407,7 @@ export const ProjectDetail = () => {
                           }
                           style={{ marginRight: 10, height: 110, width: 110 }}
                         />
-                        <Title level={4}>{managerProject.name}</Title>
+                        <Title level={4} style={{ marginLeft:20 }}>{managerProject.name}</Title>
                       </div>
                     )}
                   </Form.Item>

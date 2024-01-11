@@ -237,10 +237,10 @@ const ShowEmployees = () => {
             title: t('main.Avatar'),
             dataIndex: 'avatar',
             key: 'avatar',
-            render: (avatar) => <Avatar src={avatar} />,
-            width: 80, 
-        },
-        {
+            render: (avatar) => <Avatar src={avatar} className="custom-avatar" />,
+            className: 'custom-avatar-column', 
+          },
+          {
             title: t('main.Name'),
             dataIndex: 'name',
             key: 'name',
@@ -248,26 +248,27 @@ const ShowEmployees = () => {
             sorter: (a, b) => a.name.length - b.name.length,
             sortOrder: sortedInfo.columnKey === 'name' ? sortedInfo.order : null,
             ellipsis: true,
-            width: 120, 
-        },
+            className: 'custom-name-column',
+          },
         {
             title: t('main.LangFrame'),
             dataIndex: 'langFrame',
             key: 'langFrame',
             render: renderLangFrames,
-            width: 200,
+            className: 'custom-lF-column'
           },
           {
             title: t('main.Technology'),
             dataIndex: 'tech',
             key: 'tech',
             render: renderTechs,
-            width: 180,
+            className: 'custom-tech-column'
           },      
           {
             title: t('main.Project'),
             dataIndex: 'employee_project',
             key: 'employee_project',
+            className: 'custom-project-column',
             render: (text, record) => {
               const projects = record.employee_project?.map((item) => item.project?.name) || [];
           
@@ -282,7 +283,6 @@ const ShowEmployees = () => {
                 </>
               );
             },
-            width: 220,
           },
           
         {
@@ -320,7 +320,6 @@ const ShowEmployees = () => {
             render: (position) => (
                 <span>{getPositionTitle(position)}</span>
             ),
-            width: 100,
           },
         {
             title: t('main.Manager'),
@@ -329,7 +328,6 @@ const ShowEmployees = () => {
             render: (manager) => (
               <span>{manager ? manager.name : 'N/A'}</span>
             ),
-            width: 120,
           },         
         {
             title: t('main.Status'),
@@ -352,7 +350,6 @@ const ShowEmployees = () => {
           {status}
         </span>
             ),
-            with:150,
         },
     ];
     const getPositionTitle = (position) => {
