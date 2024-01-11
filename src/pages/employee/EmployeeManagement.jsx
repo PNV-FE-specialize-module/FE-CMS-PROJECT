@@ -168,26 +168,26 @@ const ShowEmployees = () => {
         const visibleLangFrames = showAllLangFrames ? langFrames : langFrames.slice(0, 2);
 
         return (
-            <>
-                <Flex wrap='wrap' gap={3} >
-                    {visibleLangFrames.map((langFrame, index) => (
-                        <React.Fragment key={index}>
-                            <Flex vertical wrap='wrap' align='center'>
-                                <span style={{ color: '#1d39c4', background: '#f0f5ff', border: '1px solid #adc6ff', padding: '5px', borderRadius: '3px' }}>
-                                    {langFrame.name}
-                                </span>
-                                <p style={{ color: 'gray' }}>{langFrame.exp} year</p>
-                            </Flex>
-                            {(index + 1) % 2 === 0 && <br style={{ lineHeight: '30px' }} />}
-                        </React.Fragment>
-                    ))}
+          <>
+          <Flex wrap='wrap' gap={3} >
+            {visibleLangFrames.map((langFrame, index) => (
+              <React.Fragment key={index}>
+                <Flex  vertical wrap='wrap' align='center'>
+                <span style={{ color: '#1d39c4', background: '#f0f5ff', border: '1px solid #adc6ff', padding: '5px', borderRadius:'3px'}}>
+                  {langFrame.name} 
+                </span>
+                <p style={{color:'gray'}}>{langFrame.exp} year</p>
                 </Flex>
-                {!showAllLangFrames && langFrames.length > 2 && (
-                    <span style={{ color: '#1d39c4', cursor: 'pointer', padding: '7px' }} onMouseOver={handleLangFrameHover}>
-                        +
-                    </span>
-                )}
-            </>
+                {(index + 1) % 2 === 0 && <br style={{ lineHeight: '30px' }} />}
+              </React.Fragment>
+            ))}
+            </Flex>
+            {!showAllLangFrames && langFrames.length > 2 && (
+              <span style={{ color: '#1d39c4', cursor: 'pointer', padding: '7px' }} onMouseOver={handleLangFrameHover}>
+                +
+              </span>
+            )}
+          </>
         );
     };
 
@@ -195,6 +195,37 @@ const ShowEmployees = () => {
         const visibleTechs = showAllTechs ? techs : techs.slice(0, 2);
         return (
             <>
+            <Flex wrap='wrap' gap={3} >
+              {visibleTechs.map((tech, index) => (
+                <React.Fragment key={index}>
+                  <Flex  vertical wrap='wrap' align='center'>
+                  <span style={{ color: '#1d39c4', background: '#f0f5ff', border: '1px solid #adc6ff', padding: '5px', borderRadius:'3px'}}>
+                    {tech.name} 
+                  </span>
+                  <p style={{color:'gray'}}>{tech.exp} year</p>
+                  </Flex>
+                  {(index + 1) % 2 === 0 && <br style={{ lineHeight: '30px' }} />}
+                </React.Fragment>
+              ))}
+              </Flex>
+              {!showAllTechs && techs.length > 2 && (
+                <span
+                    style={{
+                    display: 'inline-flex', 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                    width: '18px',
+                    height: '18px',
+                    color: '#1d39c4',
+                    cursor: 'pointer',
+                    border: '1px solid #1d39c4',
+                    borderRadius: '50%',
+                    }}
+                    onMouseOver={handleTechHover}
+                >
+                    +
+                </span>
+                )}
                 <Flex wrap='wrap' gap={3} >
                     {visibleTechs.map((tech, index) => (
                         <React.Fragment key={index}>
@@ -268,8 +299,8 @@ const ShowEmployees = () => {
                 );
             },
             width: 250,
-        },
-
+          },
+          
         {
             title: t('main.Position'),
             dataIndex: 'position',
@@ -306,7 +337,7 @@ const ShowEmployees = () => {
                 <span>{getPositionTitle(position)}</span>
             ),
             width: 150,
-        },
+          },
         {
             title: t('main.Manager'),
             dataIndex: 'manager',
@@ -315,7 +346,7 @@ const ShowEmployees = () => {
                 <span>{manager ? manager.name : 'N/A'}</span>
             ),
             width: 150,
-        },
+          },         
         {
             title: t('main.Status'),
             dataIndex: 'status',
@@ -337,7 +368,7 @@ const ShowEmployees = () => {
                     {status}
                 </span>
             ),
-            with: 100,
+            with:100,
         },
     ];
     const getPositionTitle = (position) => {
@@ -349,7 +380,7 @@ const ShowEmployees = () => {
             ba: 'Business Analysis',
             qa: 'Quality Assurance'
         };
-
+      
         return positionMap[position] || 'N/A';
     };
 

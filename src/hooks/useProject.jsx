@@ -1,9 +1,9 @@
 import {getTotalEmployee} from "../api/EmployeeApi.js";
 import {getTotalProject} from "../api/ProjectApi.js";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import { getDetailProject, getprojects, updateProjectApi } from "../api/Project";
+import { getDetailProject, getprojects, updateProjectApi,getProjectApi,getProjectStatus,patchStatusApi, } from "../api/Project";
 import { useTranslation} from 'react-i18next';
-import { deleteProjectApi } from "../api/ProjectApi";
+import { deleteProjectApi,  } from "../api/ProjectApi";
 import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
 
@@ -23,6 +23,38 @@ export const useGetProject = () => {
         }
     });
 };
+export const useGetData = (params) => {
+    const { t, i18n } = useTranslation();
+    return useQuery({
+      queryKey: ['projects',params.status],
+      queryFn: async () => {
+        try {
+          const { data } = await getProjectApi(params);
+          return data;
+        } catch (error) {
+          throw error;
+        }
+      },
+    });
+  };
+  export const useProjectStatusUpdate = () => {
+    const queryClient = useQueryClient();
+    const projectStatusUpdate = async ({ projectId, status }) => {
+      await patchStatusApi(projectId, status);
+    };
+    return useMutation(projectStatusUpdate, {
+      onMutate: async ({ projectId, status }) => {
+        queryClient.setQueryData(['projects', status], (prevData) => {
+          return prevData;
+        });
+        return { projectId, status }; 
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries(['projects', 'desiredStatus']);
+        queryClient.refetchQueries('projects')
+      },
+    });
+  };
 
 export const useGetDetaiProject = (id) => {
     return useQuery({
