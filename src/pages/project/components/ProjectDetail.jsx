@@ -7,6 +7,8 @@ import {
   UserOutlined,
   PlusOutlined,
   CloseCircleOutlined,
+  EditOutlined,
+  CheckOutlined,
 } from "@ant-design/icons";
 import {
   useGetDetaiProject,
@@ -27,6 +29,7 @@ import {
   DatePicker,
   Table,
   message,
+  Flex,
 } from "antd";
 import {
   PositionEnum,
@@ -38,9 +41,11 @@ import dayjs from "dayjs";
 import {
   useAssignEmployee,
   useUnassignEmployee,
+  useUpdateAssign,
 } from "../../../hooks/useAssign";
 import { useTranslation } from "react-i18next";
-import moment from 'moment';
+import moment from "moment";
+import { values } from "lodash";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -53,6 +58,7 @@ export const ProjectDetail = () => {
   const { t, i18n } = useTranslation();
   const [newMember, setNewMember] = useState("");
   const [newRole, setNewRole] = useState([]);
+  const [updateRoles, setUpdateRoles] = useState([]);
 
   const { data: managers } = useGetManager();
 
@@ -62,21 +68,26 @@ export const ProjectDetail = () => {
   const { mutate: deleteProject } = useDeleteProject();
 
   const [editMode, setEditMode] = useState(false);
+  const [editAssignMode, setEditAssignMode] = useState(false);
   const [editedProject, setEditedProject] = useState({});
 
   const { mutate: assignEmployee } = useAssignEmployee();
   const { mutate: unAssignEmployee } = useUnassignEmployee();
-
+  const { mutate: updateAssign } = useUpdateAssign();
 
   const disabledStartDate = (current) => {
     const today = moment();
-    return current && current.isBefore(today.startOf('day'));
+    return current && current.isBefore(today.startOf("day"));
   };
-  
+
   const disabledEndDate = (current) => {
     const today = moment();
-    const startDateValue = form.getFieldValue('startDate');
-    return current && (current.isBefore(today.startOf('day')) || current.isBefore(startDateValue));
+    const startDateValue = form.getFieldValue("startDate");
+    return (
+      current &&
+      (current.isBefore(today.startOf("day")) ||
+        current.isBefore(startDateValue))
+    );
   };
 
   if (isLoading) {
@@ -109,27 +120,36 @@ export const ProjectDetail = () => {
       setEditedProject({ ...project?.project });
     }
   };
-  
+  const handleEditAssignClick = async () => {
+    setEditAssignMode(!editAssignMode);
+    if (!editAssignMode) {
+      setEditedProject({ ...project?.project });
+    }
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (name=="employeeId"){
-      setNewMember(value)
+    if (name == "employeeId") {
+      setNewMember(value);
     }
-    if(Array.isArray(value)) {
-        const selectedValues = value.map((item) => item);
-        setEditedProject((prevState) => ({
-          ...prevState,
-          [name]: selectedValues,
-        }));
-        setNewRole(value)
-      }
-    else {
+    if (Array.isArray(value)) {
+      const selectedValues = value.map((item) => item);
+      setEditedProject((prevState) => ({
+        ...prevState,
+        [name]: selectedValues,
+      }));
+      setNewRole(value);
+    } else {
       setEditedProject((prevState) => ({
         ...prevState,
         [name]: value,
-      }));}
+      }));
+    }
   };
 
+  const handleUpdateRoleChange = (value) => {
+    setUpdateRoles(value);
+  };
   const handleStartDateChange = (date, dateString) => {
     setEditedProject((prevState) => ({
       ...prevState,
@@ -184,7 +204,6 @@ export const ProjectDetail = () => {
       ),
     }));
   };
-
 
   const handleTechInputChange = (e, index) => {
     const { value } = e.target;
@@ -257,17 +276,52 @@ export const ProjectDetail = () => {
       key: "roles",
     },
   ];
+
+  const selectRole = [
+    {
+      title: "NAME",
+      dataIndex: "name",
+      key: "name",
+      render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "ROLE",
+      dataIndex: "roles",
+      key: "roles",
+      render: (role) => {
+        const roleArray = role.split(", ");
+        return (
+          <Select
+            defaultValue={roleArray}
+            mode="multiple"
+            autoSize={{ minRows: 2, maxRows: 6 }}
+            style={{
+              height: "auto",
+              maxHeight: "100px",
+              maxWidth: 300,
+            }}
+            onChange={(value) => handleUpdateRoleChange(value)}
+            placeholder="Select roles"
+          >
+            <Option value={PositionEnum.FE}>FRONT-END</Option>
+            <Option value={PositionEnum.BE}>BACK-END</Option>
+            <Option value={PositionEnum.FULLSTACK}>FULL STACK</Option>
+            <Option value={PositionEnum.DEVOPS}>DEVOPS</Option>
+            <Option value={PositionEnum.BA}>BUSSINESS ANNALIST</Option>
+            <Option value={PositionEnum.QA}>QA</Option>
+            <Option value={PositionEnum.UX_UI}>UX-UI</Option>
+          </Select>
+        );
+      },
+    },
+  ];
   const handleUnAssignEmployee = (employeeId) => {
     try {
       unAssignEmployee({
         employeeIds: [employeeId],
         projectId: project.project.id,
       });
-      Swal.fire({
-        icon: "success",
-        title: t("main.Success"),
-        text: t("main.Unassign member successfully!"),
-    });
+      message.success(t("main.Unassign member successfully!"));
     } catch (error) {
       console.error("Error assigning employee:", error);
     }
@@ -279,33 +333,55 @@ export const ProjectDetail = () => {
       return;
     }
     const existingMember = project.project.employee_project.find(
-        (member) => member.employeeId === newMember,
+      (member) => member.employeeId === newMember
     );
 
     if (existingMember) {
-        message.error(t("main.Exist Member"));
-        return;
+      message.error(t("main.Exist Member"));
+      return;
     }
     try {
-        assignEmployee([
-          {
-            employeeId: editedProject.employeeId,
-            projectId: project.project.id,
-            roles: editedProject.roles,
-            joinDate: new Date(),
-          },
-        ]);
-        Swal.fire({
-          icon: "success",
-          title: t("main.Success"),
-          text: t("main.Assign member successfully!"),
-      });
+      assignEmployee([
+        {
+          employeeId: editedProject.employeeId,
+          projectId: project.project.id,
+          roles: editedProject.roles,
+          joinDate: new Date(),
+        },
+      ]);
+      message.success(t("main.Assign member successfully!"));
     } catch (error) {
       console.error("Error assigning employee:", error);
     }
     setNewMember("");
     setNewRole([]);
   };
+
+  const handleUpdateAssign = (employeeId) => {
+    const assignEmployee = employee_project.find(
+      (record) => record.employeeId === employeeId
+    );
+    try {
+      updateAssign({
+        id: assignEmployee.id,
+        body: {
+          employeeId: employeeId,
+          projectId: project.project.id,
+          roles: updateRoles.length > 0 ? updateRoles : assignEmployee.roles,
+          joinDate: new Date(),
+        },
+      });
+      message.success(t("Update Assign successfully!"));
+    } catch (error) {
+      console.error("Error assigning employee:", error);
+    }
+    setEditAssignMode(!editAssignMode);
+    if (!editAssignMode) {
+      setEditedProject({ ...project?.project });
+    }
+    setUpdateRoles([]);
+  };
+
   return (
     <Card>
       <Spin spinning={isLoading} tip={t("main.Loading...")}>
@@ -421,7 +497,9 @@ export const ProjectDetail = () => {
                           }
                           style={{ marginRight: 10, height: 110, width: 110 }}
                         />
-                        <Title level={4} style={{ marginLeft:20 }}>{managerProject.name}</Title>
+                        <Title level={4} style={{ marginLeft: 20 }}>
+                          {managerProject.name}
+                        </Title>
                       </div>
                     )}
                   </Form.Item>
@@ -433,7 +511,7 @@ export const ProjectDetail = () => {
                       <Col span={12}>
                         <Form.Item>
                           <Select
-                          value={newMember}
+                            value={newMember}
                             onChange={(value) =>
                               handleInputChange({
                                 target: { name: "employeeId", value },
@@ -469,18 +547,26 @@ export const ProjectDetail = () => {
                           </Select>
                         </Form.Item>
 
-                        <Form.Item label={t("main.Role")}
-                        rules={[
-                          {
-                            required: true,
-                            message: t('main.Please enter Language/Framework!'),
-                          },
-                        ]}>
+                        <Form.Item
+                          label={t("main.Role")}
+                          rules={[
+                            {
+                              required: true,
+                              message: t(
+                                "main.Please enter Language/Framework!"
+                              ),
+                            },
+                          ]}
+                        >
                           <Select
                             value={newRole}
                             mode="multiple"
                             autoSize={{ minRows: 2, maxRows: 6 }}
-                            style={{ height: 'auto', maxHeight: '100px', maxWidth:300 }}
+                            style={{
+                              height: "auto",
+                              maxHeight: "100px",
+                              maxWidth: 300,
+                            }}
                             onChange={(value) =>
                               handleInputChange({
                                 target: { name: "roles", value },
@@ -508,46 +594,94 @@ export const ProjectDetail = () => {
                         ></Button>
                       </Col>
                       <Col span={12}>
-                        <Table
-                          className="skills-table"
-                          rowKey="name"
-                          dataSource={project.project.employee_project.map(
-                            (member) => ({
-                              key: member.id,
-                              roles: member.roles.join(", "),
-                              ...member.employee,
-                            })
-                          ).reverse()}
-                          style={{
-                            width: "300px",
-                            maxHeight: "200px",
-                            overflow: "auto",
-                            textTransform: 'uppercase'
-                          }}
-                          columns={[
-                            ...teamMember,
-                            {
-                              title: "ACTION",
-                              width: 50,
-                              render: (record) => (
-                                <CloseCircleOutlined
-                                  type="link"
-                                  onClick={() =>
-                                    handleUnAssignEmployee(record.id)
-                                  }
-                                />
-                              ),
-                            },
-                          ]}
-                          pagination={false}
-                        />
+                        {editAssignMode ? (
+                          <Table
+                            className="skills-table"
+                            rowKey="name"
+                            dataSource={project.project.employee_project
+                              .map((member) => ({
+                                key: member.id,
+                                roles: member.roles.join(", "),
+                                ...member.employee,
+                              }))
+                              .reverse()}
+                            style={{
+                              width: "300px",
+                              maxHeight: "200px",
+                              overflow: "auto",
+                              textTransform: "uppercase",
+                            }}
+                            columns={[
+                              ...selectRole,
+                              {
+                                title: "ACTION",
+                                width: 50,
+                                render: (record) => (
+                                  <Flex justify="space-between">
+                                    <CheckOutlined
+                                      onClick={() =>
+                                        handleUpdateAssign(record.id)
+                                      }
+                                    />
+                                    <CloseCircleOutlined
+                                      type="link"
+                                      onClick={() =>
+                                        handleUnAssignEmployee(record.id)
+                                      }
+                                    />
+                                  </Flex>
+                                ),
+                              },
+                            ]}
+                            pagination={false}
+                          />
+                        ) : (
+                          <Table
+                            className="skills-table"
+                            rowKey="name"
+                            dataSource={project.project.employee_project
+                              .map((member) => ({
+                                key: member.id,
+                                roles: member.roles.join(", "),
+                                ...member.employee,
+                              }))
+                              .reverse()}
+                            style={{
+                              width: "300px",
+                              maxHeight: "200px",
+                              overflow: "auto",
+                              textTransform: "uppercase",
+                            }}
+                            columns={[
+                              ...teamMember,
+                              {
+                                title: "ACTION",
+                                width: 50,
+                                render: (record) => (
+                                  <Flex justify="space-between">
+                                    <EditOutlined
+                                      onClick={handleEditAssignClick}
+                                    />
+                                    <CloseCircleOutlined
+                                      type="link"
+                                      onClick={() =>
+                                        handleUnAssignEmployee(record.id)
+                                      }
+                                    />
+                                  </Flex>
+                                ),
+                              },
+                            ]}
+                            pagination={false}
+                          />
+                        )}
                       </Col>
                     </Row>
                   </Form.Item>
                 </Col>
 
                 <Col span={12}>
-                  <Form.Item label={t("main.Start Date")} >
+                  <Form.Item label={t("main.Start Date")}>
                     {editMode ? (
                       <DatePicker
                         value={

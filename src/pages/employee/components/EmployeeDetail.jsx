@@ -180,7 +180,6 @@ const EmployeeDetail = () => {
 
   const manager = managers.find((person) => person.id === employee?.employee?.managerId) || null;
   const handleManagerChange = (id) => {
-    console.log(id,888);
     setEditedEmployee((prevState) => ({
       ...prevState,
       managerId: id,
@@ -251,7 +250,6 @@ const EmployeeDetail = () => {
   } = editMode ? editedEmployee : employee?.employee;
 
   const handleSaveClick = async () => {
-    console.log(662,editedEmployee);
     try {
       const result = await updateEmployeeMutation.mutateAsync(editedEmployee);
       setEditMode(false)
