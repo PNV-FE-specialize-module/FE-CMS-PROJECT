@@ -32,7 +32,7 @@ const Login = () => {
         navigate('/');
       })
       .catch((error) => {
-        console.error(t("main.Error logging in:"), error.response.data.message);
+        // console.error(Error logging in, error.response.data.message);
         setError(error.response.data.message);
       });
   };
@@ -83,21 +83,21 @@ const Login = () => {
           autoComplete="off"
         >
           <Form.Item
-            label={t("main.Email")}
+            label="Email"
             name={"email"}
             rules={[
-              { required: true, message: t("main.Email is required") },
-              { type: "email", message: t("main.Email is invalid") },
+              { required: true, message:"Email is required" },
+              { type: "email", message:"Email is required" },
             ]}
             style={{ fontWeight: "500" }}
           >
-            <Input placeholder={t("main.Enter your email")} style={{height:35}} />
+            <Input placeholder="Enter your email" style={{height:35}} />
           </Form.Item>
           <Form.Item
             type="password"
-            label={t("main.Password")}
+            label="Password"
             name="password"
-            rules={[{ required: true, message: t("main.Password is required") }]}
+            rules={[{ required: true, message:" Password is required" }]}
             style={{ fontWeight: "500" }}
           >
             <Input.Password style={{height:35, minWidth: '100%'}}/>
@@ -105,11 +105,11 @@ const Login = () => {
           <Flex justify="space-between">
             <Form.Item name="remember" valuePropName="checked">
               <Checkbox style={{ fontWeight: "400" }}>
-               {t("main. Keep me signed in")}
+               Keep me signed in
               </Checkbox>
             </Form.Item>
             <FormItem>
-            <Link style={{ fontStyle: "italic", color: "#5D5FEF" }} to='/resetPwd'>{t("main.Forgot Password?")}</Link>
+            <Link style={{ fontStyle: "italic", color: "#5D5FEF" }} to='/resetPwd'>Forgot Password</Link>
               {/* <a style={{ fontStyle: "italic", color: "#5D5FEF" }} >
                 Forgot Password?
               </a> */}
@@ -135,7 +135,7 @@ const Login = () => {
                 color: "#FFF",
               }}
             >
-              {t("main.Login")}
+              LOGIN
             </Button>
           </Form.Item>
         </Form>

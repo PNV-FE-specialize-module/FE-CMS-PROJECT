@@ -25,7 +25,7 @@ export const ResetPwd = () => {
         setIsShow(true)
       })
       .catch((error) => {
-        console.error(t("main.Error logging in:"), error.response.data.message);
+        // console.error(t("main.Error logging in:"), error.response.data.message);
         setError(error.response.data.message);
       });
   };
@@ -70,8 +70,8 @@ export const ResetPwd = () => {
             color: "#5D5FEF",
           }}
         >
-          {t("main.Reset Password")}
-        </p>
+          Reset Password       
+           </p>
         <Form
           style={{ width: "100%" }}
           layout="vertical"
@@ -80,15 +80,15 @@ export const ResetPwd = () => {
           autoComplete="off"
         >
           <Form.Item
-            label={t("main.Email")}
+            label="Email"
             name={"email"}
             rules={[
-              { required: true, message: t("main.Email is required") },
-              { type: "email", message: t("main.Email is invalid") },
+              { required: true, message: "Email is required" },
+              { type: "email", message: "Email is invalid" },
             ]}
             style={{ fontWeight: "500" }}
           >
-            <Input placeholder={t("main.Enter your email")} />
+            <Input placeholder="Enter your email" />
           </Form.Item>
           {error && (
             <Flex
@@ -110,18 +110,18 @@ export const ResetPwd = () => {
                 color: "#FFF",
               }}
             >
-              {t("main.Send Mail")}
+                Send mail
             </Button>
           </Form.Item>
         </Form>
       </Flex>
       <Modal
-        title={t("main.We sent a new password to your email. Please check.")}
+        title="We sent a new password to your email. Please check."
         open={isShow}
         footer={(
           <div>
             <Button key="ok" type="primary" onClick={handleClick}>
-              {t("main.OK")}
+              OK
             </Button>
           </div>
         )}
