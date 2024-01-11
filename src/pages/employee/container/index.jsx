@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState ,useRef } from 'react';
 import { Space, Table, Avatar, Input, Button } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
-import axios from 'axios';
 import "./style.css";
 import { useTranslation} from 'react-i18next';
-
+import { useGetAllEmployee } from "../../../hooks/useEmployee";
 
 const ShowEmployees = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const searchInput = useRef(null);
   const { t, i18n } = useTranslation();
+  const { data: listEmployee } = useGetAllEmployee();
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -128,18 +128,6 @@ const ShowEmployees = () => {
       columnKey: 'code',
     });
   };
-  const [employees, setEmployees] = useState([]);
-
-  useEffect(() => {
-    axios.get('http://localhost:3000/employee')
-      .then(response => {
-        setEmployees(response.data.data);
-      })
-      .catch(error => {
-        console.error(t('main.Error fetching employee data:'), error);
-      });
-  }, []);
-
   const alphanumericSorter = (a, b) => {
     const codeA = a.code.toString();
     const codeB = b.code.toString();
@@ -256,7 +244,7 @@ const ShowEmployees = () => {
     setPagination(pagination);
   };
 
-  const employeesWithStatus = employees.map(employee => ({
+  const employeesWithStatus = listEmployee?.map(employee => ({
     key: employee.id,
     avatar: employee.avatar,
     name: employee.name,

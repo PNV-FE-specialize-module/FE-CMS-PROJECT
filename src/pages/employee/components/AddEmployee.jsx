@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Swal from "sweetalert2";
 import {
     Button, Col, DatePicker, Form, Input, InputNumber, Radio, Row, Select, Spin, Table, Upload, message,
 } from "antd";
@@ -10,8 +9,8 @@ import { Cloudinary } from "@cloudinary/url-gen";
 import { Divider } from "antd";
 import { useNavigate } from "react-router";
 import {useCreateEmployee, useGetManager} from "../../../hooks/useEmployee.jsx";
+import { useTranslation } from "react-i18next";
 const { useForm } = Form;
-import { useTranslation} from 'react-i18next';
 
 
 const CreateEmployee = () => {
@@ -23,7 +22,6 @@ const CreateEmployee = () => {
     const [newIdentityCard, setNewIdentityCard] = useState("");
     const [newGender, setNewGender] = useState("");
     const [newPosition, setNewPosition] = useState("");
-    const [newStatus, setNewStatus] = "active";
     const [newEmail, setNewEmail] = useState("");
     const [newJoinDate, setNewJoinDate] = useState("");
     const [newAvatar, setNewAvatar] = useState("");
@@ -197,19 +195,12 @@ const CreateEmployee = () => {
             formData.langFrame = newLangFrames;
             formData.tech = newTechs;
             formData.avatar = imageUrl;
-            // formData.code = newCode;
             setConfirmLoading(true);
             createEmployee({
                 ...formData,
+                status: "active",
                 code: generateRandomCode(),
             });
-            Swal.fire({
-                icon: 'success',
-                title: t('main.Employee Created Successfully!'),
-                showConfirmButton: false,
-                timer: 1500, // Optional: You can customize the time the success message stays visible
-            });
-            navigate('/listemployee')
         } catch (error) {
             message.error(t("main.Error Employee"));
         }
@@ -222,7 +213,7 @@ const CreateEmployee = () => {
             formCreate.setFields([
                 {
                     name: t("main.Email"),
-                    errors: [error.response.data.message],
+                    errors: [error.response?.data.message],
                 },
             ]);
         }
@@ -344,22 +335,6 @@ const CreateEmployee = () => {
                                 onChange={(e) => setNewAddress(e.target.value)}
                             />
                         </Form.Item>
-                        <Form.Item
-                            name="status"
-                            label={t("main.Status")}
-                            style={{ width: "100%" }}
-                            rules={[{ required: true, message: t("main.Status") }]}
-                        >
-                            <Select
-                                value={newStatus}
-                                onChange={(value) => setNewStatus(value)}
-                            >
-                                <Select.Option value="inactive">
-                                    {t("main.Inative")}
-                                </Select.Option>
-                                <Select.Option value="active">{t("main.Active")}</Select.Option>
-                            </Select>
-                        </Form.Item>
 
                         <Form.Item
                             name="position"
@@ -390,9 +365,9 @@ const CreateEmployee = () => {
                                 value={moment(newJoinDate)}
                                 placeholder={t("main.Select Join Date")}
                                 onChange={(e) => {
-                                    setNewJoinDate(e ? e.format(t("main.DD/MM/YYYY")) : null);
+                                    setNewJoinDate(e ? e.format("DD/MM/YYYY") : null);
                                 }}
-                                format={t("main.DD/MM/YYYY")}
+                                format={"DD/MM/YYYY"}
                             />
                         </Form.Item>
                     </Col>
@@ -430,9 +405,9 @@ const CreateEmployee = () => {
                                 value={moment(newDob)}
                                 placeholder={t("main.Select Date of birth")}
                                 onChange={(date) => {
-                                    setNewDob(date.format(t("main.DD/MM/YYYY")));
+                                    setNewDob(date.format("DD/MM/YYYY"));
                                 }}
-                                format={t("main.DD/MM/YYYY")}
+                                format={"DD/MM/YYYY"}
                                 disabledDate={(current) => {
                                     return current && current > moment().endOf("day");
                                 }}
@@ -783,6 +758,7 @@ const CreateEmployee = () => {
                 </Row>
                 <Row gutter={15} justify={"center"}>
                             <Button
+                                onClick={()=>{navigate('/listemployee')}}
                                 style={{
                                     marginRight: "10px",
                                     // borderRadius: "50px",

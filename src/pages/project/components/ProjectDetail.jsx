@@ -98,10 +98,17 @@ export const ProjectDetail = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setEditedProject((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    if (Array.isArray(value)) {
+      const selectedValues = value.map((item) => item);
+      setEditedProject((prevState) => ({
+        ...prevState,
+        [name]: selectedValues,
+      }));
+    } else {
+      setEditedProject((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));}
   };
 
   const handleStartDateChange = (date, dateString) => {
@@ -159,23 +166,6 @@ export const ProjectDetail = () => {
     }));
   };
 
-  // const handleAddMember = () => {
-  //   // console.log(prevState.employee_project);
-  //   setEditedProject((prevState) => ({
-  //     ...prevState,
-  //     employee_project: [
-  //       ...prevState.employee_project, ''
-  //     ],
-  //   }));
-  // };
-
-  const handleRemoveMember = (indexToRemove) => {
-    console.log("remove", editedProject.employee_project);
-    // setEditedProject((prevState) => ({
-    //   ...prevState,
-    //   employee_project: prevState.employee_project.filter((_,index) => index!==indexToRemove)
-    // }));
-  };
 
   const handleTechInputChange = (e, index) => {
     const { value } = e.target;
@@ -261,16 +251,16 @@ export const ProjectDetail = () => {
 
   const handleAssignEmployee = () => {
     try {
-      if (editedProject.employeeId && editedProject.roles) {
+      // if (editedProject.employeeId && editedProject.roles) {
         assignEmployee([
           {
             employeeId: editedProject.employeeId,
             projectId: project.project.id,
-            roles: [editedProject.roles],
+            roles: editedProject.roles,
             joinDate: new Date(),
           },
         ]);
-      }
+      // }
     } catch (error) {
       console.error("Error assigning employee:", error);
     }
@@ -403,7 +393,6 @@ export const ProjectDetail = () => {
                       <Col span={12}>
                         <Form.Item>
                           <Select
-                            // value={editedProject.employee_project.id}
                             onChange={(value) =>
                               handleInputChange({
                                 target: { name: "employeeId", value },
@@ -411,7 +400,7 @@ export const ProjectDetail = () => {
                             }
                             style={{ maxWidth: "300px" }}
                           >
-                            {listEmployee.data?.map((member, index) => (
+                            {listEmployee?.data?.map((member, index) => (
                               <Option key={index} value={member.id}>
                                 <Avatar
                                   src={
@@ -439,16 +428,23 @@ export const ProjectDetail = () => {
                           </Select>
                         </Form.Item>
 
-                        <Form.Item label={t("main.Role")}>
+                        <Form.Item label={t("main.Role")}
+                        rules={[
+                          {
+                            required: true,
+                            message: t('main.Please enter Language/Framework!'),
+                          },
+                        ]}>
                           <Select
-                            style={{ maxWidth: "300px" }}
+                            mode="multiple"
+                            autoSize={{ minRows: 2, maxRows: 6 }}
+                            style={{ height: 'auto', maxHeight: '100px', maxWidth:300 }}
                             onChange={(value) =>
                               handleInputChange({
                                 target: { name: "roles", value },
                               })
                             }
                             placeholder="Select roles"
-                            // value={editedProject.employee_project.roles}
                           >
                             <Option value={PositionEnum.FE}>FRONT-END</Option>
                             <Option value={PositionEnum.BE}>BACK-END</Option>
@@ -476,8 +472,8 @@ export const ProjectDetail = () => {
                           dataSource={project.project.employee_project.map(
                             (member) => ({
                               key: member.id,
-                              // roles: member.roles.join(", "),
-                              roles: member.roles,
+                              roles: member.roles.join(", "),
+                              // roles: member.roles,
                               ...member.employee,
                             })
                           )}
@@ -485,6 +481,7 @@ export const ProjectDetail = () => {
                             width: "300px",
                             maxHeight: "200px",
                             overflow: "auto",
+                            textTransform: 'uppercase'
                           }}
                           columns={[
                             ...teamMember,

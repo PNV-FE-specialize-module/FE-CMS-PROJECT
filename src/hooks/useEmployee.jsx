@@ -8,6 +8,7 @@ import {
 } from "../api/EmployeeApi.js";
 import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
+import { useTranslation } from "react-i18next";
 
 
 export const useGetAllEmployee = () => {
@@ -44,15 +45,21 @@ export const useGetDetailEmployee = (id) => {
         }
     });
 };
-
 export const useCreateEmployee = () => {
+    const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const mutation = useMutation(
         (newEmployee) => addEmployeeApi(newEmployee),
         {
-            onSuccess: () => {
+            onSuccess: async () => {
                 queryClient.invalidateQueries(["EMPLOYEE"]);
+                await queryClient.refetchQueries();
+                Swal.fire({
+                    icon: "success",
+                    title: t("main.Success"),
+                    text: t("main.Employee updated successfully!"),
+                  });
                 navigate("/listemployee")
 
             },

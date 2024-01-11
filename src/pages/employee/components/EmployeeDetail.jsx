@@ -590,7 +590,7 @@ const EmployeeDetail = () => {
                 <Col span={12}>
                   <Form.Item label={t("main.Soft skill")}>
                     {editMode ? (
-                        skills.map((skill, index) => (
+                        skills?.map((skill, index) => (
                             <div key={index} style={{ marginBottom: '8px' }}>
                               <Input
                                   value={editedEmployee?.skills[index].name}
@@ -613,7 +613,7 @@ const EmployeeDetail = () => {
                             </div>
                         ))
                     ) : (
-                        skills.map((skill, index) => (
+                        skills?.map((skill, index) => (
                             <div key={index} style={{ marginBottom: '8px' }}>
                               <Input
                                   value={skill.name}
@@ -643,7 +643,7 @@ const EmployeeDetail = () => {
                 <Col span={12}>
                   <Form.Item label={t("main.Language/Framework")}>
                     {editMode ? (
-                        langFrame.map((item, index) => (
+                        langFrame?.map((item, index) => (
                             <div key={index} style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
                               <Input
                                   value={item.name}
@@ -665,7 +665,7 @@ const EmployeeDetail = () => {
                             </div>
                         ))
                     ) : (
-                        langFrame.map((item, index) => (
+                        langFrame?.map((item, index) => (
                             <div key={index} style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
                               <Input
                                   value={item.name}
@@ -675,7 +675,6 @@ const EmployeeDetail = () => {
                               />
                               <Input
                                   value={item.exp}
-                                  // onChange={(e) => handleLangFrameInputChange(e, index, 'exp')}
                                   style={{ width: '80px', marginRight: '8px' }}
                                   placeholder={t("main.Experience")}
                                   disabled
@@ -698,7 +697,7 @@ const EmployeeDetail = () => {
                   <Form.Item label={t("main.Technology")}>
                     {editMode ? (
                         // Display input fields for editing tech
-                        tech.map((item, index) => (
+                        tech?.map((item, index) => (
                             <div key={index} style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
                               <Input
                                   value={item.name}
@@ -721,18 +720,16 @@ const EmployeeDetail = () => {
                         ))
                     ) : (
                         // Display tech in a table format
-                        tech.map((item, index) => (
+                        tech?.map((item, index) => (
                             <div key={index} style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
                               <Input
                                   value={item.name}
-                                  // onChange={(e) => handleTechInputChange(e, index, 'name')}
                                   style={{ width: '120px', marginRight: '8px' }}
                                   placeholder={t("main.Technology")}
                                   disabled
                               />
                               <Input
                                   value={item.exp}
-                                  // onChange={(e) => handleTechInputChange(e, index, 'exp')}
                                   style={{ width: '80px', marginRight: '8px' }}
                                   placeholder={t("main.Experience")}
                                   disabled
