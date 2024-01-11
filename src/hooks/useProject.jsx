@@ -1,6 +1,10 @@
-import { getTotalEmployee } from "../api/EmployeeApi.js";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import { useTranslation} from 'react-i18next';
+import { deleteProjectApi,  } from "../api/ProjectApi";
+import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
+
 import { getTotalProject, postAddProject } from "../api/ProjectApi.js";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getDetailProject,
   getProjects,
@@ -8,25 +12,22 @@ import {
   getProjectApi,
   patchStatusApi,
 } from "../api/ProjectApi";
-import { useTranslation } from "react-i18next";
-import { deleteProjectApi } from "../api/ProjectApi";
-import { useNavigate } from "react-router";
-import Swal from "sweetalert2";
 
 
-export const useGetProject = () => {
-  return useQuery({
-    queryKey: ["PROJECT"],
-    queryFn: async () => {
-      try {
-        const { data } = await getProjects();
-        return data;
-      } catch (error) {
-        console.error("Error:", error);
-        throw error;
-      }
-    },
-  });
+export const useGetProject = (params) => {
+    return useQuery({
+        queryKey: ["PROJECT",  params.search, params.status],
+        queryFn: async () => {
+            try {
+                const { data } = await getProjects(params);
+                return data;
+            } catch (error) {
+                console.error("Error:", error);
+                throw error;
+            }
+        }
+    });
+    
 };
 export const useGetData = (params) => {
   return useQuery({
@@ -81,19 +82,20 @@ export const useProjectStatusUpdate = () => {
   });
 };
 
+  
+
 export const useGetDetaiProject = (id) => {
-  return useQuery({
-    queryKey: ["PROJECT_DETAIL", id],
-    queryFn: async () => {
-      try {
-        const { data } = await getDetailProject(id);
-        return data;
-      } catch (error) {
-        console.error("Error:", error);
-        throw error;
-      }
-    },
-  });
+    return useQuery({
+        queryKey: ['PROJECT_DETAIL', id],
+        queryFn: async () => {
+            try {
+                const { data } = await getDetailProject(id);
+                return data;
+            } catch (error) {
+                throw error;
+            }
+        }
+    });
 };
 
 export const useUpdateProject = (id) => {

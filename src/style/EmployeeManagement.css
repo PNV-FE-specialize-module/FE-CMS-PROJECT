@@ -54,7 +54,8 @@ body{
 .text-del{
     color: red;
   }
-  .anticon-search{
+
+  .ant-table-wrapper .ant-table-filter-trigger .anticon-search{
     color: #fff;
   }
   .ant-table-wrapper .ant-table-column-sorter{

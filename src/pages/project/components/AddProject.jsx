@@ -11,7 +11,7 @@ import { useAddProject } from '../../../hooks/useProject.jsx';
 const { TextArea } = Input;
 const { Option } = Select;
 
-export const AddProject = ({isModalVisible,setIsModalVisible}) => {
+export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
   const [form] = Form.useForm();
   const [selectedManagers, setSelectedManagers] = useState([]);
   const { t, i18n } = useTranslation();

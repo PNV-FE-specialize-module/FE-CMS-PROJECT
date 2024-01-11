@@ -2,9 +2,10 @@ import baseAxios from "./baseAxios";
 
 const ENDPOINT = "project"
 
-export const getProjects = async () => {
-    return await baseAxios.get(`${ENDPOINT}`);
+export const getProjects = async (params) => {
+  return await baseAxios.get(`${ENDPOINT}`, { params } );
 }
+
 
 export const getDetailProject = async (id, params = {}) => {
   return await baseAxios.get(`${ENDPOINT}/${id}`, params);
