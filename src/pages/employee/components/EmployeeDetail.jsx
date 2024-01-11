@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useGetDetailEmployee, useUpdateEmployee, useGetManager, useDeleteEmployee } from "../../../hooks/useEmployee.jsx";
 import {Row, Col, Button, Form, Input, Typography, Card, Select, message, Space, Timeline, DatePicker} from 'antd';
 import moment from "moment";
@@ -30,7 +30,7 @@ const EmployeeDetail = () => {
   const fileInputRef = useRef();
   const { data: managers } = useGetManager();
   const { t, i18n } = useTranslation();
-  const navigate= useNavigate()
+
 
 
   if (isLoading) {
@@ -60,7 +60,6 @@ const EmployeeDetail = () => {
 
         if (result.isConfirmed) {
           deleteEmployee(id);
-          navigate('/listemployee')
         }
     } catch (error) {
         Swal.fire({
