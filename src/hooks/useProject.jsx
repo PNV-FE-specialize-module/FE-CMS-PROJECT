@@ -1,7 +1,8 @@
 import {getTotalProject} from "../api/ProjectApi.js";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import { getDetailProject, getProjects, updateProjectApi } from "../api/Project";
-import { deleteProjectApi } from "../api/ProjectApi";
+import { getDetailProject, getProjects, updateProjectApi,getProjectApi,getProjectStatus,patchStatusApi, } from "../api/ProjectApi";
+import { useTranslation} from 'react-i18next';
+import { deleteProjectApi,  } from "../api/ProjectApi";
 import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
 
@@ -23,12 +24,44 @@ export const useGetProject = (params) => {
         }
     });
 };
+export const useGetData = (params) => {
+    const { t, i18n } = useTranslation();
+    return useQuery({
+      queryKey: ['projects',params.status],
+      queryFn: async () => {
+        try {
+          const { data } = await getProjectApi(params);
+          return data;
+        } catch (error) {
+          throw error;
+        }
+      },
+    });
+  };
+  export const useProjectStatusUpdate = () => {
+    const queryClient = useQueryClient();
+    const projectStatusUpdate = async ({ projectId, status }) => {
+      await patchStatusApi(projectId, status);
+    };
+    return useMutation(projectStatusUpdate, {
+      onMutate: async ({ projectId, status }) => {
+        queryClient.setQueryData(['projects', status], (prevData) => {
+          return prevData;
+        });
+        return { projectId, status }; 
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries(['projects', 'desiredStatus']);
+        queryClient.refetchQueries('projects')
+      },
+    });
+  };
 
   
 
 export const useGetDetaiProject = (id) => {
     return useQuery({
-        queryKey: ["PROJECT", id],
+        queryKey: ['PROJECT_DETAIL', id],
         queryFn: async () => {
             try {
                 const { data } = await getDetailProject(id);
@@ -47,7 +80,7 @@ export const useUpdateProject = (id) => {
         (params) => updateProjectApi(id, params),
         {
             onSuccess: () => {
-                queryClient.invalidateQueries('project');
+                queryClient.invalidateQueries('PROJECT');
             },
         }
     );
@@ -67,7 +100,6 @@ export const useDeleteProject = () => {
     const deleteProject= async (employeeId) => await deleteProjectApi(employeeId)
     return useMutation(deleteProject, {
         onSuccess: (data) => {
-            console.log(data);
             const check = data.data.message=='Employee deletion successful'
 
             if(check){

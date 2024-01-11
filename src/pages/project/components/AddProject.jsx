@@ -10,6 +10,7 @@ import { useTranslation} from 'react-i18next';
 
 const { TextArea } = Input;
 const { Option } = Select;
+const BASE_URL = import.meta.env.VITE_BASE_URL_API;
 
 export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
   const [form] = Form.useForm();
@@ -22,7 +23,7 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
     const fetchManagers = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3000/employee/managers"
+          `${BASE_URL}/employee/managers`
         );
         const data = response.data;
         const managerData = data.map((manager) => ({
@@ -41,7 +42,7 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/employee");
+        const response = await axios.get(`${BASE_URL}/employee`);
         const data = response.data.data;
         const employeeData = data.map((employee) => ({
           id: employee.id,
@@ -112,8 +113,8 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
         <Form
           form={form}
           labelCol={{
-            xs: { span: 6 },
-            sm: { span: 6 },
+            xs: { span: 8 },
+            sm: { span: 8 },
           }}
           wrapperCol={{
             xs: { span: 24 },
@@ -224,6 +225,7 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
               </Form.Item>
             </Col>
           </Row>
+        {/* Assign member here */}
           <Row gutter={[2, 2]}>
             <Col span={24}></Col>
           </Row>

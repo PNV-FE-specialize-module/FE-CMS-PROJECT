@@ -7,7 +7,6 @@ import {
     updateEmployeeApi
 } from "../api/EmployeeApi.js";
 import { useNavigate } from "react-router";
-import { useTranslation } from 'react-i18next';
 import Swal from "sweetalert2";
 
 
@@ -32,15 +31,14 @@ export const useGetAllEmployee = () => {
 
 
 export const useGetDetailEmployee = (id) => {
-    const { t, i18n } = useTranslation();
     return useQuery({
-        queryKey: [t("main.Employee"), id],
+        queryKey: ["EMPLOYEE", id],
         queryFn: async () => {
             try {
                 const { data } = await getDetailEmployee(id);
                 return data;
             } catch (error) {
-                console.error(t("main.Error:"), error);
+                // console.error(t("main.Error:"), error);
                 throw error;
             }
         }
@@ -48,14 +46,13 @@ export const useGetDetailEmployee = (id) => {
 };
 
 export const useCreateEmployee = () => {
-    const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const mutation = useMutation(
         (newEmployee) => addEmployeeApi(newEmployee),
         {
             onSuccess: () => {
-                queryClient.invalidateQueries([t("main.Employee")]);
+                queryClient.invalidateQueries(["EMPLOYEE"]);
                 navigate("/listemployee")
 
             },
@@ -67,14 +64,13 @@ export const useCreateEmployee = () => {
 };
 
 export const useUpdateEmployee = (id) => {
-    const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
 
     const mutation = useMutation(
         (params) => updateEmployeeApi(id, params),
         {
             onSuccess: () => {
-                queryClient.invalidateQueries('EMPLOYEE');
+                queryClient.invalidateQueries(['EMPLOYEE']);
             },
         }
     );
@@ -83,9 +79,7 @@ export const useUpdateEmployee = (id) => {
 };
 
 export const useDeleteEmployee = () => {
-    const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
-
     const navigate = useNavigate()
     const deleteEmployee = async (employeeId) => await deleteEmployeeApi(employeeId)
 
@@ -115,7 +109,7 @@ export const useDeleteEmployee = () => {
 };
 export const useGetManager = () => {
 
-    return useQuery(["EMPLOYEE"], async () => {
+    return useQuery(["MANAGER"], async () => {
         const { data } = await getManager();
         return data;
     });

@@ -8,6 +8,7 @@ import {Link} from "react-router-dom";
 import {useNavigate} from "react-router";
 import { useTranslation} from 'react-i18next';
 
+const BASE_URL = import.meta.env.VITE_BASE_URL_API;
 
 
 const ShowEmployees = () => {
@@ -135,10 +136,9 @@ const ShowEmployees = () => {
     const [employees, setEmployees] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:3000/employee')
+        axios.get(`${BASE_URL}/employee`)
             .then(response => {
                 setEmployees(response.data.data);
-                console.log(8289, response.data.data);
             })
             .catch(error => {
                 console.error(t('main.Error fetching employee data:'), error);
@@ -184,9 +184,22 @@ const ShowEmployees = () => {
             ))}
             </Flex>
             {!showAllLangFrames && langFrames.length > 2 && (
-              <span style={{ color: '#1d39c4', cursor: 'pointer', padding: '7px' }} onMouseOver={handleLangFrameHover}>
-                +
-              </span>
+               <span
+               style={{
+               display: 'flex', 
+               justifyContent: 'center', 
+               alignItems: 'center',
+               width: '20px',
+               height: '20px',
+               color: '#1d39c4',
+               cursor: 'pointer',
+               border: '1px solid #1d39c4',
+               borderRadius: '50%',
+               }}
+               onMouseOver={handleLangFrameHover}
+           >
+               +
+           </span>
             )}
           </>
         );
@@ -210,10 +223,23 @@ const ShowEmployees = () => {
               ))}
               </Flex>
               {!showAllTechs && techs.length > 2 && (
-                <span style={{ color: '#1d39c4', cursor: 'pointer', padding: '7px' }} onMouseOver={handleTechHover}>
-                  +
+                <span
+                    style={{
+                    display: 'inline-flex', 
+                    justifyContent: 'center', 
+                    alignItems: 'center',
+                    width: '18px',
+                    height: '18px',
+                    color: '#1d39c4',
+                    cursor: 'pointer',
+                    border: '1px solid #1d39c4',
+                    borderRadius: '50%',
+                    }}
+                    onMouseOver={handleTechHover}
+                >
+                    +
                 </span>
-              )}
+                )}
             </>
           );
         };
@@ -255,7 +281,7 @@ const ShowEmployees = () => {
             dataIndex: 'employee_project',
             key: 'employee_project',
             render: (text, record) => {
-              const projects = record.employee_project?.map((item) => item.project.name) || [];
+              const projects = record.employee_project?.map((item) => item.project?.name) || [];
           
               return (
                 <>
@@ -268,7 +294,7 @@ const ShowEmployees = () => {
                 </>
               );
             },
-            width: 250,
+            width: 220,
           },
           
         {
@@ -306,7 +332,7 @@ const ShowEmployees = () => {
             render: (position) => (
                 <span>{getPositionTitle(position)}</span>
             ),
-            width: 150,
+            width: 100,
           },
         {
             title: t('main.Manager'),
@@ -315,7 +341,7 @@ const ShowEmployees = () => {
             render: (manager) => (
               <span>{manager ? manager.name : 'N/A'}</span>
             ),
-            width: 150,
+            width: 120,
           },         
         {
             title: t('main.Status'),
@@ -338,19 +364,19 @@ const ShowEmployees = () => {
           {status}
         </span>
             ),
-            with:100,
+            with:150,
         },
     ];
     const getPositionTitle = (position) => {
         const positionMap = {
-          be: 'Back-end',
-          fe: 'Front-end',
-          fullstack: 'Full-stack',
-          devops:'DevOps',
-          ba:'Business Analysis',
-          qa:'Quality Assurance'
+            be: 'Back-end',
+            fe: 'Front-end',
+            fullstack: 'Full-stack',
+            devops: 'DevOps',
+            ba: 'Business Analysis',
+            qa: 'Quality Assurance'
         };
-      
+    
         return positionMap[position] || 'N/A';
       };
 
@@ -365,7 +391,6 @@ const ShowEmployees = () => {
         name: employee.name,
         langFrame: employee.langFrame,
         tech: employee.tech,
-        manager: employee.isManager ? 'True' : 'False',
         position: employee.position,
         status: employee.status,
         employee_project: employee.employee_project
