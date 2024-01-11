@@ -12,7 +12,7 @@ const { TextArea } = Input;
 const { Option } = Select;
 const BASE_URL = import.meta.env.VITE_BASE_URL_API;
 
-export const AddProject = ({isModalVisible,setIsModalVisible}) => {
+export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
   const [form] = Form.useForm();
   const [selectedManagers, setSelectedManagers] = useState([]);
   const [managerOptions, setManagerOptions] = useState([]);
@@ -44,7 +44,7 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
       try {
         const response = await axios.get(`${BASE_URL}/employee`);
         const data = response.data.data;
-        const employeeData = data.map(employee => ({
+        const employeeData = data.map((employee) => ({
           id: employee.id,
           name: employee.name,
         }));
@@ -85,7 +85,7 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
       });
     } catch (error) {
       console.error(t('main.Error updating employee:'), error);
-
+    
       // Show error alert
       Swal.fire({
         icon: 'error',

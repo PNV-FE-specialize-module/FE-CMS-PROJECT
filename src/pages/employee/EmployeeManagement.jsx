@@ -281,7 +281,7 @@ const ShowEmployees = () => {
             dataIndex: 'employee_project',
             key: 'employee_project',
             render: (text, record) => {
-              const projects = record.employee_project?.map((item) => item.project.name) || [];
+              const projects = record.employee_project?.map((item) => item.project?.name) || [];
           
               return (
                 <>
@@ -393,7 +393,6 @@ const ShowEmployees = () => {
         tech: employee.tech,
         position: employee.position,
         status: employee.status,
-        manager: employee.manager,
         employee_project: employee.employee_project
     }));
     return (

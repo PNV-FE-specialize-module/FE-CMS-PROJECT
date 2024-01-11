@@ -27,6 +27,9 @@ export const useGetAllEmployee = () => {
 
 
 
+
+
+
 export const useGetDetailEmployee = (id) => {
     return useQuery({
         queryKey: ["EMPLOYEE", id],
@@ -35,7 +38,7 @@ export const useGetDetailEmployee = (id) => {
                 const { data } = await getDetailEmployee(id);
                 return data;
             } catch (error) {
-                console.error("Error:", error);
+                // console.error(t("main.Error:"), error);
                 throw error;
             }
         }
@@ -77,7 +80,6 @@ export const useUpdateEmployee = (id) => {
 
 export const useDeleteEmployee = () => {
     const queryClient = useQueryClient();
-
     const navigate = useNavigate()
     const deleteEmployee = async (employeeId) => await deleteEmployeeApi(employeeId)
 
@@ -92,7 +94,6 @@ export const useDeleteEmployee = () => {
                     timer: 1000,
                     showConfirmButton: false
                 })
-                navigate('/listemployee')
             }
             else{
                 Swal.fire({
