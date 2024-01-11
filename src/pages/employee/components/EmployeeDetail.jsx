@@ -245,7 +245,7 @@ const EmployeeDetail = () => {
 
   console.log(111111, isManager)
 
-  console.log(62626, employee?.employee.manager?.name)
+  console.log(62626, employee?.employee.isManager)
 
   const handleSaveClick = async () => {
     try {
@@ -416,7 +416,7 @@ const EmployeeDetail = () => {
                 >
                   {editMode ? (
                     <Radio.Group
-                      value={editedEmployee.isManager}
+                      value={editedEmployee?editedEmployee.isManager:isManager}
                       style={{ marginBottom: "0px" }}
                       onChange={(e) => handleInputChange({ target: { name: "isManager", value: e.target.value } })}
                     >
@@ -425,7 +425,7 @@ const EmployeeDetail = () => {
                     </Radio.Group>
                   ) : (
                     <Radio.Group
-                      value={isManager}
+                      defaultValue={employee?.employee.isManager}
                       style={{ marginBottom: "0px" }}
                       disabled
                     >
