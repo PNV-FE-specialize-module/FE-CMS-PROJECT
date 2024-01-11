@@ -1,33 +1,35 @@
-
 import baseAxios from "./baseAxios.js";
 
-const ENDPOINT="employee";
+const ENDPOINT = "employee";
 
 
 
-export const getAllEmployee = async () => {
-    return await baseAxios.get(`${ENDPOINT}`);
+export const getAllEmployees = async(params) => {
+    return await baseAxios.get(`${ENDPOINT}`, { params });
 }
 
-export const getDetailEmployee = async (id, params = {}) => {
+export const getDetailEmployee = async(id, params = {}) => {
     return await baseAxios.get(`${ENDPOINT}/${id}`, params);
 };
 
 
-export const updateEmployeeApi =  async (employId, params ={}) => {
-    return await baseAxios.patch(`${ENDPOINT}/${employId}`, {...params})
+export const updateEmployeeApi = async(employId, params = {}) => {
+    return await baseAxios.patch(`${ENDPOINT}/${employId}`, {...params })
 }
-export const deleteEmployeeApi =  async (employId) => await baseAxios.delete(`${ENDPOINT}/${employId}`)
+export const deleteEmployeeApi = async(employId) => await baseAxios.delete(`${ENDPOINT}/${employId}`)
 
-export const getManager = async () => {
+export const getAllEmployee = async() => {
+    return await baseAxios.get(`${ENDPOINT}`);
+}
+export const getManager = async() => {
     return await baseAxios.get(`${ENDPOINT}/managers`);
 }
 
-export const getTotalEmployee = async () =>{
+export const getTotalEmployee = async() => {
     return await baseAxios.get(`${ENDPOINT}/total`)
 }
 
-export const addEmployeeApi = async (params) => {
+export const addEmployeeApi = async(params) => {
     return await baseAxios.post(`employee`, params);
 };
 export default {

@@ -4,16 +4,40 @@ import {
     deleteEmployeeApi,
     getAllEmployee,
     getDetailEmployee, getManager, getTotalEmployee,
-    updateEmployeeApi
+    updateEmployeeApi,
+    getAllEmployees
 } from "../api/EmployeeApi.js";
 import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
 import { useTranslation } from "react-i18next";
 
 
+export const useGetEmployee = (params) => {
+    return useQuery({
+        queryKey: ["EMPLOYEE",
+        params.searchByName,
+        params.searchByEmail,
+        params.page,
+        params.take,
+    ],
+       
+        queryFn: async () => {
+            try {
+                const { data } = await getAllEmployees(params);
+                return data;
+            } catch (error) {
+                console.error("Error:", error);
+                throw error;
+            }
+        },
+    });
+};
+
 export const useGetAllEmployee = () => {
     return useQuery({
-        queryKey: ["EMPLOYEE"],
+        queryKey: ["EMPLOYEE",
+    ],
+       
         queryFn: async () => {
             try {
                 const { data } = await getAllEmployee();

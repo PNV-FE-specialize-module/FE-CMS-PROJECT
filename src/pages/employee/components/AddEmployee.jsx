@@ -22,6 +22,7 @@ const CreateEmployee = () => {
     const [newIdentityCard, setNewIdentityCard] = useState("");
     const [newGender, setNewGender] = useState("");
     const [newPosition, setNewPosition] = useState("");
+    // const [newStatus, setNewStatus] = "active";
     const [newEmail, setNewEmail] = useState("");
     const [newJoinDate, setNewJoinDate] = useState("");
     const [newAvatar, setNewAvatar] = useState("");
@@ -195,6 +196,8 @@ const CreateEmployee = () => {
             formData.langFrame = newLangFrames;
             formData.tech = newTechs;
             formData.avatar = imageUrl;
+            // formData.code = newCode;
+            formData.status = "active";
             setConfirmLoading(true);
             createEmployee({
                 ...formData,
@@ -335,6 +338,7 @@ const CreateEmployee = () => {
                                 onChange={(e) => setNewAddress(e.target.value)}
                             />
                         </Form.Item>
+                    
 
                         <Form.Item
                             name="position"
@@ -367,7 +371,8 @@ const CreateEmployee = () => {
                                 onChange={(e) => {
                                     setNewJoinDate(e ? e.format("DD/MM/YYYY") : null);
                                 }}
-                                format={"DD/MM/YYYY"}
+                                format={t("main.DD/MM/YYYY")}
+                                
                             />
                         </Form.Item>
                     </Col>
@@ -480,7 +485,12 @@ const CreateEmployee = () => {
                                 ))}
                             </Select>
                         </Form.Item>
-                        <Form.Item
+                
+                    </Col>
+                </Row>
+                <Row gutter={15} justify={"center"}>
+                <Col span={16}>
+                <Form.Item
                             name="description"
                             label={t("main.Description")}
                             style={{ width: "100%" }}
@@ -490,7 +500,7 @@ const CreateEmployee = () => {
                                 onChange={(e) => setNewDescription(e.target.value)}
                             />
                         </Form.Item>
-                    </Col>
+                </Col>
                 </Row>
 
                 <Divider />

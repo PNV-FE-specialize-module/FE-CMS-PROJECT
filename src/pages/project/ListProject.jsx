@@ -13,6 +13,7 @@ import { Link } from 'react-router-dom';
 import Search from 'antd/es/input/Search';
 import { Content } from 'antd/es/layout/layout';
 import "../../style/Project.css"
+import Pagination from '../../common/pagination/pagination';
 
 
 
@@ -24,8 +25,14 @@ const ListProject = () => {
   const navigate = useNavigate()
 
   const [searchName, setSearchName] = useState('');
+  const [table, setTable] = useState({
+    page: 1,
+    take: 5,
+  });
 
   const paginateOptions = {
+    page: table.page,
+    take: table.take,
     search: searchName.name,
     status: status,
   };
@@ -81,6 +88,10 @@ const ListProject = () => {
       const totalDuration = endDate - startDate;
       const elapsedTime = currentTime - startDate;
       const process = Math.min((elapsedTime / totalDuration) * 100);
+      console.log(startDate, endDate, currentTime)
+      console.log( totalDuration,'aa')
+      console.log( elapsedTime,'aaaaa')
+
       return (
         <Progress
           type="circle"
@@ -307,7 +318,8 @@ const ListProject = () => {
                   className="custom-table"
                   columns={columns}
                   dataSource={projects.data}
-                  rowKey={(record) => record.id} />
+                  rowKey={(record) => record.id}
+                  pagination={false} />
                 </>
             ) : (
                 <p>{t('main.No data to display')}</p>
@@ -317,6 +329,9 @@ const ListProject = () => {
         )}
       </Spin>
     </div>
+    <div className="pagination" style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
+            <Pagination items={projects} table={table} setTable={setTable} />
+          </div>
     </Content>
   );
 };
