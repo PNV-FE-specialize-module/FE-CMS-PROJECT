@@ -26,6 +26,7 @@ import {
   Avatar,
   DatePicker,
   Table,
+  message,
 } from "antd";
 import {
   PositionEnum,
@@ -39,7 +40,6 @@ import {
   useUnassignEmployee,
 } from "../../../hooks/useAssign";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -49,7 +49,8 @@ export const ProjectDetail = () => {
   const { id } = useParams();
   const { data: project, isLoading, isError, error } = useGetDetaiProject(id);
   const { t, i18n } = useTranslation();
-  const navigate = useNavigate();
+  const [newMember, setNewMember] = useState("");
+  const [newRole, setNewRole] = useState([]);
 
   const { data: managers } = useGetManager();
 
@@ -88,7 +89,6 @@ export const ProjectDetail = () => {
     employee_project,
   } = editMode ? editedProject : project?.project;
 
-  console.log(editedProject, 9090);
   const handleEditClick = () => {
     setEditMode(!editMode);
     if (!editMode) {
@@ -98,13 +98,18 @@ export const ProjectDetail = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    if (Array.isArray(value)) {
-      const selectedValues = value.map((item) => item);
-      setEditedProject((prevState) => ({
-        ...prevState,
-        [name]: selectedValues,
-      }));
-    } else {
+    if (name=="employeeId"){
+      setNewMember(value)
+    }
+    if(Array.isArray(value)) {
+        const selectedValues = value.map((item) => item);
+        setEditedProject((prevState) => ({
+          ...prevState,
+          [name]: selectedValues,
+        }));
+        setNewRole(value)
+      }
+    else {
       setEditedProject((prevState) => ({
         ...prevState,
         [name]: value,
@@ -244,14 +249,30 @@ export const ProjectDetail = () => {
         employeeIds: [employeeId],
         projectId: project.project.id,
       });
+      Swal.fire({
+        icon: "success",
+        title: t("main.Success"),
+        text: t("main.Unassign member successfully!"),
+    });
     } catch (error) {
       console.error("Error assigning employee:", error);
     }
   };
 
   const handleAssignEmployee = () => {
+    if (!newMember || newRole.length == 0) {
+      message.error(t("main.Error Assign"));
+      return;
+    }
+    const existingMember = project.project.employee_project.find(
+        (member) => member.employeeId === newMember,
+    );
+
+    if (existingMember) {
+        message.error(t("main.Exist Member"));
+        return;
+    }
     try {
-      // if (editedProject.employeeId && editedProject.roles) {
         assignEmployee([
           {
             employeeId: editedProject.employeeId,
@@ -260,12 +281,17 @@ export const ProjectDetail = () => {
             joinDate: new Date(),
           },
         ]);
-      // }
+        Swal.fire({
+          icon: "success",
+          title: t("main.Success"),
+          text: t("main.Assign member successfully!"),
+      });
     } catch (error) {
       console.error("Error assigning employee:", error);
     }
+    setNewMember("");
+    setNewRole([]);
   };
-
   return (
     <Card>
       <Spin spinning={isLoading} tip={t("main.Loading...")}>
@@ -393,6 +419,7 @@ export const ProjectDetail = () => {
                       <Col span={12}>
                         <Form.Item>
                           <Select
+                          value={newMember}
                             onChange={(value) =>
                               handleInputChange({
                                 target: { name: "employeeId", value },
@@ -436,6 +463,7 @@ export const ProjectDetail = () => {
                           },
                         ]}>
                           <Select
+                            value={newRole}
                             mode="multiple"
                             autoSize={{ minRows: 2, maxRows: 6 }}
                             style={{ height: 'auto', maxHeight: '100px', maxWidth:300 }}
@@ -473,10 +501,9 @@ export const ProjectDetail = () => {
                             (member) => ({
                               key: member.id,
                               roles: member.roles.join(", "),
-                              // roles: member.roles,
                               ...member.employee,
                             })
-                          )}
+                          ).reverse()}
                           style={{
                             width: "300px",
                             maxHeight: "200px",
