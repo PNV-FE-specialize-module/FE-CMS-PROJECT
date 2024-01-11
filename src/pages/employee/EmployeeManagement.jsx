@@ -6,7 +6,11 @@ import "../../style/EmployeeManagement.css";
 import {Link} from "react-router-dom";
 import {useNavigate} from "react-router";
 import { useTranslation} from 'react-i18next';
-import { useGetAllEmployee } from '../../hooks/useEmployee';
+import { useGetEmployee } from '../../hooks/useEmployee';
+import Pagination from '../../common/pagination/pagination';
+import Search from 'antd/es/input/Search';
+
+
 
 
 const ShowEmployees = () => {
@@ -15,7 +19,11 @@ const ShowEmployees = () => {
     const searchInput = useRef(null);
     const navigate= useNavigate()
     const { t, i18n } = useTranslation();
-    const { data: listEmployee } = useGetAllEmployee();
+
+    const [searchNameText, setSearchNameText] = useState("");
+
+    // const { data: listEmployee } = useGetAllEmployee();
+
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
@@ -25,7 +33,25 @@ const ShowEmployees = () => {
         clearFilters();
         setSearchText('');
     };
+    const [table, setTable] = useState({
+        page: 1,
+        take: 5,
+      });
 
+      const paginateOptions = {
+        searchByName: searchNameText,
+        page: table.page,
+        take: table.take,
+      };
+    
+    const { data: listEmployee, isLoading, isError } = useGetEmployee(paginateOptions);
+    
+    const handleSearchInput = (value) => {
+        setSearchName((prevFilters) => ({
+          ...prevFilters,
+          name: value,
+        }));
+      };
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
             <div
@@ -133,6 +159,7 @@ const ShowEmployees = () => {
         });
     };
 
+
     const alphanumericSorter = (a, b) => {
         const codeA = a.code.toString();
         const codeB = b.code.toString();
@@ -237,10 +264,10 @@ const ShowEmployees = () => {
             title: t('main.Avatar'),
             dataIndex: 'avatar',
             key: 'avatar',
-            render: (avatar) => <Avatar src={avatar} />,
-            width: 80, 
-        },
-        {
+            render: (avatar) => <Avatar src={avatar} className="custom-avatar" />,
+            className: 'custom-avatar-column', 
+          },
+          {
             title: t('main.Name'),
             dataIndex: 'name',
             key: 'name',
@@ -248,26 +275,27 @@ const ShowEmployees = () => {
             sorter: (a, b) => a.name.length - b.name.length,
             sortOrder: sortedInfo.columnKey === 'name' ? sortedInfo.order : null,
             ellipsis: true,
-            width: 120, 
-        },
+            className: 'custom-name-column',
+          },
         {
             title: t('main.LangFrame'),
             dataIndex: 'langFrame',
             key: 'langFrame',
             render: renderLangFrames,
-            width: 200,
+            className: 'custom-lF-column'
           },
           {
             title: t('main.Technology'),
             dataIndex: 'tech',
             key: 'tech',
             render: renderTechs,
-            width: 180,
+            className: 'custom-tech-column'
           },      
           {
             title: t('main.Project'),
             dataIndex: 'employee_project',
             key: 'employee_project',
+            className: 'custom-project-column',
             render: (text, record) => {
               const projects = record.employee_project?.map((item) => item.project?.name) || [];
           
@@ -282,7 +310,6 @@ const ShowEmployees = () => {
                 </>
               );
             },
-            width: 220,
           },
           
         {
@@ -320,7 +347,6 @@ const ShowEmployees = () => {
             render: (position) => (
                 <span>{getPositionTitle(position)}</span>
             ),
-            width: 100,
           },
         {
             title: t('main.Manager'),
@@ -329,7 +355,6 @@ const ShowEmployees = () => {
             render: (manager) => (
               <span>{manager ? manager.name : 'N/A'}</span>
             ),
-            width: 120,
           },         
         {
             title: t('main.Status'),
@@ -352,7 +377,6 @@ const ShowEmployees = () => {
           {status}
         </span>
             ),
-            with:150,
         },
     ];
     const getPositionTitle = (position) => {
@@ -385,8 +409,18 @@ const ShowEmployees = () => {
     }));
     return (
         <>
-
+             <Input
+              placeholder={t("main.Search name")}
+              value={searchNameText}
+              style={{
+                width: 304,
+              }}
+              onChange={(e) => {
+                setSearchNameText(e.target.value);
+              }}
+            />
             <Link to={`/addEmployee/`} className="text-edit">
+               
                 <Button
                     type="primary"
                     icon={<PlusOutlined />}
@@ -400,12 +434,6 @@ const ShowEmployees = () => {
                 className="custom-table"
                 columns={columns}
                 dataSource={employeesWithStatus}
-                pagination={{
-                    showSizeChanger: true,
-                    pageSizeOptions: ['1', '2', '5', '10'],
-                    defaultPageSize: 10,
-                    showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
-                }}
                 onChange={handleChange}
                 onRow={(record, rowIndex) => {
                     return {
@@ -414,8 +442,12 @@ const ShowEmployees = () => {
                         },
                     };
                 }}
+                pagination={false}
             
             />
+             <div className="pagination" style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
+            <Pagination items={listEmployee} table={table} setTable={setTable} />
+          </div>
         </>
     );
 };

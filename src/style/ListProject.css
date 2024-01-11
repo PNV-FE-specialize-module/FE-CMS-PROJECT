@@ -1,0 +1,18 @@
+.ant-table-cell {
+  padding: 0px !important ;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .custom-table{
+      padding: 0px !important;
+    }
+    .ant-table-cell {
+      padding: 5px !important ;
+    }
+    .colunm-status{
+      width: 10px !important;
+    }
+    .colunm-member{
+      width: 20px !important;
+    }
+}

@@ -6,6 +6,7 @@ import 'sweetalert2/dist/sweetalert2.css';
 import { useTranslation} from 'react-i18next';
 import {useGetManager} from "../../../hooks/useEmployee.jsx";
 import { useAddProject } from '../../../hooks/useProject.jsx';
+import axios from 'axios';
 
 
 const { TextArea } = Input;
@@ -18,7 +19,10 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
   const { data: managers } = useGetManager();
   const { mutate: addProject } = useAddProject();
 
-
+  const disabledDate = (current) => {
+    const today = moment();
+    return current && current.isBefore(today.startOf('day'));
+  };
   const handleOk = () => {
     form
       .validateFields()
@@ -113,14 +117,14 @@ export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
                 name="startDate"
                 rules={[{ required: true, message: t('main.Please select Start Date!') }]}
               >
-                <DatePicker />
+               <DatePicker disabledDate={disabledDate} />
               </Form.Item>
               <Form.Item
                 label={t("main.End Date")}
                 name="endDate"
                 rules={[{ required: true, message: t( 'main.Please select End Date!') }]}
               >
-                <DatePicker />
+                <DatePicker disabledDate={disabledDate} />
               </Form.Item>
             </Col>
             <Col xs={24} sm={12}>

@@ -6,12 +6,14 @@ import React, { useState } from 'react';
 import { useGetData, useProjectStatusUpdate } from '../../hooks/useProject';
 import { useGetProject } from '../../hooks/useProject';
 import AddProject from './components/AddProject';
+import "../../style/ListProject.css"
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
 import Search from 'antd/es/input/Search';
 import { Content } from 'antd/es/layout/layout';
 import "../../style/Project.css"
+import Pagination from '../../common/pagination/pagination';
 
 
 
@@ -23,8 +25,14 @@ const ListProject = () => {
   const navigate = useNavigate()
 
   const [searchName, setSearchName] = useState('');
+  const [table, setTable] = useState({
+    page: 1,
+    take: 5,
+  });
 
   const paginateOptions = {
+    page: table.page,
+    take: table.take,
     search: searchName.name,
     status: status,
   };
@@ -80,6 +88,10 @@ const ListProject = () => {
       const totalDuration = endDate - startDate;
       const elapsedTime = currentTime - startDate;
       const process = Math.min((elapsedTime / totalDuration) * 100);
+      console.log(startDate, endDate, currentTime)
+      console.log( totalDuration,'aa')
+      console.log( elapsedTime,'aaaaa')
+
       return (
         <Progress
           type="circle"
@@ -128,25 +140,26 @@ const ListProject = () => {
       dataIndex: 'technology',
       render: (text, record) => (
         <Link to={`/project/${record.id}`}>
-        <>
-          {record.technology.map((tag) => {
-            let color = tag.length > 5 ? 'geekblue' : 'green';
-            if (tag === 'loser') {
-              color = 'volcano';
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
+          <>
+            {record.technology.map((tag) => {
+              let color = tag.length > 5 ? 'geekblue' : 'green';
+              if (tag === 'loser') {
+                color = 'volcano';
+              }
+              return (
+                <Tag color={color} key={tag}>
+                  {tag.toUpperCase()}
+                </Tag>
+              );
+            })}
+          </>
         </Link>
       ),
     },
     {
       title: t('main.Members'),
       key: 'members',
+      className:"colunm-member",
       dataIndex: 'employee_project',
       render: (employeeProject, record) => (
         <Link to={`/project/${record.id}`}>
@@ -175,7 +188,7 @@ const ListProject = () => {
       key: 'process',
       render: (text, project,record) => (
         <Link to={`/project/${record.id}`}style={{ color: 'black' }}>
-        <Col span={4}>
+        <Col span={20}>
           <div
             className="circle-progress"
             style={{
@@ -189,11 +202,11 @@ const ListProject = () => {
         </Col>
         </Link>
       ),
-      with: 100,
     },
     {
       title: t('main.Status'),
       dataIndex: 'status',
+      className:"colunm-status",
       key: 'status',
       render: (text, project) => (
         <Col span={3}>
@@ -301,9 +314,12 @@ const ListProject = () => {
                 <>
                   
                     <AddProject isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} data={projects.data}/>
-                  <Table columns={columns}
+                  <Table
+                  className="custom-table"
+                  columns={columns}
                   dataSource={projects.data}
-                  rowKey={(record) => record.id} />
+                  rowKey={(record) => record.id}
+                  pagination={false} />
                 </>
             ) : (
                 <p>{t('main.No data to display')}</p>
@@ -313,6 +329,9 @@ const ListProject = () => {
         )}
       </Spin>
     </div>
+    <div className="pagination" style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
+            <Pagination items={projects} table={table} setTable={setTable} />
+          </div>
     </Content>
   );
 };
