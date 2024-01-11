@@ -147,6 +147,10 @@
       "9": "Oct",
       "10": "Nov",
       "11": "Dec"
-    }
+    },
+    "Error Assign":"Member and role are required",
+    "Exist Member":"Exist Member",
+    "Assign member successfully!":"Assign member successfully!",
+    "Unassign member successfully!":"Unassign member successfully!"
   }
 }

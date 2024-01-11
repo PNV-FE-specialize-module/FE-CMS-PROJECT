@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import {Space, Table, Avatar, Input, Button, Flex} from 'antd';
 import {PlusOutlined, SearchOutlined} from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
-import axios from 'axios';
 import "../../style/EmployeeManagement.css";
 import {Link} from "react-router-dom";
 import {useNavigate} from "react-router";
 import { useTranslation} from 'react-i18next';
-
+import { useGetAllEmployee } from '../../hooks/useEmployee';
 
 
 const ShowEmployees = () => {
@@ -16,6 +15,7 @@ const ShowEmployees = () => {
     const searchInput = useRef(null);
     const navigate= useNavigate()
     const { t, i18n } = useTranslation();
+    const { data: listEmployee } = useGetAllEmployee();
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
@@ -132,17 +132,6 @@ const ShowEmployees = () => {
             columnKey: 'code',
         });
     };
-    const [employees, setEmployees] = useState([]);
-
-    useEffect(() => {
-        axios.get('http://localhost:3000/employee')
-            .then(response => {
-                setEmployees(response.data.data);
-            })
-            .catch(error => {
-                console.error(t('main.Error fetching employee data:'), error);
-            });
-    }, []);
 
     const alphanumericSorter = (a, b) => {
         const codeA = a.code.toString();
@@ -165,12 +154,12 @@ const ShowEmployees = () => {
       setShowAllTechs(true);
     };
     const renderLangFrames = (langFrames) => {
-        const visibleLangFrames = showAllLangFrames ? langFrames : langFrames.slice(0, 2);
+        const visibleLangFrames = showAllLangFrames ? langFrames : langFrames?.slice(0, 2);
       
         return (
           <>
           <Flex wrap='wrap' gap={3} >
-            {visibleLangFrames.map((langFrame, index) => (
+            {visibleLangFrames?.map((langFrame, index) => (
               <React.Fragment key={index}>
                 <Flex  vertical wrap='wrap' align='center'>
                 <span style={{ color: '#1d39c4', background: '#f0f5ff', border: '1px solid #adc6ff', padding: '5px', borderRadius:'3px'}}>
@@ -182,7 +171,7 @@ const ShowEmployees = () => {
               </React.Fragment>
             ))}
             </Flex>
-            {!showAllLangFrames && langFrames.length > 2 && (
+            {!showAllLangFrames && langFrames?.length > 2 && (
                <span
                style={{
                display: 'flex', 
@@ -205,11 +194,11 @@ const ShowEmployees = () => {
       };
       
       const renderTechs = (techs) => {
-        const visibleTechs = showAllTechs ? techs : techs.slice(0, 2);
+        const visibleTechs = showAllTechs ? techs : techs?.slice(0, 2);
         return (
             <>
             <Flex wrap='wrap' gap={3} >
-              {visibleTechs.map((tech, index) => (
+              {visibleTechs?.map((tech, index) => (
                 <React.Fragment key={index}>
                   <Flex  vertical wrap='wrap' align='center'>
                   <span style={{ color: '#1d39c4', background: '#f0f5ff', border: '1px solid #adc6ff', padding: '5px', borderRadius:'3px'}}>
@@ -221,7 +210,7 @@ const ShowEmployees = () => {
                 </React.Fragment>
               ))}
               </Flex>
-              {!showAllTechs && techs.length > 2 && (
+              {!showAllTechs && techs?.length > 2 && (
                 <span
                     style={{
                     display: 'inline-flex', 
@@ -381,7 +370,7 @@ const ShowEmployees = () => {
     // };
 
 
-    const employeesWithStatus = employees.map(employee => ({
+    const employeesWithStatus = listEmployee?.data.map(employee => ({
         key: employee.id,
         avatar: employee.avatar,
         name: employee.name,
@@ -389,7 +378,6 @@ const ShowEmployees = () => {
         tech: employee.tech,
         position: employee.position,
         status: employee.status,
-        manager: employee.manager,
         employee_project: employee.employee_project
     }));
     return (

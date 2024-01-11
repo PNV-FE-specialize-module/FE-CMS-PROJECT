@@ -1,73 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import "../../../style/AddProject.css"
 import { Button, DatePicker, Form, Input, Row, Col, Modal, Select } from 'antd';
-import { postAddProject } from '../../../api/ProjectApi';
-import axios from 'axios';
-import moment from 'moment';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.css';
 import { useTranslation} from 'react-i18next';
+import {useGetManager} from "../../../hooks/useEmployee.jsx";
+import { useAddProject } from '../../../hooks/useProject.jsx';
+import axios from 'axios';
 
 
 const { TextArea } = Input;
 const { Option } = Select;
 
-export const AddProject = ({isModalVisible,setIsModalVisible}) => {
+export const AddProject = ({ isModalVisible, setIsModalVisible }) => {
   const [form] = Form.useForm();
   const [selectedManagers, setSelectedManagers] = useState([]);
-  const [managerOptions, setManagerOptions] = useState([]);
   const { t, i18n } = useTranslation();
+  const { data: managers } = useGetManager();
+  const { mutate: addProject } = useAddProject();
 
   const disabledDate = (current) => {
     const today = moment();
-
     return current && current.isBefore(today.startOf('day'));
   };
-  useEffect(() => {
-    const fetchManagers = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:3000/employee/managers"
-        );
-        const data = response.data;
-        const managerData = data.map((manager) => ({
-          id: manager.id,
-          name: manager.name,
-        }));
-        setManagerOptions(managerData);
-      } catch (error) {
-        console.error("Error fetching managers:", error);
-      }
-    };
-
-    fetchManagers();
-  }, []);
-
-  useEffect(() => {
-    const fetchEmployees = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/employee');
-        const data = response.data.data;
-        const employeeData = data.map(employee => ({
-          id: employee.id,
-          name: employee.name,
-        }));
-        setManagerOptions(employeeData);
-      } catch (error) {
-        console.error("Error fetching employees:", error);
-      }
-    };
-
-    fetchEmployees();
-  }, []);
-
   const handleOk = () => {
     form
       .validateFields()
       .then((values) => {
         form.resetFields();
-        setIsModalVisible(false);
         onFinish(values);
+        setIsModalVisible(false);
       })
       .catch((info) => {
         console.error("Validate Failed:", info);
@@ -80,17 +42,11 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
   };
 
   const onFinish = async (values) => {
+  
     try {
-      const { data } = await postAddProject(values);
-      Swal.fire({
-        icon: 'success',
-        title: t('main.Success'),
-        text: t('main.Employee updated successfully!'),
-      });
+      addProject(values);
     } catch (error) {
       console.error(t('main.Error updating employee:'), error);
-
-      // Show error alert
       Swal.fire({
         icon: 'error',
         title: t('main.Error'),
@@ -148,7 +104,7 @@ export const AddProject = ({isModalVisible,setIsModalVisible}) => {
                   onChange={setSelectedManagers}
                   style={{ width: "100%" }}
                 >
-                  {managerOptions.map((managerOption) => (
+                  {managers?.map((managerOption) => (
                     <Option key={managerOption.id} value={managerOption.id}>
                       {managerOption.name}
                     </Option>

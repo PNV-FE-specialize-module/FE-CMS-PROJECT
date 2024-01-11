@@ -1,11 +1,6 @@
 import React, {useRef, useState} from 'react';
-import { useParams } from "react-router-dom";
-import {
-  useGetDetailEmployee,
-  useUpdateEmployee,
-  useGetManager,
-  useDeleteEmployee
-} from "../../../hooks/useEmployee.jsx";
+import { useNavigate, useParams } from "react-router-dom";
+import { useGetDetailEmployee, useUpdateEmployee, useGetManager, useDeleteEmployee } from "../../../hooks/useEmployee.jsx";
 import {Row, Col, Button, Form, Input, Typography, Card, Select, message, Space, Timeline, DatePicker} from 'antd';
 import moment from "moment";
 import 'sweetalert2/dist/sweetalert2.css';
@@ -15,7 +10,6 @@ import { useTranslation} from 'react-i18next';
 import { Cloudinary } from "@cloudinary/url-gen";
 import axios from "axios";
 import {DeleteOutlined, PlusOutlined} from "@ant-design/icons";
-import {useNavigate} from "react-router";
 import Swal from 'sweetalert2';
 
 const { TextArea } = Input;
@@ -66,6 +60,7 @@ const EmployeeDetail = () => {
 
         if (result.isConfirmed) {
           deleteEmployee(id);
+          navigate('/listemployee')
         }
     } catch (error) {
         Swal.fire({
@@ -175,7 +170,7 @@ const EmployeeDetail = () => {
     }));
   };
 
-
+  
   const handleDateOfBirthChange = (date, dateString) => {
     setEditedEmployee((prevState) => ({
       ...prevState,
@@ -595,7 +590,7 @@ const EmployeeDetail = () => {
                 <Col span={12}>
                   <Form.Item label={t("main.Soft skill")}>
                     {editMode ? (
-                        skills.map((skill, index) => (
+                        skills?.map((skill, index) => (
                             <div key={index} style={{ marginBottom: '8px' }}>
                               <Input
                                   value={editedEmployee?.skills[index].name}
@@ -618,7 +613,7 @@ const EmployeeDetail = () => {
                             </div>
                         ))
                     ) : (
-                        skills.map((skill, index) => (
+                        skills?.map((skill, index) => (
                             <div key={index} style={{ marginBottom: '8px' }}>
                               <Input
                                   value={skill.name}
@@ -648,7 +643,7 @@ const EmployeeDetail = () => {
                 <Col span={12}>
                   <Form.Item label={t("main.Language/Framework")}>
                     {editMode ? (
-                        langFrame.map((item, index) => (
+                        langFrame?.map((item, index) => (
                             <div key={index} style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
                               <Input
                                   value={item.name}
@@ -670,7 +665,7 @@ const EmployeeDetail = () => {
                             </div>
                         ))
                     ) : (
-                        langFrame.map((item, index) => (
+                        langFrame?.map((item, index) => (
                             <div key={index} style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
                               <Input
                                   value={item.name}
@@ -680,7 +675,6 @@ const EmployeeDetail = () => {
                               />
                               <Input
                                   value={item.exp}
-                                  // onChange={(e) => handleLangFrameInputChange(e, index, 'exp')}
                                   style={{ width: '80px', marginRight: '8px' }}
                                   placeholder={t("main.Experience")}
                                   disabled
@@ -703,7 +697,7 @@ const EmployeeDetail = () => {
                   <Form.Item label={t("main.Technology")}>
                     {editMode ? (
                         // Display input fields for editing tech
-                        tech.map((item, index) => (
+                        tech?.map((item, index) => (
                             <div key={index} style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
                               <Input
                                   value={item.name}
@@ -726,18 +720,16 @@ const EmployeeDetail = () => {
                         ))
                     ) : (
                         // Display tech in a table format
-                        tech.map((item, index) => (
+                        tech?.map((item, index) => (
                             <div key={index} style={{ marginBottom: '8px', display: 'flex', alignItems: 'center' }}>
                               <Input
                                   value={item.name}
-                                  // onChange={(e) => handleTechInputChange(e, index, 'name')}
                                   style={{ width: '120px', marginRight: '8px' }}
                                   placeholder={t("main.Technology")}
                                   disabled
                               />
                               <Input
                                   value={item.exp}
-                                  // onChange={(e) => handleTechInputChange(e, index, 'exp')}
                                   style={{ width: '80px', marginRight: '8px' }}
                                   placeholder={t("main.Experience")}
                                   disabled

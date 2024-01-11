@@ -4,6 +4,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useTranslation} from 'react-i18next';
+const BASE_URL = import.meta.env.VITE_BASE_URL_API;
 
 
 
@@ -15,7 +16,7 @@ export const ResetPwd = () => {
 
   const onFinish = (email) => {
     axios
-      .post("http://localhost:3000/user/reset", JSON.stringify(email), {
+      .post(`${BASE_URL}/user/reset`, JSON.stringify(email), {
         headers: {
           "Content-Type": "application/json",
         },

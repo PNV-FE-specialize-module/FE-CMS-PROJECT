@@ -1,25 +1,42 @@
+import { useParams } from 'react-router-dom';
+
 import { Table, Spin, Alert, Space, Tag, Button, Col, Select, Progress, Typography, Avatar, Tooltip } from 'antd';
 import {  PlusOutlined } from "@ant-design/icons";
 import React, { useState } from 'react';
 import { useGetData, useProjectStatusUpdate } from '../../hooks/useProject';
+import { useGetProject } from '../../hooks/useProject';
 import AddProject from './components/AddProject';
 import "../../style/ListProject.css"
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
+import Search from 'antd/es/input/Search';
+import { Content } from 'antd/es/layout/layout';
+import "../../style/Project.css"
+
+
+
 
 const ListProject = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [status, setStatus] = useState("");
   const { t, i18n } = useTranslation();
   const navigate = useNavigate()
+
+  const [searchName, setSearchName] = useState('');
+
+  const paginateOptions = {
+    search: searchName.name,
+    status: status,
+  };
+
+
+
   const showModal = () => {
     setIsModalVisible(true);
   };
-  const paginateOptions = {
-    status: status,
-  };
-  const { data: projects, isLoading, isError, error } = useGetData(paginateOptions);
+
+  const { data: projects, isLoading, isError, error } = useGetProject(paginateOptions);
 
   const projectStatusUpdateMutation = useProjectStatusUpdate();
 
@@ -216,14 +233,59 @@ const ListProject = () => {
       render: (text,record) => <Link to={`/project/${record.id}`}style={{ color: 'black' }}> {new Date(text).toLocaleDateString('en-US')}</Link> 
     },
   ];
+
+  const handleSearch = (value) => {
+    setSearchName((prevFilters) => ({
+      ...prevFilters,
+      name: value,
+    }));
+  };
+
+
+
+
   return (
-    <div>
-      <Spin spinning={isLoading} tip={t('main.Loading...')}>
-        {isError && <Alert message={error.message} type="error" />}
-        {projects && projects.data ? (
-            Array.isArray(projects.data)  ? (
-                <>
-                    <Button
+    <Content>
+      <Space direction="horizontal" className="status-button">
+        <div className="status">
+          <Button
+            type="secondary"
+            onClick={() => setStatus("")}
+            className={status === '' ? 'button-selected' : ''}>
+            All Status
+          </Button>
+          <Button
+            type="secondary"
+            onClick={() => setStatus("pending")}
+            className={status === 'pending' ? 'button-selected' : ''}
+          >
+            Pending
+          </Button>
+          <Button
+            type="secondary"
+            onClick={() => setStatus("on_progress")}
+            className={status === 'on_progress' ? 'button-selected' : ''}
+          >
+            On Progress
+          </Button>
+          <Button
+            type="secondary"
+            className={status === 'done' ? 'button-selected' : ''}
+            onClick={() => setStatus("done")}>
+            Done
+          </Button>
+        </div>
+      
+        <Search
+          placeholder="Search Project"
+          allowClear
+          style={{
+            maxWidth: 300,
+            height: 30,
+          }}
+          onSearch={handleSearch}
+        />
+          <Button
                         type="primary"
                         icon={<PlusOutlined />}
                         style={{ float: 'right', margin: '10px' }}
@@ -231,6 +293,15 @@ const ListProject = () => {
                     >
                       {t('main.Add Project')}
                     </Button>
+      </Space>
+
+      <div>
+      <Spin spinning={isLoading} tip={t('main.Loading...')}>
+        {isError && <Alert message={error.message} type="error" />}
+        {projects && projects.data ? (
+            Array.isArray(projects.data)  ? (
+                <>
+                  
                     <AddProject isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} data={projects.data}/>
                   <Table
                   className="custom-table"
@@ -246,6 +317,7 @@ const ListProject = () => {
         )}
       </Spin>
     </div>
+    </Content>
   );
 };
 export default ListProject;

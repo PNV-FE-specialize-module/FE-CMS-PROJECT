@@ -8,6 +8,7 @@ import {
 } from "../api/EmployeeApi.js";
 import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
+import { useTranslation } from "react-i18next";
 
 
 export const useGetAllEmployee = () => {
@@ -27,6 +28,9 @@ export const useGetAllEmployee = () => {
 
 
 
+
+
+
 export const useGetDetailEmployee = (id) => {
     return useQuery({
         queryKey: ["EMPLOYEE", id],
@@ -35,21 +39,27 @@ export const useGetDetailEmployee = (id) => {
                 const { data } = await getDetailEmployee(id);
                 return data;
             } catch (error) {
-                console.error("Error:", error);
+                // console.error(t("main.Error:"), error);
                 throw error;
             }
         }
     });
 };
-
 export const useCreateEmployee = () => {
+    const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const mutation = useMutation(
         (newEmployee) => addEmployeeApi(newEmployee),
         {
-            onSuccess: () => {
+            onSuccess: async () => {
                 queryClient.invalidateQueries(["EMPLOYEE"]);
+                await queryClient.refetchQueries();
+                Swal.fire({
+                    icon: "success",
+                    title: t("main.Success"),
+                    text: t("main.Employee updated successfully!"),
+                  });
                 navigate("/listemployee")
 
             },
@@ -77,7 +87,6 @@ export const useUpdateEmployee = (id) => {
 
 export const useDeleteEmployee = () => {
     const queryClient = useQueryClient();
-
     const navigate = useNavigate()
     const deleteEmployee = async (employeeId) => await deleteEmployeeApi(employeeId)
 
@@ -92,7 +101,6 @@ export const useDeleteEmployee = () => {
                     timer: 1000,
                     showConfirmButton: false
                 })
-                navigate('/listemployee')
             }
             else{
                 Swal.fire({
