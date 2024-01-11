@@ -74,8 +74,8 @@
         "uploading": "Đang tải lên",
         "done": "Xong",
         "uploaded successfully": "Đã tải lên thành công",
-        "'Employee Created Successfully!": "Tạo nhân viên thành công!",
-        "Error Employee": "Lỗi thêm nhân viên",
+        "Employee Created Successfully!": "Tạo nhân viên thành công!",
+        "Employee creation failed": "Thêm nhân viên không thành công!",
         "Address": "Địa chỉ",
         "Join Date": "Ngày tham gia",
         "Select Join Date": "Chọn ngày tham gia",
@@ -144,7 +144,7 @@
         "On Progress": "Đang chạy",
         "Done": "Hoàn thành",
         "Closed": "Bảo trì",
-        "All Status": "Trạng thái",
+        "All Status": "Tất cả trạng thái",
         " Login": "Đăng nhập",
         "Employee Information": "Thông tin nhân viên",
         "LangFrame": "Ngôn ngữ & Frame",
@@ -292,6 +292,15 @@
         "Error Assign": "Cần nhập đầy đủ thành viên và vai trò",
         "Exist Member": "Thành viên đã tồn tại",
         "Assign member successfully!": "Thêm thành viên vào dự án thành công!",
-        "Unassign member successfully!": "Xóa thành viên khỏi dự án thành công!"
+        "Unassign member successfully!": "Xóa thành viên khỏi dự án thành công!",
+        "Please input position": "Hãy nhập vị trí",
+        "Please input email!": "Hãy nhập email!",
+        "Please choose the date of birth!": "Hãy chọn ngày sinh!",
+        "Please input the identity!": "Hãy nhập mã xác thực!",
+        "Please choose the gender!": "Hãy chọn giới tính!",
+        "Are you manager?": "Bạn có phải là quản lý không?",
+        "Please input the name!": "Vui lòng nhập tên!",
+        "Please input the phone number!": "Vui lòng nhập số điện thoại!",
+        "Please input the address!": "Vui lòng nhập địa chỉ!"
     }
 }

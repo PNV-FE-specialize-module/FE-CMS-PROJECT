@@ -205,7 +205,7 @@ const CreateEmployee = () => {
                 code: generateRandomCode(),
             });
         } catch (error) {
-            message.error(t("main.Error Employee"));
+            message.error(t("main.Employee creation failed"));
         }
     };
 
@@ -302,7 +302,7 @@ const CreateEmployee = () => {
                             name="name"
                             label={t("main.Name")}
                             style={{ width: "100%" }}
-                            rules={[{ required: true, message: t("main.Name")}]}
+                            rules={[{ required: true, message: t("main.Please input the name!")}]}
                         >
                             <Input
                                 value={newName}
@@ -318,7 +318,7 @@ const CreateEmployee = () => {
                                 {
                                     required: true,
                                     pattern: /^[0-9]{10}$/,
-                                    message: t("main.Phone"),
+                                    message: t("main.Please input the phone number!"),
                                 },
                             ]}
                         >
@@ -331,7 +331,7 @@ const CreateEmployee = () => {
                             name="address"
                             label={t("main.Address")}
                             style={{ width: "100%" }}
-                            rules={[{ required: true, message: t("main.Address")}]}
+                            rules={[{ required: true, message: t("main.Please input the address!")}]}
                         >
                             <Input
                                 value={newAddress}
@@ -344,7 +344,7 @@ const CreateEmployee = () => {
                             name="position"
                             label={t("main.Position")}
                             style={{ width: "100%" }}
-                            rules={[{ required: true, message: t("main.Position")}]}
+                            rules={[{ required: true, message: t("main.Please input position")}]}
                         >
                             <Select
                                 value={newPosition}
@@ -382,10 +382,10 @@ const CreateEmployee = () => {
                             label={t("main.Email")}
                             style={{ width: "100%" }}
                             rules={[
-                                { required: true, message: t("main.Email") },
+                                { required: true, message: t("main.Please input email!") },
                                 {
                                     type: "email",
-                                    message: t("main.Valid Email"),
+                                    message: t("main.Invalid Email"),
                                 },
                             ]}
                         >
@@ -401,7 +401,7 @@ const CreateEmployee = () => {
                             rules={[
                                 {
                                     required: true,
-                                    message: t("main.Date of birth"),
+                                    message: t("main.Please choose the date of birth!"),
                                 },
                             ]}
                         >
@@ -426,7 +426,7 @@ const CreateEmployee = () => {
                                 {
                                     required: true,
                                     pattern: /^[0-9]{9,12}$/,
-                                    message: t("main.Identity"),
+                                    message: t("main.Please input the identity!"),
                                 },
                             ]}
                         >
@@ -440,7 +440,7 @@ const CreateEmployee = () => {
                             name="gender"
                             label={t("main.Gender")}
                             style={{ width: "100%" }}
-                            rules={[{ required: true, message: t("main.Gender") }]}
+                            rules={[{ required: true, message: t("main.Please choose the gender!") }]}
                         >
                             <Select
                                 value={newGender}
@@ -458,7 +458,7 @@ const CreateEmployee = () => {
                             rules={[
                                 {
                                     required: true,
-                                    message: t("main.IsManager"),
+                                    message: t("main.Are you manager?"),
                                 },
                             ]}
                         >
