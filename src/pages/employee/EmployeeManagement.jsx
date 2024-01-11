@@ -276,6 +276,7 @@ const ShowEmployees = () => {
             sortOrder: sortedInfo.columnKey === 'name' ? sortedInfo.order : null,
             ellipsis: true,
             className: 'custom-name-column',
+            render: (text) => <span style={{ fontSize: '16px', fontWeight: 'bold' }}>{text}</span>,
           },
         {
             title: t('main.LangFrame'),
