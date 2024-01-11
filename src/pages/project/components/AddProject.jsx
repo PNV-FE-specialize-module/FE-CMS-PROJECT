@@ -6,8 +6,7 @@ import 'sweetalert2/dist/sweetalert2.css';
 import { useTranslation} from 'react-i18next';
 import {useGetManager} from "../../../hooks/useEmployee.jsx";
 import { useAddProject } from '../../../hooks/useProject.jsx';
-import axios from 'axios';
-
+import moment from 'moment';
 
 const { TextArea } = Input;
 const { Option } = Select;
