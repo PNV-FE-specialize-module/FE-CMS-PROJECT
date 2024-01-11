@@ -27,19 +27,7 @@ export default function HeaderContent({ pageTitle }) {
       style={{ padding: '0 2em', background: "#ffffff", fontSize: "20px", fontWeight:'500', color:'#5D5FEF' }}
     >
       {t(pageTitle)}
-      <Input
-        placeholder={t("main.Search here...")}
-        prefix={<SearchOutlined className="site-form-item-icon" />}
-        suffix={
-          <Tooltip title="Micro">
-            <AudioOutlined
-              style={{
-                color: 'rgba(0,0,0,.45)',
-              }}
-            />
-          </Tooltip>
-        }
-      />
+    
       <Language/>
     </Header>
   );

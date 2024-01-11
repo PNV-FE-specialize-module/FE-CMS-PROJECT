@@ -77,11 +77,11 @@
         "done": "done",
         "uploaded successfully": "uploaded successfully",
         "Employee Created Successfully!": "Employee Created Successfully!",
-        "Error Employee": "Error Employee",
+        "Employee creation failed": "Employee creation failed!",
         "Address": "Address",
         "Join Date": "Join Date",
         "Select Join Date": "Select Join Date",
-        "Valid Email": "Valid Email",
+        "Invalid Email": "Invalid Email",
         "Date of birth": "Date of birth",
         "Select Date of birth": "Select Date of birth",
         "DD/MM/YYYY": "DD/MM/YYYY",
@@ -175,6 +175,15 @@
         "Error Assign": "Member and role are required",
         "Exist Member": "Exist Member",
         "Assign member successfully!": "Assign member successfully!",
-        "Unassign member successfully!": "Unassign member successfully!"
+        "Unassign member successfully!": "Unassign member successfully!",
+        "Please input position": "Please input position",
+        "Please input email!": "Please input email!",
+        "Please choose the date of birth!": "Please choose the date of birth!",
+        "Please input the identity!": "Please input the identity!",
+        "Please choose the gender!": "Please choose the gender!",
+        "Are you manager?": "Are you manager?",
+        "Please input the name!": "Please input the name!",
+        "Please input the phone number!": "Please input the phone number!",
+        "Please input the address!": "Please input the address!"
     }
 }

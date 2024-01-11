@@ -432,7 +432,7 @@ export const ProjectDetail = () => {
                         <Option value={StatusProjectEnum.ON_PROGRESS}>
                           On Progress
                         </Option>
-                        <Option value={StatusProjectEnum.CLOSED}>Closed</Option>
+                        {/* <Option value={StatusProjectEnum.CLOSED}>Closed</Option> */}
                       </Select>
                     ) : (
                       <Input
@@ -681,7 +681,7 @@ export const ProjectDetail = () => {
                 </Col>
 
                 <Col span={12}>
-                  <Form.Item label={t("main.Start Date")}>
+                  <Form.Item label={t("main.Start Date")} >
                     {editMode ? (
                       <DatePicker
                         value={

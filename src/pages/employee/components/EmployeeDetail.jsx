@@ -250,6 +250,7 @@ const EmployeeDetail = () => {
   } = editMode ? editedEmployee : employee?.employee;
 
   const handleSaveClick = async () => {
+    console.log(662,editedEmployee);
     try {
       const result = await updateEmployeeMutation.mutateAsync(editedEmployee);
       setEditMode(false)
@@ -357,8 +358,8 @@ const EmployeeDetail = () => {
                 <Form.Item label={t("main.Projects")}>
                   <Timeline mode="left">l
                     {employee?.employee?.employee_project?.map((project, index) => (
-                        <Timeline.Item key={index} label={`${moment(project?.project?.startDate).format(t('main.DD-MM-YYYY'))} - ${moment(project?.project?.endDate).format(t('main.DD-MM-YYYY'))}`}>
-                          <div>
+                        <Timeline.Item key={index} label={`${moment(project?.project?.startDate).format('DD-MM-YYYY')} - ${moment(project?.project?.endDate).format('DD-MM-YYYY')}`}>
+                        <div>
                             <strong>{t("main.Name:")}</strong> {project?.project?.name}
                           </div>
                           <div>

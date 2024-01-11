@@ -78,7 +78,7 @@ const Dashboard = () => {
       },
       xaxis: {
         type: "datetime",
-        categories: formattedDates,
+        categories: dates,
       },
       tooltip: {
         x: {
@@ -312,3 +312,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
