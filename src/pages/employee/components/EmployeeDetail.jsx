@@ -177,6 +177,16 @@ const EmployeeDetail = () => {
       dateOfBirth: dateString,
     }));
   };
+
+  const manager = managers.find((person) => person.id === employee?.employee?.managerId) || null;
+  const handleManagerChange = (id) => {
+    console.log(id,888);
+    setEditedEmployee((prevState) => ({
+      ...prevState,
+      managerId: id,
+    }));
+  };
+
   const handleFileChange = async (file) => {
     setLoadingAvatar(true);
     const formData = new FormData();
@@ -237,10 +247,11 @@ const EmployeeDetail = () => {
     langFrame,
     tech,
     description,
-    manager,
+    managerId,
   } = editMode ? editedEmployee : employee?.employee;
 
   const handleSaveClick = async () => {
+    console.log(662,editedEmployee);
     try {
       const result = await updateEmployeeMutation.mutateAsync(editedEmployee);
       setEditMode(false)
@@ -380,19 +391,21 @@ const EmployeeDetail = () => {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label={t("main.Manager Name")}>
+                  <Form.Item label={t("main.Manager Name")} >
 
                     {editMode ? (
-                        <Select>
-                          {(managers || []).map((manager) => (
-                              <Select.Option key={manager.id} value={manager.id}>
+                        <Select 
+                        onChange={(value) => {handleManagerChange(value)}}
+                        defaultValue={manager?.name}>
+                          {managers?.map((manager) => (
+                              <Select.Option key={manager.id} value={manager.id} >
                                 {manager.name}
                               </Select.Option>
                           ))}
                         </Select>
                     ) : (
                         <Input
-                            value={editMode ? editedEmployee.manager.name : name}
+                            value={manager?.name}
                             style={{ maxWidth: "300px" }}
                             disabled
                         />
