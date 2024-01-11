@@ -75,7 +75,7 @@
     "done":"Xong",
     "uploaded successfully":"Đã tải lên thành công",
     "'Employee Created Successfully!":"Tạo nhân viên thành công!",
-    "Error Employee":"Lỗi thêm nhân viên",
+    "Employee creation failed":"Thêm nhân viên không thành công!",
     "Address":"Địa chỉ",
     "Join Date":"Ngày tham gia",
     "Select Join Date":"Chọn ngày tham gia",
@@ -138,11 +138,11 @@
     "Employee Information":"Thông tin nhân viên",
     "Members":"Thành viên",
     "Process":"Quá trình",
-    "Pending":"Chờ Xử lý",
+    "Pending":"Chờ thực thi",
     "On Progress":"Đang chạy",
     "Done":"Hoàn thành",
     "Closed":"Bảo trì",
-    "All Status":"Trạng thái",
+    "All Status":"Tất cả trạng thái",
     " Login":"Đăng nhập",
     "PROJECT": "DỰ ÁN",
     "OVERVIEW": "TỔNG QUÁT",
@@ -150,6 +150,8 @@
     "DONE PROJECT": "DỰ ÁN HOÀN THÀNH",
     "TOTAL": "Tổng",
     "Onprogress": "Đang thực hiện",
+    "ACTION":"HÀNH ĐỘNG",
+    "year":"năm",
     "YEAR":"Năm",
     "MONTH":"Tháng",
     "months": {
@@ -165,6 +167,18 @@
       "9": "Tháng 10",
       "10": "Tháng 11",
       "11": "Tháng 12"
-    }
+    },
+    "Search Project":"Tìm kiếm dự án",
+    "ROLE":"VAI TRÒ",
+    "NAME":"TÊN",
+    "Please input position":"Hãy nhập vị trí",
+    "Please input email!":"Hãy nhập email!",
+    "Please choose the date of birth!":"Hãy chọn ngày sinh!",
+    "Please input the identity!":"Hãy nhập mã xác thực!",
+    "Please choose the gender!":"Hãy chọn giới tính!",
+    "Are you manager?":"Bạn có phải là quản lý không?",
+    "Please input the name!":"Vui lòng nhập tên!",
+    "Please input the phone number!":"Vui lòng nhập số điện thoại!",
+    "Please input the address!":"Vui lòng nhập địa chỉ!"
   }
 }

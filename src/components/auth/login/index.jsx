@@ -6,6 +6,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import { useTranslation} from 'react-i18next';
 
+const BASE_URL = import.meta.env.VITE_BASE_URL_API;
+
 
 
 const Login = () => {
@@ -19,7 +21,7 @@ const Login = () => {
     const requestData = { email: values.email, password: values.password };
 
     axios
-      .post("http://localhost:3000/user/login", JSON.stringify(requestData), {
+      .post(`${BASE_URL}/user/login`, JSON.stringify(requestData), {
         headers: {
           "Content-Type": "application/json",
         },

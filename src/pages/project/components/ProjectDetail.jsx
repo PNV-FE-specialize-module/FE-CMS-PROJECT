@@ -55,6 +55,7 @@ export const ProjectDetail = () => {
 
   const { data: listEmployee } = useGetAllEmployee();
 
+
   const updateProject = useUpdateProject(id);
   const { mutate: deleteProject } = useDeleteProject();
 
@@ -237,13 +238,13 @@ export const ProjectDetail = () => {
 
   const teamMember = [
     {
-      title: "NAME",
+      title: t("main.NAME"),
       dataIndex: "name",
       key: "name",
       render: (text) => <a>{text}</a>,
     },
     {
-      title: "ROLE",
+      title: t("main.ROLE"),
       dataIndex: "roles",
       key: "roles",
     },
@@ -252,7 +253,7 @@ export const ProjectDetail = () => {
     try {
       unAssignEmployee({
         employeeIds: [employeeId],
-        projectId: editedProject.id,
+        projectId: project.project.id,
       });
     } catch (error) {
       console.error("Error assigning employee:", error);
@@ -265,7 +266,7 @@ export const ProjectDetail = () => {
         assignEmployee([
           {
             employeeId: editedProject.employeeId,
-            projectId: editedProject.id,
+            projectId: project.project.id,
             roles: [editedProject.roles],
             joinDate: new Date(),
           },
@@ -320,13 +321,13 @@ export const ProjectDetail = () => {
                         }
                       >
                         <Option value={StatusProjectEnum.PENDING}>
-                          Pending
+                          {t("main.Pending")}
                         </Option>
-                        <Option value={StatusProjectEnum.DONE}>Done</Option>
+                        <Option value={StatusProjectEnum.DONE}>{Table("main.Done")}</Option>
                         <Option value={StatusProjectEnum.ON_PROGRESS}>
-                          On Progress
+                          {t("main.On Progress")}
                         </Option>
-                        <Option value={StatusProjectEnum.CLOSED}>Closed</Option>
+                        <Option value={StatusProjectEnum.CLOSED}>{t("main.Closed")}</Option>
                       </Select>
                     ) : (
                       <Input
@@ -403,7 +404,7 @@ export const ProjectDetail = () => {
                       <Col span={12}>
                         <Form.Item>
                           <Select
-                            value={editedProject.employee_project.id}
+                            // value={editedProject.employee_project.id}
                             onChange={(value) =>
                               handleInputChange({
                                 target: { name: "employeeId", value },
@@ -411,6 +412,11 @@ export const ProjectDetail = () => {
                             }
                             style={{ maxWidth: "300px" }}
                           >
+                            {/* if (!listEmployee) {
+                              // Xử lý trường hợp listEmployee không tồn tại
+                              console.error("Error: listEmployee is undefined")
+                              // Có thể return hoặc thực hiện các hành động khác tùy thuộc vào yêu cầu của bạn
+                            }; */}
                             {listEmployee.data?.map((member, index) => (
                               <Option key={index} value={member.id}>
                                 <Avatar
@@ -448,7 +454,7 @@ export const ProjectDetail = () => {
                               })
                             }
                             placeholder="Select roles"
-                            value={editedProject.employee_project.roles}
+                          // value={editedProject.employee_project.roles}
                           >
                             <Option value={PositionEnum.FE}>FRONT-END</Option>
                             <Option value={PositionEnum.BE}>BACK-END</Option>
@@ -489,7 +495,7 @@ export const ProjectDetail = () => {
                           columns={[
                             ...teamMember,
                             {
-                              title: "ACTION",
+                              title:t("main.ACTION"),
                               width: 50,
                               render: (record) => (
                                 <CloseCircleOutlined

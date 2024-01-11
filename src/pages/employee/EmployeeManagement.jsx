@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router";
 import { useTranslation } from 'react-i18next';
 
+const BASE_URL = import.meta.env.VITE_BASE_URL_API;
 
 
 const ShowEmployees = () => {
@@ -135,7 +136,7 @@ const ShowEmployees = () => {
     const [employees, setEmployees] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:3000/employee')
+        axios.get(`${BASE_URL}/employee`)
             .then(response => {
                 setEmployees(response.data.data);
             })
@@ -176,7 +177,7 @@ const ShowEmployees = () => {
                 <span style={{ color: '#1d39c4', background: '#f0f5ff', border: '1px solid #adc6ff', padding: '5px', borderRadius:'3px'}}>
                   {langFrame.name} 
                 </span>
-                <p style={{color:'gray'}}>{langFrame.exp} year</p>
+                <p style={{color:'gray'}}>{langFrame.exp} {t("main.year")}</p>
                 </Flex>
                 {(index + 1) % 2 === 0 && <br style={{ lineHeight: '30px' }} />}
               </React.Fragment>
@@ -202,7 +203,7 @@ const ShowEmployees = () => {
                   <span style={{ color: '#1d39c4', background: '#f0f5ff', border: '1px solid #adc6ff', padding: '5px', borderRadius:'3px'}}>
                     {tech.name} 
                   </span>
-                  <p style={{color:'gray'}}>{tech.exp} year</p>
+                  <p style={{color:'gray'}}>{tech.exp} {t("main.year")}</p>
                   </Flex>
                   {(index + 1) % 2 === 0 && <br style={{ lineHeight: '30px' }} />}
                 </React.Fragment>
@@ -285,18 +286,18 @@ const ShowEmployees = () => {
             dataIndex: 'employee_project',
             key: 'employee_project',
             render: (text, record) => {
-                const projects = record.employee_project?.map((item) => item.project.name) || [];
-
-                return (
-                    <>
-                        {projects.map((project, index) => (
-                            <React.Fragment key={project}>
-                                <span>{project}</span>
-                                {index < projects.length - 1 && ', '}
-                            </React.Fragment>
-                        ))}
-                    </>
-                );
+              const projects = record.employee_project?.map((item) => item.project.name) || [];
+          
+              return (
+                <>
+                  {projects.map((project, index) => (
+                    <React.Fragment key={project}>
+                      <span>{project}</span>
+                      {index < projects.length - 1 && ', '}
+                    </React.Fragment>
+                  ))}
+                </>
+              );
             },
             width: 250,
           },
@@ -397,7 +398,6 @@ const ShowEmployees = () => {
         tech: employee.tech,
         position: employee.position,
         status: employee.status,
-        manager: employee.manager,
         employee_project: employee.employee_project
     }));
     return (

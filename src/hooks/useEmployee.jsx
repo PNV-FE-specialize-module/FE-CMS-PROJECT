@@ -11,21 +11,23 @@ import Swal from "sweetalert2";
 
 
 export const useGetAllEmployee = () => {
-    const { t, i18n } = useTranslation();
 
     return useQuery({
-        queryKey: [t("main.Employee")],
+        queryKey: ["EMPLOYEE"],
         queryFn: async () => {
             try {
                 const { data } = await getAllEmployee();
                 return data;
             } catch (error) {
-                console.error(t("main.Error:"), error);
+                // console.error(t("main.Error:"), error);
                 throw error;
             }
         },
     });
 };
+
+
+
 
 
 
@@ -37,7 +39,7 @@ export const useGetDetailEmployee = (id) => {
                 const { data } = await getDetailEmployee(id);
                 return data;
             } catch (error) {
-                console.error("Error:", error);
+                // console.error(t("main.Error:"), error);
                 throw error;
             }
         }
@@ -63,7 +65,6 @@ export const useCreateEmployee = () => {
 };
 
 export const useUpdateEmployee = (id) => {
-    const { t, i18n } = useTranslation();
     const queryClient = useQueryClient();
 
     const mutation = useMutation(
@@ -80,7 +81,6 @@ export const useUpdateEmployee = (id) => {
 
 export const useDeleteEmployee = () => {
     const queryClient = useQueryClient();
-
     const navigate = useNavigate()
     const deleteEmployee = async (employeeId) => await deleteEmployeeApi(employeeId)
 
@@ -95,7 +95,6 @@ export const useDeleteEmployee = () => {
                     timer: 1000,
                     showConfirmButton: false
                 })
-                navigate('/listemployee')
             }
             else{
                 Swal.fire({

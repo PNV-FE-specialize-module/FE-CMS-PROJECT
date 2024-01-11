@@ -1,20 +1,21 @@
-import {getTotalEmployee} from "../api/EmployeeApi.js";
 import {getTotalProject} from "../api/ProjectApi.js";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import { getDetailProject, getprojects, updateProjectApi,getProjectApi,getProjectStatus,patchStatusApi, } from "../api/Project";
+import { getDetailProject, getProjects, updateProjectApi,getProjectApi,getProjectStatus,patchStatusApi, } from "../api/ProjectApi";
 import { useTranslation} from 'react-i18next';
 import { deleteProjectApi,  } from "../api/ProjectApi";
 import { useNavigate } from "react-router";
 import Swal from "sweetalert2";
 
+
 // import {getTotalEmployee} from "../api/EmployeeApi.js";
 
-export const useGetProject = () => {
+
+export const useGetProject = (params) => {
     return useQuery({
-        queryKey: ['PROJECT'],
+        queryKey: ["PROJECT",  params.search, params.status],
         queryFn: async () => {
             try {
-                const { data } = await getprojects();
+                const { data } = await getProjects(params);
                 return data;
             } catch (error) {
                 console.error(t("main.Error:"), error);
@@ -56,6 +57,8 @@ export const useGetData = (params) => {
     });
   };
 
+  
+
 export const useGetDetaiProject = (id) => {
     return useQuery({
         queryKey: ['PROJECT_DETAIL', id],
@@ -64,7 +67,6 @@ export const useGetDetaiProject = (id) => {
                 const { data } = await getDetailProject(id);
                 return data;
             } catch (error) {
-                console.error("Error:", error);
                 throw error;
             }
         }
