@@ -40,12 +40,14 @@ import {
   useUnassignEmployee,
 } from "../../../hooks/useAssign";
 import { useTranslation } from "react-i18next";
+import moment from 'moment';
 
 const { TextArea } = Input;
 const { Option } = Select;
 const { Title, Text } = Typography;
 
 export const ProjectDetail = () => {
+  const [form] = Form.useForm();
   const { id } = useParams();
   const { data: project, isLoading, isError, error } = useGetDetaiProject(id);
   const { t, i18n } = useTranslation();
@@ -64,6 +66,18 @@ export const ProjectDetail = () => {
 
   const { mutate: assignEmployee } = useAssignEmployee();
   const { mutate: unAssignEmployee } = useUnassignEmployee();
+
+
+  const disabledStartDate = (current) => {
+    const today = moment();
+    return current && current.isBefore(today.startOf('day'));
+  };
+  
+  const disabledEndDate = (current) => {
+    const today = moment();
+    const startDateValue = form.getFieldValue('startDate');
+    return current && (current.isBefore(today.startOf('day')) || current.isBefore(startDateValue));
+  };
 
   if (isLoading) {
     return <Spin spinning={isLoading} tip={t("main.Loading...")}></Spin>;
@@ -95,7 +109,7 @@ export const ProjectDetail = () => {
       setEditedProject({ ...project?.project });
     }
   };
-
+  
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name=="employeeId"){
@@ -533,7 +547,7 @@ export const ProjectDetail = () => {
                 </Col>
 
                 <Col span={12}>
-                  <Form.Item label={t("main.Start Date")}>
+                  <Form.Item label={t("main.Start Date")} >
                     {editMode ? (
                       <DatePicker
                         value={
@@ -544,6 +558,7 @@ export const ProjectDetail = () => {
                         onChange={handleStartDateChange}
                         format="YYYY-MM-DD"
                         name="startDate"
+                        disabledDate={disabledStartDate}
                       />
                     ) : (
                       <Input
@@ -566,6 +581,7 @@ export const ProjectDetail = () => {
                         onChange={handleEndDateChange}
                         format="YYYY-MM-DD"
                         name="endDate"
+                        disabledDate={disabledEndDate}
                       />
                     ) : (
                       <Input
