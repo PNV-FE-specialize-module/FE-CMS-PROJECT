@@ -18,24 +18,24 @@ import "../../style/Project.css"
 
 const ListProject = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [status, setStatus] = useState("");
   const { t, i18n } = useTranslation();
   const navigate = useNavigate()
 
   const [searchName, setSearchName] = useState('');
-  const [status, setStatus] = useState("");
 
   const paginateOptions = {
     search: searchName.name,
     status: status,
   };
 
-  const { data: projects, isLoading, isError, error } = useGetProject(paginateOptions);
 
 
   const showModal = () => {
     setIsModalVisible(true);
   };
 
+  const { data: projects, isLoading, isError, error } = useGetProject(paginateOptions);
 
   const projectStatusUpdateMutation = useProjectStatusUpdate();
 
