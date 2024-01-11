@@ -1,7 +1,7 @@
 import React, {useRef, useState} from 'react';
 import { useParams } from "react-router-dom";
 import { useGetDetailEmployee, useUpdateEmployee, useGetManager, useDeleteEmployee } from "../../../hooks/useEmployee.jsx";
-import {Row, Col, Button, Form, Input, Typography, Card, Select, message, Space, Timeline, DatePicker} from 'antd';
+import {Row, Col, Button, Form, Input, Typography, Card, Select, message, Space, Timeline, DatePicker, Radio} from 'antd';
 import moment from "moment";
 import 'sweetalert2/dist/sweetalert2.css';
 import { useTranslation} from 'react-i18next';
@@ -246,6 +246,7 @@ const EmployeeDetail = () => {
     tech,
     description,
     managerId,
+    isManager
   } = editMode ? editedEmployee : employee?.employee;
 
   const handleSaveClick = async () => {
@@ -371,6 +372,7 @@ const EmployeeDetail = () => {
               </Col>
             </Row>
           </Col>
+          
           <Col md={24} lg={16}>
             <Form layout="vertical">
               <Typography.Title level={3} style={{ lineHeight: "30px" }}>
@@ -416,18 +418,19 @@ const EmployeeDetail = () => {
                             name="name"
                             value={editedEmployee.name}
                             onChange={handleInputChange}
-                            style={{ maxWidth: '300px' }}
+                            style={{ maxWidth: '300px', fontSize:'16px', fontWeight:'bold' }}
                         />
                     ) : (
                         <Input
                             name="name"
                             value={name}
-                            style={{ maxWidth: '300px' }}
+                            style={{ maxWidth: '300px',  fontSize:'16px', fontWeight:'bold' }}
                             disabled
                         />
                     )}
                   </Form.Item>
                 </Col>
+              
                 <Col span={12}>
                   <Form.Item label={t("main.Email")}>
                     {editMode ? (
@@ -447,6 +450,32 @@ const EmployeeDetail = () => {
                     )}
                   </Form.Item>
                 </Col>
+                <Col span={12}>
+                <Form.Item
+                  name="isManager"
+                  label={t("main.IsManager")}
+                >
+                  {editMode ? (
+                    <Radio.Group
+                      value={editedEmployee?editedEmployee.isManager:isManager}
+                      style={{ marginBottom: "0px" }}
+                      onChange={(e) => handleInputChange({ target: { name: "isManager", value: e.target.value } })}
+                    >
+                      <Radio value={true}>{t("main.True")}</Radio>
+                      <Radio value={false}>{t("main.False")}</Radio>
+                    </Radio.Group>
+                  ) : (
+                    <Radio.Group
+                      defaultValue={employee?.employee.isManager}
+                      style={{ marginBottom: "0px" }}
+                      disabled
+                    >
+                      <Radio value={true}>{t("main.True")}</Radio>
+                      <Radio value={false}>{t("main.False")}</Radio>
+                    </Radio.Group>
+                 )}
+                </Form.Item>
+              </Col>
                 <Col span={12}>
                   <Form.Item label={t("main.Phone")}>
                     {editMode ? (
