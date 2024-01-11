@@ -214,10 +214,7 @@ const ListProject = () => {
       render: (text,record) => <Link to={`/project/${record.id}`}style={{ color: 'black' }}> {new Date(text).toLocaleDateString('en-US')}</Link> 
     },
   ];
-  // const [selectedStatus, setSelectedStatus] = useState("");
-  // const handleStatusClick = (status) => {
-  //   setSelectedStatus(status);
-  // };
+  
   return (
     <div>
       <Spin spinning={isLoading} tip={t('main.Loading...')}>
